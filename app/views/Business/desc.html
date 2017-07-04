@@ -1,0 +1,92 @@
+#{extends 'main.html' /}
+#{set title: business.name+"_"+business.content+"_"+business.description /}
+
+<div class="row">
+    <div class="col-lg-12">
+        <div class="ibox float-e-margins">
+            <div class="ibox-title">
+                <h5>业务解释-${desc?.content} <small>${desc?.business+"-"+desc?.name+"-"+desc?.title}</small></h5>
+
+            </div>
+            <div class="ibox-content">
+                ${desc?.description.raw()}
+            </div>
+        </div>
+    </div>
+
+    <div class="col-lg-12">
+        <div class="ibox float-e-margins">
+            <div class="ibox-title">
+                <h5>关联业务-${desc?.content} <small>${desc?.business+"-"+desc?.name+"-"+desc?.title}</small></h5>
+
+            </div>
+            <div class="ibox-content">
+                <div>
+                <div class="col-sm-12 col-xs-12" id="main" style="height: 500px;">
+
+                </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+#{set 'moreScripts'}
+<script src="@{'/public/js/echarts.min.js'}" ></script>
+<script type="text/javascript">
+    // 基于准备好的dom，初始化echarts实例
+    var myChart = echarts.init(document.getElementById('main'));
+
+    var uploadedDataURL = "";
+    myChart.showLoading();
+    $.getJSON("@{controllers.Business.getData(business)}", function(data) {
+        myChart.hideLoading();
+
+        myChart.setOption(option = {
+            title: {
+                text: '${name}'
+            },
+
+            tooltip: {
+                trigger: 'item',
+                triggerOn: 'mousemove'
+            },
+            series: [{
+                type: 'graph',
+                top: '30%',
+                layout: 'none',
+                symbolSize: 150,
+                label: {
+                    normal: {
+                        show: true
+                    }
+                },
+                edgeSymbolSize: [4, 10],
+                edgeLabel: {
+                    normal: {
+                        textStyle: {
+                            fontSize: 20
+                        }
+                    }
+                },
+                data: data.nodes,
+                links: data.links,
+                itemStyle: {
+                    normal: {
+                        borderWidth: 1,
+                        borderColor: '#aaa'
+                    }
+                },
+                lineStyle: {
+                    normal: {
+                        opacity: 0.9,
+                        width: 2,
+                        curveness: 0
+                    }
+                }
+            }]
+        });
+    });
+</script>
+
+#{/set}

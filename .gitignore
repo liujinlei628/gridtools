@@ -1,0 +1,9 @@
+gridtools.iml
+gridtools.ipr
+precompiled
+tmp
+.DS_Store
+.classpath
+.idea
+.project
+.settings

@@ -1,0 +1,21 @@
+#{extends 'main.html' /}
+
+#{doLayout /}
+
+#{set 'moreStyles'}
+<link href="@{'/public/css/plugins/summernote/summernote.css'}" rel="stylesheet">
+<link href="@{'/public/css/plugins/summernote/summernote-bs3.css'}" rel="stylesheet">
+#{/set}
+
+#{set 'moreScripts'}
+
+<script src="@{'/public/js/plugins/summernote/summernote.min.js'}"></script>
+
+<script>
+    $(document).ready(function(){
+
+        $('.summernote').summernote();
+
+    });
+</script>
+#{/set}

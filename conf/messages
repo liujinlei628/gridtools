@@ -1,0 +1,17 @@
+# You can specialize this file for each language.
+# For example, for French create a messages.fr file
+#
+
+business.summary=业务总览
+business.description=业务详情
+business.management=业务管理
+
+business.management.upload=业务导入
+business.management.query=业务查询
+business.management.export=业务导出
+
+business=业务
+name=业务名称
+title=业务内容
+content=业务内容描述
+description=业务内容详情

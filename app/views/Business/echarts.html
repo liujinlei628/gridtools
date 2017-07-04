@@ -1,0 +1,148 @@
+#{extends 'main.html' /}
+#{set title:'index.html' /}
+
+<div class="row">
+    <div class="col-lg-12">
+        <div class="ibox float-e-margins">
+            <div class="ibox-content">
+
+
+            *{<div class="search-form">}*
+            *{<form action="@{controllers.Business.query()}" method="get">}*
+            *{<div class="input-group">}*
+            *{<input type="text" placeholder="${keyword}" name="keyword" id="keyword" class="form-control input-lg">}*
+            *{<div class="input-group-btn">}*
+            *{<button class="btn btn-lg btn-primary" type="submit">}*
+            *{搜索}*
+            *{</button>}*
+            *{</div>}*
+            *{</div>}*
+
+            *{</form>}*
+            *{</div>}*
+
+            *{<small>Request time  (0.23 seconds)</small>}*
+
+                <div id="main" style="height:800px">
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+#{set 'moreScripts'}
+<script src="@{'/public/js/echarts.min.js'}" ></script>
+<script type="text/javascript">
+    // 基于准备好的dom，初始化echarts实例
+    var dom = document.getElementById('main');
+    var myChart = echarts.init(document.getElementById('main'));
+
+    var uploadedDataURL = "";
+    myChart.showLoading();
+    $.getJSON("@{controllers.Business.searchAll(keyword)}", function(data) {
+        myChart.hideLoading();
+
+        myChart.setOption(option = {
+            tooltip: {
+                show: true,
+                formatter: function(e) {
+                    return e.data.displayname;
+                }
+            },
+            legend: {
+                x: "center",
+                data: data.categories.map(function (a) {
+                    return a.name;
+                }),
+                tooltip: {
+                    show: true
+                },
+            },
+            title: [{
+                text: "${keyword}流程图",
+                textStyle: {
+                    color: '#333',
+                    fontSize: 16,
+                }
+            }],
+            toolbox: {
+                show : true,
+                feature : {
+                    myTool2: {
+                        show: true,
+                        title: '自动布局模式',
+                        icon: 'image://http://echarts.baidu.com/images/favicon.png',
+                        onclick: function (){
+                            window.location="@{Business.force(keyword)}";
+                        }
+                    },
+                    saveAsImage : {show: true}
+                }
+            },
+            animationDurationUpdate: 1500,
+            animationEasingUpdate: 'quinticInOut',
+            draggable:true,
+            series: [{
+                categories: data.categories,
+                type: 'graph',
+                layout: 'none',
+                symbol: 'rect',
+                silent: true,
+                symbolSize: [100,50],
+                symbolRotate:0,
+                roam: true, //禁止用鼠标滚轮缩小放大效果
+                edgeSymbol: ['none', 'arrow'],
+                edgeSymbolSize: [4, 10],
+                // 连接线上的文字
+                focusNodeAdjacency: true, //划过只显示对应关系
+                edgeLabel: {
+                    normal: {
+                        show: true,
+                        textStyle: {
+                            fontSize: 9
+                        },
+                        formatter: "{c}"
+                    }
+                },
+                lineStyle: {
+                    normal: {
+                        opacity: 1,
+                        width: 2,
+                        curveness: 0,
+                        color: "#333"
+                    }
+                },
+                // 圆圈内的文字
+                label: {
+                    normal: {
+                        show: true,
+                        formatter: function(e) {
+                            return e.data.displayname;
+                        },
+                        textStyle: {
+                            color: '#fff',
+                            fontSize: 12
+                        }
+                    }
+                },
+                force: {
+                    repulsion: 500
+                },
+                data: data.nodes,
+                links: data.links
+            }]
+        });
+
+//        $("#main").css("width",data.xx);
+//        alert(data.xx);
+//
+//        myChart.resize({
+//            width: data.xx
+//        });
+
+
+    });
+</script>
+
+#{/set}

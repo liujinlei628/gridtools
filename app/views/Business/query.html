@@ -53,10 +53,8 @@
 </div>
 #{set 'moreScripts'}
 <script type="text/javascript">
-    // 基于准备好的dom，初始化echarts实例
+    // 基于准备好的dom
     var dom = document.getElementById('queryMain');
-    // graph.originAtCenter = false;
-    // var toolbar = Q.createToolbar(graph, document.getElementById("toolbar"));
 	var colorArray = ['#2f4554','#61a0a8','#d48265','#91c7ae','#749f83','#ca8622','#bda29a',
 		'#6e7074','#546570','#c4ccd3','#ce93d8','#90caf9','#80deea','#80cbc4','#a5d6a7','#c5e1a5','#e6ee9c','#f48fb1','#ef9a9a','#cde6c7'];
     var nodeMap = new Map();
@@ -124,14 +122,6 @@
     				break;
     			}
     		}
-    		
-/*     		if(_srouceType == _targetType && isLink){
-    			list.push(node);
-    			if(_targetType != _srouceType){
-    				break;
-    			}
-    			findLinkNodes(links, node.source, nodes, list);
-    		} */
     	}
     }
 

@@ -69,6 +69,8 @@
     var selectedMap = new Map();//过滤功能中选中的颜色节点
     function createText(label, x, y,color) {
         var node = graph.createText(label, x, y);
+        // 层次间布局方向为向右布局
+        node.parentChildrenDirection = Q.Consts.DIRECTION_RIGHT;
         node.setStyle(Q.Styles.LABEL_BORDER, 1);
         node.setStyle(Q.Styles.LABEL_PADDING, 15);
         node.setStyle(Q.Styles.LABEL_COLOR, '#FFF');
@@ -198,13 +200,16 @@
             }
         }
 	}
+	
     $.getJSON("@{controllers.Business.searchAll(keyword)}", function(data) {
 		var _color = "red";
 		var _firstNode = data.nodes[0].name;
 		var _type = _firstNode.substring(0,2);
+		var categories = data.categories;
 		colorMap.set(_type,_color);
 		createNodes(_firstNode, data.nodes, data.links);
         colorMap.forEach((value,key)=>{
+        	
         	var $button = $("<button>");
         	$button.addClass("btn btn-primary btn-xs");
         	$button.text(key).css("background", value).css("margin-left", "10px");
@@ -222,6 +227,30 @@
         	});
         	$("#colorMap").append($button);
         });
+        
+        // 涉及专业
+        var majors = "";
+        for(var i = 0 ; i < categories.length ; i ++){
+        	majors += categories[i].name + ",";
+        }
+        majors = majors.substring(majors, majors.length - 1);
+        
+        var majorsli = "";
+        for(var i = 0 ; i < categories.length ; i ++){
+            majorsli += categories[i].name;
+        }
+        
+        // 节点数量
+        var nodeCount = $("<div>节点数量：" + data.nodes.length + "</div>");
+        var majors = $("<div>涉及专业：" + majors + "</div>");
+        var nodeCountHidden = $("<input type='hidden' id='nodeCount' value='"+ data.nodes.length + "'/>");
+        var majorsliHidden = $("<input type='hidden' id='majorsli' value='"+ majorsli + "'/>");
+
+        $("#colorMap").append(nodeCount);
+        $("#colorMap").append(majors);
+        $("#colorMap").append(nodeCountHidden);
+        $("#colorMap").append(majorsliHidden);
+
         createEdges(data.links);
         graph.moveToCenter();
         
@@ -229,12 +258,22 @@
         /* setTimeout(function() {
         	saveAs(graph.exportImage().data,'${keyword}');
         }) */
+        
+        var layouter = new Q.TreeLayouter(graph);
+        // 设置整体的布局框架为垂直平均分布
+        layouter.layoutType = Q.Consts.LAYOUT_TYPE_EVEN_VERTICAL;
+        layouter.doLayout({callback: function(){
+            graph.zoomToOverview();
+        }});
+        
     });
     
     function downloadCanvas(link, filename) {
-    	console.log(link);
+    	
+    	var nodeCount =  document.getElementById("nodeCount").value;
+        var majorsli =  document.getElementById("majorsli").value;
         link.href = graph.exportImage().data.replace(/^data:image\/[^;]/, 'data:application/octet-stream');
-        link.download = filename;
+        link.download = filename + "-" + nodeCount + "-" + majorsli + ".png";
     }
 
     function saveAs(uri, filename) {

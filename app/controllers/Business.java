@@ -264,13 +264,28 @@ public class Business extends CRUD {
 		TempLink link = null;
 
 		TempCategory category = null;
+		
+		Integer _x_min=80;
+        Integer _y_min=50;
 
+        Integer _x_d = 230;
+        Integer _y_d = 200;
+
+        Integer xx = 1;
+
+        int i = 0;
 
 		for(TCfgBusiness _busi: _businesses){
 			node = new TempNode();
 			node.name = _busi.business_id;
-			node.displayname= node.name+"\n"+_busi.name +"\n"+_busi.description;
-			node.category = _busi.professional;
+			node.displayname = node.name + "\n" + _busi.description;
+			node.category = _busi.area;
+			
+			node.source = _busi.business_id;
+            node.target = _busi.post_business_id;
+            node.x=_x_min + (i*_x_d);
+            node.y=_y_min + (i*_y_d);
+			
 			if(!nodeSet.contains(node.name)) {
 				nodeList.add(node);
 				nodeSet.add(node.name);
@@ -281,7 +296,7 @@ public class Business extends CRUD {
 			}
 
 			category = new TempCategory();
-			category.name = _busi.professional;
+			category.name = _busi.area;
 			if(!categorySet.contains(category.name)) {
 				categoryList.add(category);
 				categorySet.add(category.name);
@@ -289,15 +304,21 @@ public class Business extends CRUD {
 
 			node = new TempNode();
 			node.name = _busi.post_business_id;
-			node.displayname= node.name+"\n"+_busi.post_business_name +"\n"+_busi.post_business_description;
-			node.category = _busi.post_professional;
+			node.displayname = node.name + "\n" + _busi.post_business_description;
+			node.category = _busi.area;
+			
+			node.source = _busi.business_id;
+            node.target = _busi.post_business_id;
+            node.x = _x_min + _x_d ;
+            node.y = _y_min +((i-_businesses.size()/2)*_y_d);
+			
 			if(!nodeSet.contains(node.name)) {
 				nodeList.add(node);
 				nodeSet.add(node.name);
 			}
 
 			category = new TempCategory();
-			category.name = _busi.post_professional;
+			category.name = _busi.area;
 			if(!categorySet.contains(category.name)) {
 				categoryList.add(category);
 				categorySet.add(category.name);
@@ -312,7 +333,7 @@ public class Business extends CRUD {
 				linkList.add(link);
 				linkSet.add(link.source+"-"+link.target);
 			}
-			findNext(leaderSet,nodeSet, linkSet, categorySet, nodeList, linkList, categoryList, _busi.post_business_id, keyword);
+			findAllNext(leaderSet,nodeSet, linkSet, categorySet, nodeList, linkList, categoryList, _busi.post_business_id, keyword, node.x, node.y, _x_d, _y_d, xx);
 		}
 
 		JsonObject _output = new JsonObject();
@@ -330,8 +351,26 @@ public class Business extends CRUD {
 			}
 		}
 
+		List<TempNode> nodeListDw = new ArrayList<TempNode>();
+		List<TempNode> nodeListZy = new ArrayList<TempNode>();
+		List<TempNode> nodeListFz = new ArrayList<TempNode>();
+		for (TempNode temNode : nodeList) {
+		    if("电网业务".equals(temNode.category)){
+		        nodeListDw.add(temNode);
+	        }
+		    if("资源保障".equals(temNode.category)){
+		        nodeListZy.add(temNode);
+            }
+            if("辅助保障".equals(temNode.category)){
+                nodeListFz.add(temNode);
+            }
+		}
+		
 		if(_r) {
 			_output.add("nodes", gson.toJsonTree(nodeList));
+			_output.add("nodeDws", gson.toJsonTree(nodeListDw));
+			_output.add("nodeZys", gson.toJsonTree(nodeListZy));
+			_output.add("nodeFzs", gson.toJsonTree(nodeListFz));
 			_output.add("links", gson.toJsonTree(linkList));
 			_output.add("categories", gson.toJsonTree(categoryList));
 		}
@@ -339,17 +378,29 @@ public class Business extends CRUD {
 		renderText(_output);
 	}
 
-	private static void findNext(Set<String>  leaderSet,Set<String> nodeSet,Set<String> linkSet, Set<String> categorySet, List<TempNode> nodeList, List<TempLink> linkList, List<TempCategory> categoryList, String _next_id, String keyword) {
+	private static void findAllNext(Set<String>  leaderSet,Set<String> nodeSet,Set<String> linkSet, Set<String> categorySet, List<TempNode> nodeList, List<TempLink> linkList, List<TempCategory> categoryList, String _next_id, String keyword, Integer x, Integer y, Integer _x_d, Integer _y_d, Integer xx) {
 		TempNode node = null;
 		TempCategory category = null;
 		TempLink link = null;
 		List<TCfgBusiness> _child_businesses = TCfgBusiness.find("business_id",_next_id).fetch();
+		
+		int i=0;
 		for(TCfgBusiness _busi: _child_businesses){
 			node = new TempNode();
 			node.name = _busi.post_business_id;
-			node.displayname= node.name+"\n"+_busi.post_business_name +"\n"+_busi.post_business_description;
-			node.category = _busi.post_professional;
+			node.displayname = node.name + "\n" + _busi.post_business_description;
+			node.category = _busi.area;
 
+            node.source = _busi.business_id;
+            node.target = _busi.post_business_id;
+            node.x = x + _x_d;
+            
+            if(_child_businesses.size()>1){
+                node.y = y + _y_d *(i-_child_businesses.size()/2);
+            } else {
+                node.y = y + _y_d * (i);
+            }
+			
 			if(!nodeSet.contains(node.name)) {
 				nodeList.add(node);
 				nodeSet.add(node.name);
@@ -360,7 +411,7 @@ public class Business extends CRUD {
 			}
 
 			category = new TempCategory();
-			category.name = _busi.post_professional;
+			category.name = _busi.area;
 			if(!categorySet.contains(category.name)) {
 				categoryList.add(category);
 				categorySet.add(category.name);
@@ -389,11 +440,12 @@ public class Business extends CRUD {
 				}
 			}
 
+			xx++;
 			Logger.info(":"+_r);
 
 			if(!_r) {
 				if (!leaderSet.contains(_busi.post_business_id)) {
-					findNext(leaderSet, nodeSet, linkSet, categorySet, nodeList, linkList, categoryList, _busi.post_business_id, keyword);
+				    findAllNext(leaderSet, nodeSet, linkSet, categorySet, nodeList, linkList, categoryList, _busi.post_business_id, keyword, node.x, node.y, _x_d, _y_d, xx);
 				}
 			}
 

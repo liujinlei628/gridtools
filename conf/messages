@@ -2,15 +2,47 @@
 # For example, for French create a messages.fr file
 #
 
-business.summary=业务总览
-business.description=业务详情
-business.management=业务管理
+# 
+project.name=国家电网
 
-business.management.upload=业务导入
-business.management.query=业务查询
-business.management.export=业务导出
+# 项目名称
+project.projectname=业务数据体系管理辅助系统
 
+# 一级菜单列表
+business.summary=业务管理
+business.description=数据管理
+business.management=综合查询
+business.fenxi=综合分析
+business.sysguanl=系统管理
+
+# 业务管理子菜单
+business.summary.overview=业务总览
+business.summary.segment=业务板块浏览
+business.summary.detailmanage=业务详情管理
+business.summary.nodemanage=业务节点管理
+
+# 数据管理子菜单
+business.description.overview=数据总览
+business.description.browsing=数据浏览
+business.description.detailmanage=数据详情
+business.description.maintenance=数据维护
+
+# 综合查询子菜单
+business.management.optquery=业务/数据查询
+business.management.busquery=业务查询
+business.management.dataquery=数据查询
+business.management.busupload=业务导入
+business.management.busexport=业务导出
+
+# 综合分析子菜单
+business.fenxi.analysissummary=分析汇总业务及数据
+
+# 系统管理子菜单
+business.sysguanl.jurmanage=权限管理
+
+# 业务实体对象
 business=业务
+business_id=业务编号
 name=业务名称
 title=业务内容
 content=业务内容描述

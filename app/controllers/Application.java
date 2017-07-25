@@ -13,6 +13,9 @@ import models.*;
 
 public class Application extends Controller {
 
+    /**
+     * 首页一览图
+     */
     public static void index() {
         render();
     }
@@ -58,19 +61,16 @@ public class Application extends Controller {
             }
         }
 
-
         JsonObject _output = new JsonObject();
         Gson gson = new Gson();
         _output.add("nodes",gson.toJsonTree(keySet));
         _output.add("links",gson.toJsonTree(links));
 
-        System.out.println(_output);
-
         renderText(_output);
 
     }
 
-
+    @SuppressWarnings("unused")
     private static void findNext(List<TCfgBusiness> _businesses, String _next_id, Set<String> _id_set) {
         if(_id_set==null){
             _id_set = new HashSet<String>();
@@ -84,6 +84,13 @@ public class Application extends Controller {
                 _id_set.add(business.business_id);
             }
         }
+    }
+    
+    /**
+     * 板块一览图
+     */
+    public static void indexQunee() {
+        render();
     }
 
 }

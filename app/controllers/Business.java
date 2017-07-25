@@ -3,20 +3,37 @@ package controllers;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Random;
+import java.util.Set;
+import java.util.TreeMap;
+import java.util.TreeSet;
+import java.util.UUID;
 
-import com.google.gson.Gson;
-import com.google.gson.JsonObject;
-import models.*;
 import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.util.IntList;
 import org.jeecgframework.poi.excel.ExcelExportUtil;
 import org.jeecgframework.poi.excel.ExcelImportUtil;
 import org.jeecgframework.poi.excel.entity.ExportParams;
 import org.jeecgframework.poi.excel.entity.ImportParams;
-
 import org.jeecgframework.poi.excel.entity.params.ExcelExportEntity;
+
+import com.google.gson.Gson;
+import com.google.gson.JsonObject;
+
+import models.TCfgBusiness;
+import models.TCfgBusinessDesc;
+import models.TempCategory;
+import models.TempLink;
+import models.TempNode;
 import play.Logger;
 import play.Play;
+import sun.security.krb5.KdcComm;
 
 public class Business extends CRUD {
 
@@ -39,7 +56,8 @@ public class Business extends CRUD {
 		//params.setImportFields(fields);
 		//params.setSheetNum(9);
 		params.setNeedSave(true);
-		long start = new Date().getTime();
+		@SuppressWarnings("unused")
+        long start = new Date().getTime();
 		List<Map<String, Object>> list = ExcelImportUtil.importExcel(file, Map.class, params);
 
 		TCfgBusiness busi = null;
@@ -207,7 +225,8 @@ public class Business extends CRUD {
 		}
 	}
 
-	public static void search(String keyword) {
+	@SuppressWarnings("unused")
+    public static void search(String keyword) {
 		String query="";
 		if(keyword!=null){
 			keyword = keyword.toUpperCase();
@@ -238,8 +257,6 @@ public class Business extends CRUD {
 			_businesses = TCfgBusiness.find(query+" and business_id not in (select post_business_id from TCfgBusiness where post_business_id is not null and post_business_id <> '/')").fetch();
 
 		}
-
-
 
 		Map<String, List<TCfgBusiness>> trees = new TreeMap<String, List<TCfgBusiness>>();
 
@@ -283,8 +300,8 @@ public class Business extends CRUD {
 			
 			node.source = _busi.business_id;
             node.target = _busi.post_business_id;
-            node.x=_x_min + (i*_x_d);
-            node.y=_y_min + (i*_y_d);
+            node.x=_x_min + (i + _x_d);
+            node.y=_y_min + (i + _y_d);
 			
 			if(!nodeSet.contains(node.name)) {
 				nodeList.add(node);
@@ -310,7 +327,7 @@ public class Business extends CRUD {
 			node.source = _busi.business_id;
             node.target = _busi.post_business_id;
             node.x = _x_min + _x_d ;
-            node.y = _y_min +((i-_businesses.size()/2)*_y_d);
+            node.y = _y_min + _y_d ;
 			
 			if(!nodeSet.contains(node.name)) {
 				nodeList.add(node);
@@ -333,7 +350,11 @@ public class Business extends CRUD {
 				linkList.add(link);
 				linkSet.add(link.source+"-"+link.target);
 			}
+			
+			i ++;
+			
 			findAllNext(leaderSet,nodeSet, linkSet, categorySet, nodeList, linkList, categoryList, _busi.post_business_id, keyword, node.x, node.y, _x_d, _y_d, xx);
+			// findNext(leaderSet,nodeSet, linkSet, categorySet, nodeList, linkList, categoryList, _busi.post_business_id, keyword);
 		}
 
 		JsonObject _output = new JsonObject();
@@ -366,6 +387,14 @@ public class Business extends CRUD {
             }
 		}
 		
+		/* getCoordinate(nodeListDw, 0, 800, 0, 0);
+		getCoordinate(nodeListZy, 1000, 1600, 0, 0);
+		getCoordinate(nodeListFz, 1800, 2800, 0, 0);*/
+		/*getCoordinate2(nodeListDw, 0, 800, 0, 0);*/
+		getCoordinateIndex(nodeListDw, 0, 800, 0, 0);
+		getCoordinateLeft(nodeListZy, 1000, 1800, 0, 0);
+		getCoordinateRight(nodeListFz, 1000, 1800, 0, 0);
+		
 		if(_r) {
 			_output.add("nodes", gson.toJsonTree(nodeList));
 			_output.add("nodeDws", gson.toJsonTree(nodeListDw));
@@ -374,9 +403,268 @@ public class Business extends CRUD {
 			_output.add("links", gson.toJsonTree(linkList));
 			_output.add("categories", gson.toJsonTree(categoryList));
 		}
-
+		
 		renderText(_output);
 	}
+	
+	/**
+     * 圆心坐标
+     * @param nodeList 节点集合
+     * @param in_x 内半径
+     * @param out_x 外半径
+     * @param round_x 圆心x
+     * @param round_y 圆心y
+     * @return
+     */
+    public static List<TempNode> getCoordinateIndex(List<TempNode> nodeList, Integer in_x, Integer out_x, Integer round_x, Integer round_y ) {
+
+        float buchang = (out_x*2-2) / nodeList.size();
+        int jiou=0;
+        for(int i = 0 ; i < nodeList.size() ; i ++ ){
+            TempNode tempNode = nodeList.get(i);
+            tempNode.x = (int) (i * buchang + (round_x - out_x + 2));
+            if(jiou%2 != 0){
+                int max_ = round_y + (int) Math.sqrt(Math.pow(out_x, 2.0) - Math.pow(tempNode.x, 2.0));
+                int min_ = round_y + (int) Math.sqrt(Math.pow(in_x, 2.0) - Math.pow(tempNode.x, 2.0));
+                Random random = new Random();
+                tempNode.y = random.nextInt(max_ - min_ + 1) + min_;
+                // tempNode.y = max_;
+             }/*else if(jiou%8 != 2){
+                int min_ = round_y - (int) Math.sqrt(Math.pow(out_x, 2.0) - Math.pow(tempNode.x, 2.0));
+                int max_ = round_y - (int) Math.sqrt(Math.pow(in_x, 2.0) - Math.pow(tempNode.x, 2.0));
+                Random random = new Random();
+                tempNode.y = random.nextInt(max_ - min_ + 1) + min_; 
+            }else if(jiou%8 != 4){
+                int min_ = round_y - (int) Math.sqrt(Math.pow(out_x, 2.0) - Math.pow(tempNode.x, 2.0));
+                int max_ = round_y - (int) Math.sqrt(Math.pow(in_x, 2.0) - Math.pow(tempNode.x, 2.0));
+                Random random = new Random();
+                tempNode.y = random.nextInt(max_ - min_ + 1) + min_; 
+            }*/else {
+                // 在弧线上的点
+                int min_ = round_y - (int) Math.sqrt(Math.pow(out_x, 2.0) - Math.pow(tempNode.x, 2.0));
+                int max_ = round_y - (int) Math.sqrt(Math.pow(in_x, 2.0) - Math.pow(tempNode.x, 2.0));
+                Random random = new Random();
+                tempNode.y = random.nextInt(max_ - min_ + 1) + min_; 
+                // tempNode.y = min_;
+            }
+            jiou++;
+        }
+        return nodeList;
+    }
+	
+	/**
+	 * 得到节点坐标
+	 * @param nodeList 节点集合
+	 * @param in_x 内半径
+	 * @param out_x 外半径
+	 * @param round_x 圆心x
+	 * @param round_y 圆心y
+	 * @return
+	 */
+	public static List<TempNode> getCoordinate(List<TempNode> nodeList, Integer in_x, Integer out_x, Integer round_x, Integer round_y ) {
+
+	    float buchang = (out_x * 2 - 2) / nodeList.size();
+	    int jiou=0;
+	    for(int i = 0 ; i < nodeList.size() ; i ++ ){
+	        TempNode tempNode = nodeList.get(i);
+	        tempNode.x = (int) (i * buchang + (round_x - out_x + 2));
+	        if(jiou%2 != 0){
+	            int max_ = round_y + (int) Math.sqrt(Math.pow(out_x, 2.0) - Math.pow(tempNode.x, 2.0));
+	            int min_ = round_y + (int) Math.sqrt(Math.pow(in_x, 2.0) - Math.pow(tempNode.x, 2.0));
+	            Random random = new Random();
+	            tempNode.y = random.nextInt(max_ - min_ + 1) + min_; 
+	         }else {
+	            int min_ = round_y - (int) Math.sqrt(Math.pow(out_x, 2.0) - Math.pow(tempNode.x, 2.0));
+                int max_ = round_y - (int) Math.sqrt(Math.pow(in_x, 2.0) - Math.pow(tempNode.x, 2.0));
+                Random random = new Random();
+                tempNode.y = random.nextInt(max_ - min_ + 1) + min_; 
+	        }
+	        jiou++;
+	    }
+        return nodeList;
+    }
+	
+	/**
+     * 圆心坐标
+     * @param nodeList 节点集合
+     * @param in_x 内半径
+     * @param out_x 外半径
+     * @param round_x 圆心x
+     * @param round_y 圆心y
+     * @return
+     */
+    public static List<TempNode> getCoordinate2(List<TempNode> nodeList, Integer in_x, Integer out_x, Integer round_x, Integer round_y ) {
+
+        float buchang = (out_x*2-2) / nodeList.size();
+        //int i=0;
+        int jiou=0;
+        for(int i = 0 ; i < nodeList.size() ; i ++ ){
+            TempNode tempNode = nodeList.get(i);
+            tempNode.x = (int) (i * buchang + (round_x - out_x + 2));
+            if(jiou%4 != 0){
+                int max_ = round_y + (int) Math.sqrt(Math.pow(out_x, 2.0) - Math.pow(tempNode.x, 2.0));
+                int min_ = round_y + (int) Math.sqrt(Math.pow(in_x, 2.0) - Math.pow(tempNode.x, 2.0));
+                Random random = new Random();
+                tempNode.y = random.nextInt(max_ - min_ + 1) + min_; 
+             }else if(jiou%4 != 2){
+                int min_ = round_y - (int) Math.sqrt(Math.pow(out_x, 2.0) - Math.pow( tempNode.x, 2.0));
+                int max_ = round_y - (int) Math.sqrt(Math.pow(in_x, 2.0) - Math.pow( tempNode.x, 2.0));
+                Random random = new Random();
+                tempNode.y = random.nextInt(max_ - min_ + 1) + min_; 
+            }else {
+                int min_ = round_y - (int) Math.sqrt(Math.pow(out_x, 2.0) - Math.pow( tempNode.x, 2.0));
+                //int max_ = round_y - (int) Math.sqrt(Math.pow(in_x, 2.0) - Math.pow( tempNode.x, 2.0));
+                // Random random = new Random();
+                tempNode.y = min_; 
+            }        
+            jiou++;
+        }
+        return nodeList;
+    }
+    
+    /**
+     * 左边坐标
+     * @param nodeList 节点集合
+     * @param in_x 内半径
+     * @param out_x 外半径
+     * @param round_x 圆心x
+     * @param round_y 圆心y
+     * @return
+     */
+    public static List<TempNode> getCoordinateLeft(List<TempNode> nodeList, Integer in_x, Integer out_x, Integer round_x, Integer round_y ) {
+
+        float buchang = (out_x  -2) / nodeList.size();
+        int jiou=0;
+        for(int i = 0 ; i < nodeList.size() ; i ++ ){
+            TempNode tempNode = nodeList.get(i);
+            tempNode.x = (int) (i * buchang + (round_x - out_x + 2));
+            if(jiou%2 != 0){
+                int max_ = round_y + (int) Math.sqrt(Math.pow(out_x, 2.0) - Math.pow(tempNode.x, 2.0));
+                int min_ = round_y + (int) Math.sqrt(Math.pow(in_x, 2.0) - Math.pow(tempNode.x, 2.0));
+                Random random = new Random();
+                tempNode.y = random.nextInt(max_ - min_ + 1) + min_; 
+             }else {
+                int min_ = round_y - (int) Math.sqrt(Math.pow(out_x, 2.0) - Math.pow(tempNode.x, 2.0));
+                int max_ = round_y - (int) Math.sqrt(Math.pow(in_x, 2.0) - Math.pow(tempNode.x, 2.0));
+                Random random = new Random();
+                tempNode.y = random.nextInt(max_ - min_ + 1) + min_; 
+            }
+            jiou++;
+        }
+        return nodeList;
+    }
+    
+    
+    /**
+     * 右边坐标
+     * @param nodeList 节点集合
+     * @param in_x 内半径
+     * @param out_x 外半径
+     * @param round_x 圆心x
+     * @param round_y 圆心y
+     * @return
+     */
+    public static List<TempNode> getCoordinateRight(List<TempNode> nodeList, Integer in_x, Integer out_x, Integer round_x, Integer round_y ) {
+
+        float buchang = (out_x - 2) / nodeList.size();
+        int jiou=0;
+        for(int i = 0 ; i< nodeList.size() ; i ++ ){
+            TempNode tempNode = nodeList.get(i);
+            tempNode.x = (int) (i * buchang + (round_x + 2));
+            if(jiou%2 != 0){
+                int max_ = round_y + (int) Math.sqrt(Math.pow(out_x, 2.0) - Math.pow(tempNode.x, 2.0));
+                int min_ = round_y + (int) Math.sqrt(Math.pow(in_x, 2.0) - Math.pow(tempNode.x, 2.0));
+                Random random = new Random();
+                tempNode.y = random.nextInt(max_ - min_ + 1) + min_; 
+             }else {
+                int min_ = round_y - (int) Math.sqrt(Math.pow(out_x, 2.0) - Math.pow(tempNode.x, 2.0));
+                int max_ = round_y - (int) Math.sqrt(Math.pow(in_x, 2.0) - Math.pow(tempNode.x, 2.0));
+                Random random = new Random();
+                tempNode.y = random.nextInt(max_ - min_ + 1) + min_; 
+            }
+            jiou++;
+        }
+        return nodeList;
+    }
+	
+	/*private static boolean isInCircle(Integer r, Integer round_x, Integer round_y, Integer x2, Integer y2) {
+	    
+	    
+	    double xx = r * Math.random();
+        double yy = r * Math.random();
+        double rr = Math.pow(xx, 2.0) + Math.pow(yy, 2.0);
+        //double distance = Math.sqrt((y2-y1)*(y2-y1)+(x2-x1)*(x2-x1));
+        if(distance > r) {
+            // System.out.println("在圆外");
+            
+        } else {
+            // System.out.println("在圆内");
+            return true;
+        }
+    }*/
+	
+	@SuppressWarnings("unused")
+    private static void findNext(Set<String>  leaderSet,Set<String> nodeSet,Set<String> linkSet, Set<String> categorySet, List<TempNode> nodeList, List<TempLink> linkList, List<TempCategory> categoryList, String _next_id, String keyword) {
+        TempNode node = null;
+        TempCategory category = null;
+        TempLink link = null;
+        List<TCfgBusiness> _child_businesses = TCfgBusiness.find("business_id",_next_id).fetch();
+        
+        for(TCfgBusiness _busi: _child_businesses){
+            node = new TempNode();
+            node.name = _busi.post_business_id;
+            node.displayname = node.name + "\n" + _busi.post_business_description;
+            node.category = _busi.area;
+
+            if(!nodeSet.contains(node.name)) {
+                nodeList.add(node);
+                nodeSet.add(node.name);
+            }
+
+            if(!leaderSet.contains(_busi.business_id)){
+                leaderSet.add(_busi.business_id);
+            }
+
+            category = new TempCategory();
+            category.name = _busi.area;
+            if(!categorySet.contains(category.name)) {
+                categoryList.add(category);
+                categorySet.add(category.name);
+            }
+
+            link = new TempLink();
+            link.source = _busi.business_id;
+            link.target = _busi.post_business_id;
+            link.value = _busi.relation;
+            if(!linkSet.contains(link.source+"-"+link.target)) {
+                linkList.add(link);
+                linkSet.add(link.source+"-"+link.target);
+            }
+
+            Boolean _r = false;
+            if(keyword!=null){
+                keyword = keyword.toUpperCase();
+                if(keyword.contains(",")){
+                    for(String k:keyword.split(",")){
+                        Logger.info(k+"-"+_busi.post_business_id);
+                        if(_busi.post_business_id.equalsIgnoreCase(k)){
+                            Logger.info(k+"-"+_busi.post_business_id);
+                            _r = true;
+                        }
+                    }
+                }
+            }
+
+            Logger.info(":"+_r);
+
+            if(!_r) {
+                if (!leaderSet.contains(_busi.post_business_id)) {
+                    findNext(leaderSet, nodeSet, linkSet, categorySet, nodeList, linkList, categoryList, _busi.post_business_id, keyword);
+                }
+            }
+
+        }
+    }
 
 	private static void findAllNext(Set<String>  leaderSet,Set<String> nodeSet,Set<String> linkSet, Set<String> categorySet, List<TempNode> nodeList, List<TempLink> linkList, List<TempCategory> categoryList, String _next_id, String keyword, Integer x, Integer y, Integer _x_d, Integer _y_d, Integer xx) {
 		TempNode node = null;
@@ -396,9 +684,9 @@ public class Business extends CRUD {
             node.x = x + _x_d;
             
             if(_child_businesses.size()>1){
-                node.y = y + _y_d *(i-_child_businesses.size()/2);
+                node.y = y + _y_d + i;
             } else {
-                node.y = y + _y_d * (i);
+                node.y = y + _y_d + i;
             }
 			
 			if(!nodeSet.contains(node.name)) {
@@ -441,6 +729,7 @@ public class Business extends CRUD {
 			}
 
 			xx++;
+			
 			Logger.info(":"+_r);
 
 			if(!_r) {
@@ -451,8 +740,9 @@ public class Business extends CRUD {
 
 		}
 	}
-
-	public static void searchAll(String keyword) {
+	
+	@SuppressWarnings("unused")
+    public static void searchAll(String keyword) {
 		String query="";
 		String keyId = ""; // ljl
 		if(keyword != null){
@@ -624,7 +914,6 @@ public class Business extends CRUD {
 			_output.add("categories", gson.toJsonTree(categoryList));
 			_output.addProperty("xx",4000);
 		}
-
 
 		renderText(_output);
 	}
@@ -932,21 +1221,17 @@ public class Business extends CRUD {
 				i++;
 			}
 
-
-
 		JsonObject _output = new JsonObject();
 		Gson gson = new Gson();
 		_output.add("nodes",gson.toJsonTree(keySet));
 		_output.add("links",gson.toJsonTree(links));
 
-		System.out.println(_output);
-
 		renderText(_output);
 
 	}
 
-
-	private static void findNextPoint(List<TCfgBusiness> _businesses, String _next_id) {
+	@SuppressWarnings("unused")
+    private static void findNextPoint(List<TCfgBusiness> _businesses, String _next_id) {
 		TCfgBusiness business = TCfgBusiness.find("business_id",_next_id).first();
 		if(business!=null) {
 			_businesses.add(business);
@@ -954,4 +1239,179 @@ public class Business extends CRUD {
 		}
 	}
 	
+	/**
+    * 新增节点
+    * @param busName
+    */
+   public static void addOneNode(String keyWord){
+       
+       Map<String, Object> map = queryNodeList(keyWord);
+       List<TempNode> nodes = (List<TempNode>) map.get("nodes");
+       List<TempLink> links = (List<TempLink>) map.get("links");
+       List<TempCategory> categoryList = (List<TempCategory>) map.get("categoryList");
+       if(nodes.size() > 0){
+           render(nodes, links, categoryList);
+       }
+       render();
+   }
+   
+   /**
+    * 根据节点名称查询与该节点有关系的所有节点
+    * @param keyword
+    */
+   @SuppressWarnings("unused")
+public static Map<String, Object> queryNodeList(String keyword) {
+       String query="";
+       String keyId = ""; // ljl
+       if(keyword != null){
+           keyword = keyword.toUpperCase();
+           keyId = keyword.substring(0,2);
+           if(keyword.contains(",")){
+               for(String k:keyword.split(",")){
+                   if(!query.equals("")){
+                       query+=" or ";
+                   }
+                   query+= "business_id = '"+k+"'";
+               }
+           }
+       }
+
+       if(query.equals("")){
+           query= "business_id = '"+keyword+"'";
+       }
+
+       query ="("+query+")";
+
+       Logger.info(query);
+
+       List<TCfgBusiness> _businesses = TCfgBusiness.find(query+" and business_id not in (select post_business_id from TCfgBusiness where post_business_id is not null and post_business_id <> '/')").fetch();
+
+       if(_businesses==null || _businesses.size()==0){
+           query= "business_id like '%"+keyword+"%'";
+           query ="("+query+")";
+
+           _businesses = TCfgBusiness.find(query+" and business_id not in (select post_business_id from TCfgBusiness where post_business_id is not null and post_business_id <> '/')").fetch();
+
+       }
+
+       Logger.info("SQL:"+query);
+
+       Map<String, List<TCfgBusiness>> trees = new TreeMap<String, List<TCfgBusiness>>();
+
+       List<TCfgBusiness> _child_business = null;
+
+       Set<String> _id_set = new HashSet<String>();;
+
+       Set<String> nodeSet = new HashSet<String>();
+
+       Set<String> linkSet = new HashSet<String>();
+
+       Set<String> categorySet = new HashSet<String>();
+
+       Set<String> leaderSet = new HashSet<String>();
+
+       List<TempNode> nodeList = new ArrayList<TempNode>();
+       List<TempLink> linkList = new ArrayList<TempLink>();
+       List<TempCategory> categoryList = new ArrayList<TempCategory>();
+
+       TempNode node = null;
+
+       TempLink link = null;
+
+       TempCategory category = null;
+
+       Integer _x_min=80;
+       Integer _y_min=50;
+
+       Integer _x_d = 230;
+       Integer _y_d = 200;
+
+       Integer xx = 1;
+
+       int i = 0;
+
+       for(TCfgBusiness _busi: _businesses){
+           node = new TempNode();
+           node.name = _busi.business_id;
+           node.displayname= node.name+"\n"+_busi.name +"\n"+_busi.description;
+           node.category = _busi.professional;
+           node.source = _busi.business_id;
+           node.target = _busi.post_business_id;
+           node.x=_x_min + (i*_x_d);
+           node.y=_y_min + (i*_y_d);
+           if(!nodeSet.contains(node.name)) {
+               nodeList.add(node);
+               nodeSet.add(node.name);
+           }
+
+           if(!leaderSet.contains(node.name)){
+               leaderSet.add(node.name);
+           }
+
+           category = new TempCategory();
+           category.name = _busi.professional;
+           if(!categorySet.contains(category.name)) {
+               categoryList.add(category);
+               categorySet.add(category.name);
+           }
+           
+           if(keyId.equalsIgnoreCase("GH")){
+               if( _busi.post_business_id.substring(0, 2).equalsIgnoreCase("GH")){ //ljl
+                   node = new TempNode();
+                   node.name = _busi.post_business_id;
+                   node.displayname= node.name+"\n"+_busi.post_business_name +"\n"+_busi.post_business_description;
+                   node.category = _busi.post_professional;
+                   node.source = _busi.business_id;
+                   node.target = _busi.post_business_id;
+                   node.x = _x_min + _x_d ;
+                   node.y = _y_min +((i-_businesses.size()/2)*_y_d);
+                   if(!nodeSet.contains(node.name)) {
+                       nodeList.add(node);
+                       nodeSet.add(node.name);
+                   }
+               }
+           }else{
+               node = new TempNode();
+               node.name = _busi.post_business_id;
+               node.displayname= node.name+"\n"+_busi.post_business_name +"\n"+_busi.post_business_description;
+               node.category = _busi.post_professional;
+               node.source = _busi.business_id;
+               node.target = _busi.post_business_id;
+               node.x = _x_min + _x_d ;
+               node.y = _y_min +((i-_businesses.size()/2)*_y_d);
+               if(!nodeSet.contains(node.name)) {
+                   nodeList.add(node);
+                   nodeSet.add(node.name);
+               }
+           }
+           
+           category = new TempCategory();
+           category.name = _busi.post_professional;
+           if(!categorySet.contains(category.name)) {
+               categoryList.add(category);
+               categorySet.add(category.name);
+           }
+
+           link = new TempLink();
+           link.source = _busi.business_id;
+           link.target = _busi.post_business_id;
+           link.value = _busi.relation;
+           if(!linkSet.contains(link.source+"-"+link.target)) {
+               linkList.add(link);
+               linkSet.add(link.source+"-"+link.target);
+           }
+
+           i++;
+
+           if(!_busi.relation.equalsIgnoreCase("引用")) {
+               findNext(leaderSet, nodeSet, linkSet, categorySet, nodeList, linkList, categoryList, _busi.post_business_id, keyword, node.x, node.y, _x_d, _y_d, xx);
+           }
+       }
+       Map<String, Object> map = new HashMap<String, Object>();
+       map.put("nodes", nodeList);
+       map.put("links", linkList);
+       map.put("categories", categoryList);
+
+       return(map);
+   }
 }

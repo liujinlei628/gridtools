@@ -1,122 +1,71 @@
 #{extends 'main.html' /}
 #{set title:'Home' /}
 *{<div class="row">}*
-	*{<div class="col-lg-12">}*
-		*{<div class="ibox float-e-margins">}*
-			*{<div class="ibox-content text-center p-md">}*
+    *{<div class="col-lg-12">}*
+        *{<div class="ibox float-e-margins">}*
+            *{<div class="ibox-content text-center p-md">}*
 
-				*{<h2>}*
-					*{<span class="text-navy">公司一体化业务体系</span>}*
-				*{</h2>}*
+                *{<h2>}*
+                    *{<span class="text-navy">公司一体化业务体系</span>}*
+                *{</h2>}*
 
-			*{</div>}*
-		*{</div>}*
-	*{</div>}*
+            *{</div>}*
+        *{</div>}*
+    *{</div>}*
 *{</div>}*
 <div class="row">
-    <div role="toolbar" class="q-toolbar">
-        <div class="row">
-            <div id="toolbar" class="col-md-7">
-            </div>
-            <div class="col-md-1">
-                <a id="downloadImg" href="javascript:void(0);" onclick="downloadCanvas(this, '${keyword}')">导出图片</a>
-            </div>
-            <!-- <div id="demo_menu" class="q-right">
-                <div id="btnJSONShow" title="JSON Export"
-                    class="btn btn-default btn-sm">
-                    <div class="q-icon toolbar-json"></div>
-                </div>
-                <div title="Maximize" id="maximize"
-                    class="btn btn-default btn-sm">
-                    <div class="q-icon toolbar-max"></div>
-                </div>
-            </div> -->
-            <div id="colorMap" class="col-md-5 text-right"></div>
-        </div>
+    <div class="col-sm-12">
+        <div id="main" style="height: 900px;"></div>
     </div>
-    <div id="main" style="height: 900px"></div>
 </div>
 <div class="row">
     <h3>战略与管控业务</h3>
-	<div class="col-sm-4 col-xs-12">
-		<div class="ibox float-e-margins">
-			<div class="ibox-title">
-				<h5>战略规划</h5>
-				<!-- <span class="label label-info">IN+</span> -->
-				<div class="ibox-tools">
-					<a class="collapse-link"> <i class="fa fa-chevron-up"></i>
-					</a> 
-					<!-- <a class="dropdown-toggle" data-toggle="dropdown" href="#"> <i
-						class="fa fa-wrench"></i>
-					</a> -->
-					<!-- <ul class="dropdown-menu dropdown-user">
-						<li><a href="#">Config option 1</a></li>
-						<li><a href="#">Config option 2</a></li>
-					</ul> -->
-					<!-- <a class="close-link"> <i class="fa fa-times"></i>
-					</a> -->
-				</div>
-			</div>
-			<div class="ibox-content">
-				<a class="btn btn-info btn-rounded" href="#">规划-统计分析</a>
-				<a class="btn btn-info btn-rounded" href="#">规划-负荷预测</a>
-				<a class="btn btn-info btn-rounded" href="#">规划-公司规划</a>
-			</div>
-		</div>
-	</div>
-	<div class="col-sm-4 col-xs-12">
-		<div class="ibox float-e-margins">
-			<div class="ibox-title">
-				<h5>计划预算</h5>
-				<!-- <span class="label label-info">IN+</span> -->
-				<div class="ibox-tools">
-					<a class="collapse-link"> <i class="fa fa-chevron-up"></i>
-					</a> 
-					<!-- <a class="dropdown-toggle" data-toggle="dropdown" href="#"> <i
-						class="fa fa-wrench"></i>
-					</a> -->
-					<!-- <ul class="dropdown-menu dropdown-user">
-						<li><a href="#">Config option 1</a></li>
-						<li><a href="#">Config option 2</a></li>
-					</ul> -->
-					<!-- <a class="close-link"> <i class="fa fa-times"></i>
-					</a> -->
-				</div>
-			</div>
-			<div class="ibox-content">
-				<a class="btn btn-info btn-rounded" href="#">规划-*综合计划下达</a>
-				<a class="btn btn-info btn-rounded" href="#">财务-*财务预算下达</a>
-			</div>
-		</div>
-	</div>
-	<div class="col-sm-4 col-xs-12">
-		<div class="ibox float-e-margins">
-			<div class="ibox-title">
-				<h5>监督与评价</h5>
-				<!-- <span class="label label-info">IN+</span> -->
-				<div class="ibox-tools">
-					<a class="collapse-link"> <i class="fa fa-chevron-up"></i>
-					</a> 
-					<!-- <a class="dropdown-toggle" data-toggle="dropdown" href="#"> <i
-						class="fa fa-wrench"></i>
-					</a> -->
-					<!-- <ul class="dropdown-menu dropdown-user">
-						<li><a href="#">Config option 1</a></li>
-						<li><a href="#">Config option 2</a></li>
-					</ul> -->
-					<!-- <a class="close-link"> <i class="fa fa-times"></i>
-					</a> -->
-				</div>
-			</div>
-			<div class="ibox-content">
-				<a class="btn btn-info btn-rounded" href="#">风险</a>
-				<a class="btn btn-info btn-rounded" href="#">检查</a>
-				<a class="btn btn-info btn-rounded" href="#">审计</a>
+    <div class="col-sm-4 col-xs-12">
+        <div class="ibox float-e-margins">
+            <div class="ibox-title">
+                <h5>战略规划</h5>
+                <div class="ibox-tools">
+                    <a class="collapse-link"> <i class="fa fa-chevron-up"></i></a> 
+                </div>
+            </div>
+            <div class="ibox-content">
+                <a class="btn btn-info btn-rounded" href="#">规划-统计分析</a>
+                <a class="btn btn-info btn-rounded" href="#">规划-负荷预测</a>
+                <a class="btn btn-info btn-rounded" href="#">规划-公司规划</a>
+            </div>
+        </div>
+    </div>
+    <div class="col-sm-4 col-xs-12">
+        <div class="ibox float-e-margins">
+            <div class="ibox-title">
+                <h5>计划预算</h5>
+                <div class="ibox-tools">
+                    <a class="collapse-link"> <i class="fa fa-chevron-up"></i></a> 
+                </div>
+            </div>
+            <div class="ibox-content">
+                <a class="btn btn-info btn-rounded" href="#">规划-*综合计划下达</a>
+                <a class="btn btn-info btn-rounded" href="#">财务-*财务预算下达</a>
+            </div>
+        </div>
+    </div>
+    <div class="col-sm-4 col-xs-12">
+        <div class="ibox float-e-margins">
+            <div class="ibox-title">
+                <h5>监督与评价</h5>
+                <div class="ibox-tools">
+                    <a class="collapse-link"> <i class="fa fa-chevron-up"></i></a> 
+                </div>
+            </div>
+            <div class="ibox-content">
+                <a class="btn btn-info btn-rounded" href="#">风险</a>
+                <a class="btn btn-info btn-rounded" href="#">检查</a>
+                <a class="btn btn-info btn-rounded" href="#">审计</a>
                 <a class="btn btn-info btn-rounded" href="#">安全质量与环保</a>
                 <a class="btn btn-info btn-rounded" href="#">考核评价</a>
-			</div>
-		</div>
-	</div>
+            </div>
+        </div>
+    </div>
 </div>
 
 <div class="row">
@@ -125,19 +74,8 @@
         <div class="ibox float-e-margins">
             <div class="ibox-title">
                 <h5>客户接入</h5>
-                <!-- <span class="label label-info">IN+</span> -->
                 <div class="ibox-tools">
-                    <a class="collapse-link"> <i class="fa fa-chevron-up"></i>
-                    </a>
-                    <!-- <a class="dropdown-toggle" data-toggle="dropdown" href="#"> <i
-                        class="fa fa-wrench"></i>
-                    </a> -->
-                    <!-- <ul class="dropdown-menu dropdown-user">
-                        <li><a href="#">Config option 1</a></li>
-                        <li><a href="#">Config option 2</a></li>
-                    </ul> -->
-                    <!-- <a class="close-link"> <i class="fa fa-times"></i>
-                    </a> -->
+                    <a class="collapse-link"> <i class="fa fa-chevron-up"></i></a>
                 </div>
             </div>
             <div class="ibox-content">
@@ -150,19 +88,8 @@
         <div class="ibox float-e-margins">
             <div class="ibox-title">
                 <h5>用电管理</h5>
-                <!-- <span class="label label-info">IN+</span> -->
                 <div class="ibox-tools">
-                    <a class="collapse-link"> <i class="fa fa-chevron-up"></i>
-                    </a>
-                    <!-- <a class="dropdown-toggle" data-toggle="dropdown" href="#"> <i
-                        class="fa fa-wrench"></i>
-                    </a> -->
-                    <!-- <ul class="dropdown-menu dropdown-user">
-                        <li><a href="#">Config option 1</a></li>
-                        <li><a href="#">Config option 2</a></li>
-                    </ul> -->
-                    <!-- <a class="close-link"> <i class="fa fa-times"></i>
-                    </a> -->
+                    <a class="collapse-link"> <i class="fa fa-chevron-up"></i></a>
                 </div>
             </div>
             <div class="ibox-content">
@@ -177,19 +104,8 @@
         <div class="ibox float-e-margins">
             <div class="ibox-title">
                 <h5>客户服务</h5>
-                <!-- <span class="label label-info">IN+</span> -->
                 <div class="ibox-tools">
-                    <a class="collapse-link"> <i class="fa fa-chevron-up"></i>
-                    </a>
-                    <!-- <a class="dropdown-toggle" data-toggle="dropdown" href="#"> <i
-                        class="fa fa-wrench"></i>
-                    </a> -->
-                    <!-- <ul class="dropdown-menu dropdown-user">
-                        <li><a href="#">Config option 1</a></li>
-                        <li><a href="#">Config option 2</a></li>
-                    </ul> -->
-                    <!-- <a class="close-link"> <i class="fa fa-times"></i>
-                    </a> -->
+                    <a class="collapse-link"> <i class="fa fa-chevron-up"></i></a>
                 </div>
             </div>
             <div class="ibox-content">
@@ -206,19 +122,8 @@
         <div class="ibox float-e-margins">
             <div class="ibox-title">
                 <h5>核心交易</h5>
-                <!-- <span class="label label-primary">IN+</span> -->
                 <div class="ibox-tools">
-                    <a class="collapse-link"> <i class="fa fa-chevron-up"></i>
-                    </a>
-                    <!-- <a class="dropdown-toggle" data-toggle="dropdown" href="#"> <i
-                        class="fa fa-wrench"></i>
-                    </a> -->
-                    <!-- <ul class="dropdown-menu dropdown-user">
-                        <li><a href="#">Config option 1</a></li>
-                        <li><a href="#">Config option 2</a></li>
-                    </ul> -->
-                    <!-- <a class="close-link"> <i class="fa fa-times"></i>
-                    </a> -->
+                    <a class="collapse-link"> <i class="fa fa-chevron-up"></i></a>
                 </div>
             </div>
             <div class="ibox-content">
@@ -233,19 +138,8 @@
         <div class="ibox float-e-margins">
             <div class="ibox-title">
                 <h5>电力运行</h5>
-                <!-- <span class="label label-primary">IN+</span> -->
                 <div class="ibox-tools">
-                    <a class="collapse-link"> <i class="fa fa-chevron-up"></i>
-                    </a>
-                    <!-- <a class="dropdown-toggle" data-toggle="dropdown" href="#"> <i
-                        class="fa fa-wrench"></i>
-                    </a> -->
-                    <!-- <ul class="dropdown-menu dropdown-user">
-                        <li><a href="#">Config option 1</a></li>
-                        <li><a href="#">Config option 2</a></li>
-                    </ul> -->
-                    <!-- <a class="close-link"> <i class="fa fa-times"></i>
-                    </a> -->
+                    <a class="collapse-link"> <i class="fa fa-chevron-up"></i></a>
                 </div>
             </div>
             <div class="ibox-content">
@@ -260,19 +154,8 @@
         <div class="ibox float-e-margins">
             <div class="ibox-title">
                 <h5>用电结算</h5>
-                <!-- <span class="label label-primary">IN+</span> -->
                 <div class="ibox-tools">
-                    <a class="collapse-link"> <i class="fa fa-chevron-up"></i>
-                    </a>
-                    <!-- <a class="dropdown-toggle" data-toggle="dropdown" href="#"> <i
-                        class="fa fa-wrench"></i>
-                    </a> -->
-                    <!-- <ul class="dropdown-menu dropdown-user">
-                        <li><a href="#">Config option 1</a></li>
-                        <li><a href="#">Config option 2</a></li>
-                    </ul> -->
-                    <!-- <a class="close-link"> <i class="fa fa-times"></i>
-                    </a> -->
+                    <a class="collapse-link"> <i class="fa fa-chevron-up"></i></a>
                 </div>
             </div>
             <div class="ibox-content">
@@ -289,19 +172,8 @@
         <div class="ibox float-e-margins">
             <div class="ibox-title">
                 <h5>核心交易</h5>
-                <!-- <span class="label label-info">IN+</span> -->
                 <div class="ibox-tools">
-                    <a class="collapse-link"> <i class="fa fa-chevron-up"></i>
-                    </a>
-                    <!-- <a class="dropdown-toggle" data-toggle="dropdown" href="#"> <i
-                        class="fa fa-wrench"></i>
-                    </a> -->
-                    <!-- <ul class="dropdown-menu dropdown-user">
-                        <li><a href="#">Config option 1</a></li>
-                        <li><a href="#">Config option 2</a></li>
-                    </ul> -->
-                    <!-- <a class="close-link"> <i class="fa fa-times"></i>
-                    </a> -->
+                    <a class="collapse-link"> <i class="fa fa-chevron-up"></i></a>
                 </div>
             </div>
             <div class="ibox-content">
@@ -319,19 +191,8 @@
         <div class="ibox float-e-margins">
             <div class="ibox-title">
                 <h5>电力运行</h5>
-                <!-- <span class="label label-info">IN+</span> -->
                 <div class="ibox-tools">
-                    <a class="collapse-link"> <i class="fa fa-chevron-up"></i>
-                    </a>
-                    <!-- <a class="dropdown-toggle" data-toggle="dropdown" href="#"> <i
-                        class="fa fa-wrench"></i>
-                    </a> -->
-                    <!-- <ul class="dropdown-menu dropdown-user">
-                        <li><a href="#">Config option 1</a></li>
-                        <li><a href="#">Config option 2</a></li>
-                    </ul> -->
-                    <!-- <a class="close-link"> <i class="fa fa-times"></i>
-                    </a> -->
+                    <a class="collapse-link"> <i class="fa fa-chevron-up"></i></a>
                 </div>
             </div>
             <div class="ibox-content">
@@ -346,19 +207,8 @@
         <div class="ibox float-e-margins">
             <div class="ibox-title">
                 <h5>用电结算</h5>
-                <!-- <span class="label label-info">IN+</span> -->
                 <div class="ibox-tools">
-                    <a class="collapse-link"> <i class="fa fa-chevron-up"></i>
-                    </a>
-                    <!-- <a class="dropdown-toggle" data-toggle="dropdown" href="#"> <i
-                        class="fa fa-wrench"></i>
-                    </a> -->
-                    <!-- <ul class="dropdown-menu dropdown-user">
-                        <li><a href="#">Config option 1</a></li>
-                        <li><a href="#">Config option 2</a></li>
-                    </ul> -->
-                    <!-- <a class="close-link"> <i class="fa fa-times"></i>
-                    </a> -->
+                    <a class="collapse-link"> <i class="fa fa-chevron-up"></i></a>
                 </div>
             </div>
             <div class="ibox-content">
@@ -372,275 +222,92 @@
 <script src="@{'/public/js/echarts.js'}" ></script>
 <script src="@{'/public/js/echarts-gl.min.js'}" ></script>
 <script>
-    var uploadedDataURL = "@{'/public/js/data-1495595908173-rk2KsOfWb.json'}";
-    var dom = document.getElementById('main');
-    var graph = new Q.Graph('main');
-    graph.originAtCenter = false;
-    var toolbar = Q.createToolbar(graph, document.getElementById("toolbar"));
-    var colorArray = ['#2f4554','#61a0a8','#d48265'];
-    var nodeMap = new Map();
-    var colorMap = new Map(); //所有节点的颜色
-    var selectedMap = new Map();//过滤功能中选中的颜色节点
-    
-    // 创建节点文本
-    function createText(label, x, y,color) {
-        var node = graph.createText(label, x, y);
-        // 层次间布局方向为向右布局
-        node.parentChildrenDirection = Q.Consts.DIRECTION_RIGHT;
-        node.setStyle(Q.Styles.LABEL_BORDER, 1);
-        node.setStyle(Q.Styles.LABEL_PADDING, 15);
-        node.setStyle(Q.Styles.LABEL_COLOR, '#FFF');
-        node.setStyle(Q.Styles.LABEL_BACKGROUND_COLOR,color);
-        return node;
-    }
-
-    // 节点样式
-    function createStep(label, x, y, title){
-        var titleNode = graph.createText(title, x, y - 5);
-        titleNode.setStyle(Q.Styles.LABEL_BACKGROUND_COLOR, "#1D4876");
-        titleNode.setStyle(Q.Styles.LABEL_COLOR, "#FFF");
-        titleNode.setStyle(Q.Styles.LABEL_PADDING, 5);
-        titleNode.anchorPosition = Q.Position.LEFT_BOTTOM;
-        var node = graph.createText(label, x, y);
-        node.setStyle(Q.Styles.LABEL_BORDER, 1);
-        node.setStyle(Q.Styles.LABEL_BACKGROUND_COLOR, "#FFF");
-        node.setStyle(Q.Styles.LABEL_BORDER_STYLE, "#1D4876");
-        node.setStyle(Q.Styles.LABEL_FONT_SIZE, 20);
-        node.setStyle(Q.Styles.LABEL_SIZE, new Q.Size(120, 50));
-        node.anchorPosition = Q.Position.LEFT_TOP;
-
-        titleNode.host = node;
-        node.host = titleNode;
-        return node;
-    }
-
-    // 节点连线
-    function createEdges(links){
-        for (var i in links) {
-            var n = links[i];
-            var from = nodeMap.get(n.source);
-            var to = nodeMap.get(n.target);
-            if(from && to){
-                 var edge = graph.createEdge(from, to, n.value);
-                edge.setStyle(Q.Styles.EDGE_WIDTH, 3);
-                edge.setStyle(Q.Styles.EDGE_COLOR, "#1D4876");
-                if(n.value){
-                    edge.setStyle(Q.Styles.EDGE_LINE_DASH, [10, 10]);
+    var myChart = echarts.init(document.getElementById('main'));
+    $.getJSON("@{controllers.Sky.search("")}", function(data) {
+        option = {
+            title: {
+                text: "公司业务一体化体系",
+                top: "top",
+                left: "center"
+            },
+            tooltip: {
+                show: true,
+                formatter: function(e) {
+                    return e.data.displayname;
                 }
-                if(n.value == '引用'){
-                    to.setStyle(Q.Styles.LABEL_RADIUS, 60);
-                    to.setStyle(Q.Styles.LABEL_BORDER, 0);
-                    edge.setStyle(Q.Styles.ARROW_TO, false);
-                }
-            }
-        }
-    }
-
-    var uploadedDataURL = "";
-
-    var findLinkNodes = function(links, name, nodes, list) {
-        for (var i in nodes) {
-            var node = nodes[i];
-            if (name === node.target) {
-                if (node.name.substring(0, 2) === "GH") {
-                    list.push(node);
-                    findLinkNodes(links, node.source, nodes, list);
-                } else {
-                    break;
-                }
-            }
-        }
-    }
-
-    var findLink = function(name, links) {
-        for (var i in links) {
-            if (name === links[i].target && links[i].value === "后置") {
-                return true
-            }
-        }
-        return false;
-    }
-    
-    var isCreate = function(list,node){
-        var isCreate = true;
-        for(save in list){
-            var saveNode = list[save];
-            if(saveNode.name == node.name){
-                isCreate = false;
-                break;
-            }
-        }
-        return isCreate;
-    }
-    
-    // 创建节点
-    var createNodes = function(_firstNode, nodes, links) {
-        var _type = _firstNode.category;
-        graph.clear();
-        nodeMap.clear();
-        
-        var leafList = [];
-        if (_type != "GH") {
-            for (var n in nodes) {
-                var isLink = findLink(nodes[n].name, links);
-                if (nodes[n].isleaf && isLink) {
-                    leafList.push(nodes[n]);    
-                }               
-            }
-        }
-        
-        var saveList = [];
-        for (var leaf in leafList) {
-            var node = leafList[leaf];
-            saveList.push(node);
-            findLinkNodes(links, node.source, nodes, saveList);
-        }
-        
-        var i = 0;
-        for(x in nodes) {
-            var node =nodes[x];
-            var _nodeId = node.category;
-            if(!selectedMap.get(_nodeId)){
-                if(_nodeId != _type){
-                    if(!colorMap.get(_nodeId)){
-                        colorMap.set(_nodeId,colorArray[i++]);
+            },
+            legend: {
+                x: "bottom",
+                bottom:"auto",
+                data: data.categories.map(function (a) {
+                    return a.name;
+                }),
+                tooltip: {
+                    show: true
+                },
+            },
+            toolbox: {
+                show: true,
+                feature: {
+                    dataView: {
+                        show: true,
+                        readOnly: true
+                    },
+                    restore: {
+                        show: true
+                    },
+                    myTool1: {
+                        show: true,
+                        title: '板块浏览',
+                        icon: 'path://M432.45,595.444c0,2.177-4.661,6.82-11.305,6.82c-6.475,0-11.306-4.567-11.306-6.82s4.852-6.812,11.306-6.812C427.841,588.632,432.452,593.191,432.45,595.444L432.45,595.444z M421.155,589.876c-3.009,0-5.448,2.495-5.448,5.572s2.439,5.572,5.448,5.572c3.01,0,5.449-2.495,5.449-5.572C426.604,592.371,424.165,589.876,421.155,589.876L421.155,589.876z M421.146,591.891c-1.916,0-3.47,1.589-3.47,3.549c0,1.959,1.554,3.548,3.47,3.548s3.469-1.589,3.469-3.548C424.614,593.479,423.062,591.891,421.146,591.891L421.146,591.891zM421.146,591.891',
+                        onclick: function (){
+                            window.location.href="/Application/indexQunee";
+                        }
+                    },
+                    saveAsImage: {
+                        show: true
                     }
                 }
-                if (isCreate(saveList,node)) {
-                    var n = createText(node.displayname, node.x, node.y,colorMap.get(_nodeId));
-                    nodeMap.set(node.name, n);
-                }
-            }
-        }
-    }
-    
-    var xGap = 200;
-    var yGap = 80;
-    
-    // 创建分组节点
-    function createGroupNodes(nodes, width, y){
-        var x = -width / 2;
-        var group = graph.createGroup();
-        group.setStyle(Q.Styles.LABEL_ANCHOR_POSITION, Q.Position.CENTER_TOP);
-        group.setStyle(Q.Styles.LABEL_POSITION, Q.Position.LEFT_MIDDLE);
-        group.setStyle(Q.Styles.LABEL_ROTATE, Math.PI / 2); 
-        // group.groupImage = graph.group_cloud;
-        group.padding = 30;
-        // group.setStyle(Q.Styles.RENDER_COLOR, "#2898E0");
-        Q.forEach(nodes, function(node, i){
-        	var node =nodes[i];
-            var _nodeId = node.category;
-            var n = createText(node.displayname, x, y, colorMap.get(_nodeId));
-            nodeMap.set(node.name, n);
-            n.setStyle(Q.Styles.RENDER_COLOR, node);
-            n.setStyle(Q.Styles.RENDER_COLOR_BLEND_MODE);
-            x += xGap;
-            group.addChild(n);
-        });
-        return group;
-    }
-    
-    $.getJSON("@{controllers.Business.search("")}", function(data) {
-        
-        /* var _color = "red";
-        var _firstNode = data.nodes[0].name;
-        var _type = _firstNode.substring(0,2);
-        colorMap.set(_type,_color);
-        createNodes(_firstNode, data.nodes, data.links);
-        colorMap.forEach((value,key)=>{
-            var $button = $("<button>");
-            $button.addClass("btn btn-primary btn-xs");
-            $button.text(key).css("background", value).css("margin-left", "10px");
-            $button.click(function(event){
-                var key = event.currentTarget.innerText;
-                if(selectedMap.get(key)){
-                    selectedMap.delete(key);
-                    $button.css("background", colorMap.get(key));
-                }else{
-                    selectedMap.set(key,key);
-                    $button.css("background", "gray");
-                }
-                createNodes(_firstNode, data.nodes, data.links);
-                createEdges(data.links);
-            });
-            $("#colorMap").append($button);
-        }); */
-        
-        var y = -200;
-        
-        if (data.nodeDws.length > 0) {
-            var _color = "#2f4554";
-	   		var _firstNode = data.nodeDws[0].name;
-	   		var _type = data.nodeDws[0].category;
-	   		colorMap.set(_type,_color);
-	   		var width = (data.nodeDws.length - 1) * xGap;
-	   	    createGroupNodes(data.nodeDws, width, y);
-            y += yGap;
-    	}
-    	
-        if (data.nodeZys.length > 0) {
-    		var _color = "#61a0a8";
-    		var _firstNode = data.nodeZys[0].name;
-            var _type = data.nodeZys[0].category;
-            colorMap.set(_type,_color);
-            var width = (data.nodeZys.length - 1) * xGap;
-            createGroupNodes(data.nodeZys, width, y);
-            y += yGap;
-    	}
-        if (data.nodeFzs.length > 0) {
-        	var _color = "#d48265";
-        	var _firstNode = data.nodeFzs[0].name;
-            var _type = data.nodeFzs[0].category;
-            colorMap.set(_type,_color);
-            var width = (data.nodeFzs.length - 1) * xGap;
-            createGroupNodes(data.nodeFzs, width, y);
-            y += yGap;
-        }
-        
-        colorMap.forEach((value,key)=>{
-            var $button = $("<button>");
-            $button.addClass("btn btn-primary btn-xs");
-            $button.text(key).css("background", value).css("margin-left", "10px");
-            $("#colorMap").append($button);
-        });
-        
-        createEdges(data.links);
-        graph.moveToCenter();
-        
-        // 设置整体的布局框架为垂直平均分布
-        var layouter = new Q.TreeLayouter(graph);
-        layouter.layoutType = Q.Consts.LAYOUT_TYPE_EVEN_VERTICAL;
-        layouter.doLayout({callback: function(){
-            graph.zoomToOverview();
-        }});
-    });
-    
-    function downloadCanvas(link, filename) {
-        
-        var nodeCount =  document.getElementById("nodeCount").value;
-        var majorsli =  document.getElementById("majorsli").value;
-        link.href = graph.exportImage().data.replace(/^data:image\/[^;]/, 'data:application/octet-stream');
-        link.download = filename + "-" + nodeCount + "-" + majorsli + ".png";
-    }
+            },
+            animationDuration: 1500,
+            animationEasingUpdate: 'quinticInOut',
+            series: [{
+                type: 'graph',
+                layout: 'force',
 
-    function saveAs(uri, filename) {
-          var link = document.createElement('a');
-          if (typeof link.download === 'string') {
-            link.href = uri;
-            link.download = filename;
-    
-            //Firefox requires the link to be in the body
-            document.body.appendChild(link);
-            
-            //simulate click
-            link.click();
-    
-            //remove the link when done
-            document.body.removeChild(link);
-          } else {
-            window.open(uri);
-          }
-    }
-    
+                force: {
+                    //initLayout:'circular'
+                    edgeLength: 50,
+                    repulsion: 50,
+                    gravity: 0.2
+                },
+                data: data.nodes,
+                links: data.links,
+                categories: data.categories,
+                focusNodeAdjacency: true,
+                roam: true,
+                label: {
+                    normal: {
+                        show: true,
+                        formatter: function(e) {
+                            return e.data.name;
+                        },
+                        textStyle: {
+                            color: '#333',
+                            fontFamily: '微软雅黑',
+                            fontSize: 10
+                        }
+                    }
+                },
+                lineStyle: {
+                    normal: {
+                        //color: 'target',
+                        curveness: 0
+                    }
+                }
+            }]
+        };
+        myChart.setOption(option)
+    })
 </script>
 #{/set}

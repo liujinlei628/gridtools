@@ -1,69 +1,138 @@
 #{extends 'main.html' /} #{set title:'index.html' /}
 
 <div class="row">
-	<div class="col-lg-12">
-		<div class="ibox float-e-margins">
-			<div class="ibox-content" style="overflow: hidden;">
+    <div class="col-lg-12">
+        <div class="ibox float-e-margins">
+            <div class="ibox-content" style="overflow: hidden;">
 
 
-				*{
-				<div class="search-form">
-					}* *{
-					<form action="@{controllers.Business.query()}" method="get">
-						}* *{
-						<div class="input-group">
-							}* *{<input type="text" placeholder="${keyword}" name="keyword"
-								id="keyword" class="form-control input-lg">}* *{
-							<div class="input-group-btn">
-								}* *{
-								<button class="btn btn-lg btn-primary" type="submit">}*
-									*{搜索}* *{</button>
-								}* *{
-							</div>
-							}* *{
-						</div>
-						}* *{
-					</form>
-					}* *{
-				</div>
-				}* *{<small>Request time (0.23 seconds)</small>}*
+                *{
+                <div class="search-form">
+                    }* *{
+                    <form action="@{controllers.Business.query()}" method="get">
+                        }* *{
+                        <div class="input-group">
+                            }* *{<input type="text" placeholder="${keyword}" name="keyword"
+                                id="keyword" class="form-control input-lg">}* *{
+                            <div class="input-group-btn">
+                                }* *{
+                                <button class="btn btn-lg btn-primary" type="submit">}*
+                                    *{搜索}* *{</button>
+                                }* *{
+                            </div>
+                            }* *{
+                        </div>
+                        }* *{
+                    </form>
+                    }* *{
+                </div>
+                }* *{<small>Request time (0.23 seconds)</small>}*
 
-				<div role="toolbar" class="q-toolbar">
-					<div class="row">
-						<div id="toolbar" class="col-md-7">
-						</div>
-						<div class="col-md-1">
-							<a id="downloadImg" href="javascript:void(0);" onclick="downloadCanvas(this, '${keyword}')">导出图片</a>
-						</div>
-						<!-- <div id="demo_menu" class="q-right">
-							<div id="btnJSONShow" title="JSON Export"
-								class="btn btn-default btn-sm">
-								<div class="q-icon toolbar-json"></div>
-							</div>
-							<div title="Maximize" id="maximize"
-								class="btn btn-default btn-sm">
-								<div class="q-icon toolbar-max"></div>
-							</div>
-						</div> -->
-						<div id="colorMap" class="col-md-5 text-right"></div>
-					</div>
-				</div>
-				<div id="main" style="height: 800px"></div>
-			</div>
-		</div>
-	</div>
+                <div role="toolbar" class="q-toolbar">
+                    <div class="row">
+                        <div id="toolbar" class="col-md-7">
+                        </div>
+                        <!-- <div class="col-md-1">
+                            <a href="javascript:void(0);" onclick="addEventGuide()">新增节点</a>
+                        </div> -->
+                        <div class="col-md-1">
+                            <a id="downloadImg" href="javascript:void(0);" onclick="downloadCanvas(this, '${keyword}')">导出图片</a>
+                        </div>
+                        <!-- <div id="demo_menu" class="q-right">
+                            <div id="btnJSONShow" title="JSON Export"
+                                class="btn btn-default btn-sm">
+                                <div class="q-icon toolbar-json"></div>
+                            </div>
+                            <div title="Maximize" id="maximize"
+                                class="btn btn-default btn-sm">
+                                <div class="q-icon toolbar-max"></div>
+                            </div>
+                        </div> -->
+                        <div id="colorMap" class="col-md-5 text-right"></div>
+                    </div>
+                </div>
+                <div id="main" style="height: 800px"></div>
+            </div>
+        </div>
+    </div>
 </div>
 
 #{set 'moreScripts'}
-<script src="@{'/public/js/echarts.min.js'}"></script>
+<script type="text/javascript" src="@{'/public/js/echarts.min.js'}"></script>
+<script type="text/javascript" src="@{'/public/js/jquery-form.min.js'}"></script>
+<script type="text/javascript" src="@{'/public/js/plugins/jquery-ui/jquery-ui.min.js'}"></script>
+<link href="@{'/public/js/plugins/jquery-ui/jquery-ui.min.css'}" rel="stylesheet">
+<script type="text/javascript">
+
+    function addEventGuide(){
+        var html ='<div id="dialog-window" title="新增节点"><iframe id="myFrame" src="/addOneNode.${keyword}" frameBorder="0" style="border: 0;margin-bottom:-5px;margin-top:-3px;" scrolling="no" height="100%" width="100%"></iframe></div>';
+        $(html).dialog($.extend({
+            modal: true,
+            width: 800,
+            height: 580,
+            closeOnEscape: false,
+            draggable: true,
+            resizable: false,
+            'class': 'overflow-y:hidden',
+            close: function(event, ui) {
+              $(this).dialog("destroy"); 
+            },
+            buttons : [{
+                html : "确定",
+                id:"addSubmitButton",
+                'class' : "btn btn-primary btn-sm",
+                click : function(btn) {
+                var myFrameWin = document.getElementById("myFrame").contentWindow;
+                var myForm = myFrameWin.document.getElementById("myEventGuideForm");
+                var _this = this;
+                $(myForm).validate({
+                    meta: "validate",
+                    onsubmit:true,
+                    onblur:false,
+                    onkeyup :false,
+                    rules: {
+                        vendorName: {
+                            required: true,
+                            specialChart: true
+                        },
+                        errorCode: {
+                            required: true,
+                            specialChart: true
+                        },
+                        codeSeverity: {
+                            required: true,
+                            specialChart: true
+                        }
+                    },
+                    submitHandler: function(){
+                        ajaxSubmit(myForm);
+                        $(_this).dialog("close");
+                    },
+                    invalidHandler: function(){
+                        return false;
+                    }
+                });
+                $(myForm).submit();
+             }
+         },{
+                html : "取消",
+                'class' : "btn btn-default btn-sm",
+                click : function() {                        
+                    $(this).dialog("close");
+                }
+          }]
+        }));
+    }
+</script>
+
 <script type="text/javascript">
     // 基于准备好的dom，初始化echarts实例
     var dom = document.getElementById('main');
     var graph = new Q.Graph('main');
     graph.originAtCenter = false;
     var toolbar = Q.createToolbar(graph, document.getElementById("toolbar"));
-	var colorArray = ['#2f4554','#61a0a8','#d48265','#91c7ae','#749f83','#ca8622','#bda29a',
-		'#6e7074','#546570','#c4ccd3','#ce93d8','#90caf9','#80deea','#80cbc4','#a5d6a7','#c5e1a5','#e6ee9c','#f48fb1','#ef9a9a','#cde6c7'];
+    var colorArray = ['#2f4554','#61a0a8','#d48265','#91c7ae','#749f83','#ca8622','#bda29a',
+        '#6e7074','#546570','#c4ccd3','#ce93d8','#90caf9','#80deea','#80cbc4','#a5d6a7','#c5e1a5','#e6ee9c','#f48fb1','#ef9a9a','#cde6c7'];
     var nodeMap = new Map();
     var colorMap = new Map(); //所有节点的颜色
     var selectedMap = new Map();//过滤功能中选中的颜色节点
@@ -98,140 +167,140 @@
     }
 
     function createEdges(links){
-    	for (var i in links) {
-    		var n = links[i];
-	        var from = nodeMap.get(n.source);
-	        var to = nodeMap.get(n.target);
-			if(from && to){
-				 var edge = graph.createEdge(from, to, n.value);
-		        edge.setStyle(Q.Styles.EDGE_WIDTH, 3);
-		        edge.setStyle(Q.Styles.EDGE_COLOR, "#1D4876");
-		        if(n.value){
-		            edge.setStyle(Q.Styles.EDGE_LINE_DASH, [10, 10]);
-		        }
-		        if(n.value == '引用'){
-		            to.setStyle(Q.Styles.LABEL_RADIUS, 60);
-		            to.setStyle(Q.Styles.LABEL_BORDER, 0);
-		            edge.setStyle(Q.Styles.ARROW_TO, false);
-		        }
-			}
-    	}
+        for (var i in links) {
+            var n = links[i];
+            var from = nodeMap.get(n.source);
+            var to = nodeMap.get(n.target);
+            if(from && to){
+                 var edge = graph.createEdge(from, to, n.value);
+                edge.setStyle(Q.Styles.EDGE_WIDTH, 3);
+                edge.setStyle(Q.Styles.EDGE_COLOR, "#1D4876");
+                if(n.value){
+                    edge.setStyle(Q.Styles.EDGE_LINE_DASH, [10, 10]);
+                }
+                if(n.value == '引用'){
+                    to.setStyle(Q.Styles.LABEL_RADIUS, 60);
+                    to.setStyle(Q.Styles.LABEL_BORDER, 0);
+                    edge.setStyle(Q.Styles.ARROW_TO, false);
+                }
+            }
+        }
     }
 
     var uploadedDataURL = "";
 
     var findLinkNodes = function(links, name, nodes, list) {
-    	for (var i in nodes) {
-    		var node = nodes[i];
-    		if (name === node.target) {
-    			if (node.name.substring(0, 2) === "GH") {
-	    			list.push(node);
-	    			findLinkNodes(links, node.source, nodes, list);
-    			} else {
-    				break;
-    			}
-    		}
-    		
-/*     		if(_srouceType == _targetType && isLink){
-    			list.push(node);
-    			if(_targetType != _srouceType){
-    				break;
-    			}
-    			findLinkNodes(links, node.source, nodes, list);
-    		} */
-    	}
+        for (var i in nodes) {
+            var node = nodes[i];
+            if (name === node.target) {
+                if (node.name.substring(0, 2) === "GH") {
+                    list.push(node);
+                    findLinkNodes(links, node.source, nodes, list);
+                } else {
+                    break;
+                }
+            }
+            
+/*             if(_srouceType == _targetType && isLink){
+                list.push(node);
+                if(_targetType != _srouceType){
+                    break;
+                }
+                findLinkNodes(links, node.source, nodes, list);
+            } */
+        }
     }
 
     var findLink = function(name, links) {
-    	for (var i in links) {
-    		if (name === links[i].target && links[i].value === "后置") {
-    			return true
-    		}
-    	}
-    	return false;
+        for (var i in links) {
+            if (name === links[i].target && links[i].value === "后置") {
+                return true
+            }
+        }
+        return false;
     }
-	var isCreate = function(list,node){
-		var isCreate = true;
-    	for(save in list){
-    		var saveNode = list[save];
-    		if(saveNode.name == node.name){
-    			isCreate = false;
-    			break;
-    		}
-    	}
-    	return isCreate;
-	}
-	var createNodes = function(_firstNode, nodes, links) {
-		var _type = _firstNode.substring(0, 2);
-		graph.clear();
-		nodeMap.clear();
-		
-		var leafList = [];
-		if (_type != "GH") {
-			for (var n in nodes) {
-				var isLink = findLink(nodes[n].name, links);
-				if (nodes[n].isleaf && isLink) {
-					leafList.push(nodes[n]);	
-				}				
-			}
-		}
-		
-		var saveList = [];
-		for (var leaf in leafList) {
-			var node = leafList[leaf];
-			saveList.push(node);
-			findLinkNodes(links, node.source, nodes, saveList);
-		}
-		
-		var i = 0;
+    var isCreate = function(list,node){
+        var isCreate = true;
+        for(save in list){
+            var saveNode = list[save];
+            if(saveNode.name == node.name){
+                isCreate = false;
+                break;
+            }
+        }
+        return isCreate;
+    }
+    var createNodes = function(_firstNode, nodes, links) {
+        var _type = _firstNode.substring(0, 2);
+        graph.clear();
+        nodeMap.clear();
+        
+        var leafList = [];
+        if (_type != "GH") {
+            for (var n in nodes) {
+                var isLink = findLink(nodes[n].name, links);
+                if (nodes[n].isleaf && isLink) {
+                    leafList.push(nodes[n]);    
+                }                
+            }
+        }
+        
+        var saveList = [];
+        for (var leaf in leafList) {
+            var node = leafList[leaf];
+            saveList.push(node);
+            findLinkNodes(links, node.source, nodes, saveList);
+        }
+        
+        var i = 0;
         for(x in nodes) {
             var node =nodes[x];
             var _nodeId = node.name.substring(0,2);
             if(!selectedMap.get(_nodeId)){
-            	if(_nodeId != _type){
-                	if(!colorMap.get(_nodeId)){
-                		colorMap.set(_nodeId,colorArray[i++]);
-                	}
+                if(_nodeId != _type){
+                    if(!colorMap.get(_nodeId)){
+                        colorMap.set(_nodeId,colorArray[i++]);
+                    }
                 }
-            	if (isCreate(saveList,node)) {
-	            	var n = createText(node.displayname, node.x, node.y,colorMap.get(_nodeId));
-	                nodeMap.set(node.name, n);
-            	}
+                if (isCreate(saveList,node)) {
+                    var n = createText(node.displayname, node.x, node.y,colorMap.get(_nodeId));
+                    nodeMap.set(node.name, n);
+                }
             }
         }
-	}
-	
+    }
+    
     $.getJSON("@{controllers.Business.searchAll(keyword)}", function(data) {
-		var _color = "red";
-		var _firstNode = data.nodes[0].name;
-		var _type = _firstNode.substring(0,2);
-		var categories = data.categories;
-		colorMap.set(_type,_color);
-		createNodes(_firstNode, data.nodes, data.links);
+        var _color = "red";
+        var _firstNode = data.nodes[0].name;
+        var _type = _firstNode.substring(0,2);
+        var categories = data.categories;
+        colorMap.set(_type,_color);
+        createNodes(_firstNode, data.nodes, data.links);
         colorMap.forEach((value,key)=>{
-        	
-        	var $button = $("<button>");
-        	$button.addClass("btn btn-primary btn-xs");
-        	$button.text(key).css("background", value).css("margin-left", "10px");
-        	$button.click(function(event){
-				var key = event.currentTarget.innerText;
-				if(selectedMap.get(key)){
-					selectedMap.delete(key);
-					$button.css("background", colorMap.get(key));
-				}else{
-					selectedMap.set(key,key);
-					$button.css("background", "gray");
-				}
-				createNodes(_firstNode, data.nodes, data.links);
-				createEdges(data.links);
-        	});
-        	$("#colorMap").append($button);
+            
+            var $button = $("<button>");
+            $button.addClass("btn btn-primary btn-xs");
+            $button.text(key).css("background", value).css("margin-left", "10px");
+            $button.click(function(event){
+                var key = event.currentTarget.innerText;
+                if(selectedMap.get(key)){
+                    selectedMap.delete(key);
+                    $button.css("background", colorMap.get(key));
+                }else{
+                    selectedMap.set(key,key);
+                    $button.css("background", "gray");
+                }
+                createNodes(_firstNode, data.nodes, data.links);
+                createEdges(data.links);
+            });
+            $("#colorMap").append($button);
         });
         
         // 涉及专业
         var majors = "";
         for(var i = 0 ; i < categories.length ; i ++){
-        	majors += categories[i].name + ",";
+            majors += categories[i].name + ",";
         }
         majors = majors.substring(majors, majors.length - 1);
         
@@ -256,7 +325,7 @@
         
         // export
         /* setTimeout(function() {
-        	saveAs(graph.exportImage().data,'${keyword}');
+            saveAs(graph.exportImage().data,'${keyword}');
         }) */
         
         var layouter = new Q.TreeLayouter(graph);
@@ -269,35 +338,31 @@
     });
     
     function downloadCanvas(link, filename) {
-    	
-    	var nodeCount =  document.getElementById("nodeCount").value;
+        
+        var nodeCount =  document.getElementById("nodeCount").value;
         var majorsli =  document.getElementById("majorsli").value;
         link.href = graph.exportImage().data.replace(/^data:image\/[^;]/, 'data:application/octet-stream');
         link.download = filename + "-" + nodeCount + "-" + majorsli + ".png";
     }
 
     function saveAs(uri, filename) {
-	   	  var link = document.createElement('a');
-	   	  if (typeof link.download === 'string') {
-	   	    link.href = uri;
-	   	    link.download = filename;
-	
-	   	    //Firefox requires the link to be in the body
-	   	    document.body.appendChild(link);
-	   	    
-	   	    //simulate click
-	   	    link.click();
-	
-	   	    //remove the link when done
-	   	    document.body.removeChild(link);
-	   	  } else {
-	   	    window.open(uri);
-	   	  }
-    }
+             var link = document.createElement('a');
+             if (typeof link.download === 'string') {
+               link.href = uri;
+               link.download = filename;
     
-/*     document.getElementById('download').addEventListener('click', function() {
-        downloadCanvas(this, 'test.png');
-    }, false); */
+               //Firefox requires the link to be in the body
+               document.body.appendChild(link);
+               
+               //simulate click
+               link.click();
+    
+               //remove the link when done
+               document.body.removeChild(link);
+             } else {
+               window.open(uri);
+             }
+    }
     
 </script>
 

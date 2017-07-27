@@ -1,0 +1,135 @@
+#{extends 'main.html' /}
+#{set title:'index.html' /}
+
+
+<div class="row">
+    <div class="col-lg-12">
+        <div class="ibox float-e-margins" id="_qunee">
+            <div class="ibox-content" style="overflow: hidden;">
+                <div class="search-form">
+                    <form action="@{controllers.Summary.queryBusNodeList(busName)}" method="get">
+                        <div class="input-group">
+                            <input type="text" placeholder="${busName}" name="busName" id="busName" value="${busName}" class="form-control input-lg">
+                            <div class="input-group-btn">
+                                <button class="btn btn-lg btn-primary" type="submit">搜索</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <h2>发现: 
+                    <span class="text-navy">“${busNodeList.size()}”</span>个一级业务 
+                    <!-- <a href="@{Business.export(keyword)}" class="btn btn-success">导出</a>
+                    <a href="javascript:void(0);" id="download" onclick="exportAllImg();" class="btn btn-success">一键导出</a> -->
+                </h2>
+                *{<small>Request time  (0.23 seconds)</small>}*
+                %{
+                    com.google.gson.Gson gson = new com.google.gson.Gson();
+                    businessList = gson.toJson(busNodeList);
+                }%
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-lg-12">
+        <div class="ibox float-e-margins" id="_qunee">
+            <div class="ibox-content" style="overflow: hidden;">
+                <br/>
+                <h3>电网业务</h3>
+                #{list items:busNodeList,as:'_busi'}
+                    #{if _busi.area == '电网业务' }
+                    <div class="col-xs-6 col-sm-6 col-md-4 col-lg-3">
+                        <a href="@{Summary.queryNodeListByName(_busi.name)}">
+                            <div class="widget navy-bg p-xs text-center">
+                             <div class="m-b-md">
+                                  <h1 class="m-xs">${_busi.name}</h1>
+                              </div>
+                            </div>
+                        </a>
+                        <div id="${_busi.business}" style="height: 300px; display: none;">${_busi.business}</div>
+                    </div>
+                    #{/if}
+                #{/list}
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-lg-12">
+        <div class="ibox float-e-margins" id="_qunee">
+            <div class="ibox-content" style="overflow: hidden;">
+                <br/>
+                <h3>资源保障</h3>
+                #{list items:busNodeList,as:'_busi'}
+                    #{if _busi.area == '资源保障' }
+                    <div class="col-xs-6 col-sm-6 col-md-4 col-lg-3">
+                        <a href="@{Summary.queryNodeListByName(_busi.name)}">
+                            <div class="widget navy-bg p-xs text-center">
+                             <div class="m-b-md">
+                                  <h1 class="m-xs">${_busi.name}</h1>
+                              </div>
+                            </div>
+                        </a>
+                        <div id="${_busi.business}" style="height: 300px; display: none;">${_busi.business}</div>
+                    </div>
+                    #{/if}
+                #{/list}
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-lg-12">
+        <div class="ibox float-e-margins" id="_qunee">
+            <div class="ibox-content" style="overflow: hidden;">
+                <br/>
+                <h3>辅助保障</h3>
+                #{list items:busNodeList,as:'_busi'}
+                    #{if _busi.area == '辅助保障' }
+                    <div class="col-xs-6 col-sm-6 col-md-4 col-lg-3">
+                        <a href="@{Summary.queryNodeListByName(_busi.name)}">
+                            <div class="widget navy-bg p-xs text-center">
+                             <div class="m-b-md">
+                                  <h1 class="m-xs">${_busi.name}</h1>
+                              </div>
+                            </div>
+                        </a>
+                        <div id="${_busi.business}" style="height: 300px; display: none;">${_busi.business}</div>
+                    </div>
+                    #{/if}
+                #{/list}
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-lg-12">
+        <div class="ibox float-e-margins" id="_qunee">
+            <div class="ibox-content" style="overflow: hidden;">
+                <br/>
+                <h3>其他</h3>
+                #{list items:busNodeList,as:'_busi'}
+                    #{if _busi.area == '' }
+                    <div class="col-xs-6 col-sm-6 col-md-4 col-lg-3">
+                        <a href="@{Summary.queryNodeListByName(_busi.name)}">
+                            <div class="widget navy-bg p-xs text-center">
+                             <div class="m-b-md">
+                                  <h1 class="m-xs">${_busi.name}</h1>
+                              </div>
+                            </div>
+                        </a>
+                        <div id="${_busi.business}" style="height: 300px; display: none;">${_busi.business}</div>
+                    </div>
+                    #{/if}
+                #{/list}
+            </div>
+        </div>
+    </div>
+</div>
+
+#{set 'moreScripts'}
+#{/set}

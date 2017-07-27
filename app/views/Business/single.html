@@ -60,16 +60,17 @@
 #{set 'moreScripts'}
 <script type="text/javascript" src="@{'/public/js/echarts.min.js'}"></script>
 <script type="text/javascript" src="@{'/public/js/jquery-form.min.js'}"></script>
+<script type="text/javascript" src="@{'/public/js/jquery.validate.min.js'}"></script>
 <script type="text/javascript" src="@{'/public/js/plugins/jquery-ui/jquery-ui.min.js'}"></script>
 <link href="@{'/public/js/plugins/jquery-ui/jquery-ui.min.css'}" rel="stylesheet">
 <script type="text/javascript">
 
     function addEventGuide(){
-        var html ='<div id="dialog-window" title="新增节点"><iframe id="myFrame" src="/addOneNode.${keyword}" frameBorder="0" style="border: 0;margin-bottom:-5px;margin-top:-3px;" scrolling="no" height="100%" width="100%"></iframe></div>';
+        var html ='<div id="dialog-window" title="新增节点"><iframe id="myFrame" src="@{controllers.Summary.addOneNode(keyword)}" frameBorder="0" style="border: 0;margin-bottom:-5px;margin-top:-3px;" scrolling="no" height="100%" width="100%"></iframe></div>';
         $(html).dialog($.extend({
             modal: true,
             width: 800,
-            height: 580,
+            height: 500,
             closeOnEscape: false,
             draggable: true,
             resizable: false,
@@ -83,7 +84,7 @@
                 'class' : "btn btn-primary btn-sm",
                 click : function(btn) {
                 var myFrameWin = document.getElementById("myFrame").contentWindow;
-                var myForm = myFrameWin.document.getElementById("myEventGuideForm");
+                var myForm = myFrameWin.document.getElementById("summaryForm");
                 var _this = this;
                 $(myForm).validate({
                     meta: "validate",
@@ -117,11 +118,44 @@
          },{
                 html : "取消",
                 'class' : "btn btn-default btn-sm",
-                click : function() {                        
+                click : function() {
                     $(this).dialog("close");
                 }
           }]
         }));
+    }
+    
+    //将form转为AJAX提交
+    function ajaxSubmit(frm) {
+        var dataPara = getFormJson(frm);
+        $.ajax({
+            url: frm.action,
+            type: frm.method,
+            data: dataPara,
+            dataType:"json",
+            success: function(jsonResult){
+                $.alert(jsonResult.msg, '操作提示',function(btn){
+                    window.location.reload(true);
+                });
+            } 
+        });
+    }
+    
+    //将form中的值转换为键值对。
+    function getFormJson(frm) {
+        var o = {};
+        var a = $(frm).serializeArray();
+        $.each(a, function () {
+            if (o[this.name] !== undefined) {
+                if (!o[this.name].push) {
+                    o[this.name] = [o[this.name]];
+                }
+                o[this.name].push(this.value || '');
+            } else {
+                o[this.name] = this.value || '';
+            }
+        });
+        return o;
     }
 </script>
 

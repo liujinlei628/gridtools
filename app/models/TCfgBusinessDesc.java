@@ -16,24 +16,33 @@ import javax.persistence.Table;
 public class TCfgBusinessDesc extends Model {
 
     @Required
-    public String business;
+    public String business; // 业务编号
 
     @Required
-    public String name;
+    public String name; // 业务名称
 
     @Required
-    public String title;
+    public String title; // 业务事项
 
     @MaxLength(1024)
-    public String content;
+    @Required
+    public String content; // 业务内容
 
     @MaxSize(100000)
     @MaxLength(100000)
-    public String description;
-
+    public String description; // 业务内容描述
+    
+    @Required
+    public String area; // 所属板块
+    
+    @Required
+    public String major; // 专业
+    
+    @Required
+    public String delFlag; // 删除标识
 
     public String toString(){
-        return this.business+"-"+this.name+"-"+this.title+"-"+this.content;
+        return this.business + "-" + this.name + "-" + this.title + "-" + this.content;
     }
 
 }

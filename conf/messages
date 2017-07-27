@@ -41,9 +41,10 @@ business.fenxi.analysissummary=分析汇总业务及数据
 business.sysguanl.jurmanage=权限管理
 
 # 业务实体对象
-business=业务
-business_id=业务编号
+business=业务编号
 name=业务名称
-title=业务内容
-content=业务内容描述
-description=业务内容详情
+title=业务事项
+content=业务内容
+description=业务内容描述
+area=所属板块
+major=专业

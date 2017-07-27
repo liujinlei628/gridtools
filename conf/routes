@@ -11,5 +11,12 @@ GET     /favicon.ico                            404
 # Map static resources from the /app/public folder to the /public path
 GET     /public/                                staticDir:public
 
+# 业务板块浏览
+GET     /Summary/oneLevelList                   Summary.queryBusNodeList
+GET     /Summary/oneLevelChilds/{busName}       Summary.queryNodeListByName
+
 # Catch all
 *       /{controller}/{action}                  {controller}.{action}
+
+# Administration(管理员)
+*       /admin                                  module:crud

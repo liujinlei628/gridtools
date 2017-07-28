@@ -17,7 +17,7 @@ business.sysguanl=系统管理
 
 # 业务管理子菜单
 business.summary.overview=业务总览
-business.summary.segment=业务板块浏览
+business.summary.segment=业务版块浏览
 business.summary.detailmanage=业务详情管理
 business.summary.nodemanage=业务节点管理
 

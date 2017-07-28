@@ -252,6 +252,7 @@ public class Summary extends CRUD {
             if(keyId.equalsIgnoreCase("GH")){
                 if( _busi.post_business_id.substring(0, 2).equalsIgnoreCase("GH")){ //ljl
                     node = new TempNode();
+                    node.id = _busi.id;
                     node.name = _busi.post_business_id;
                     node.displayname= node.name+"\n"+_busi.post_business_name +"\n"+_busi.post_business_description;
                     node.category = _busi.post_professional;
@@ -266,6 +267,7 @@ public class Summary extends CRUD {
                 }
             }else{
                 node = new TempNode();
+                node.id = _busi.id;
                 node.name = _busi.post_business_id;
                 node.displayname= node.name+"\n"+_busi.post_business_name +"\n"+_busi.post_business_description;
                 node.category = _busi.post_professional;
@@ -290,6 +292,7 @@ public class Summary extends CRUD {
             link.source = _busi.business_id;
             link.target = _busi.post_business_id;
             link.value = _busi.relation;
+            link.id = _busi.id;
             if(!linkSet.contains(link.source+"-"+link.target)) {
                 linkList.add(link);
                 linkSet.add(link.source+"-"+link.target);
@@ -331,6 +334,7 @@ public class Summary extends CRUD {
             if(keyId.equalsIgnoreCase("GH")){
                 if(_busi.post_business_id.substring(0, 2).equalsIgnoreCase("GH")){
                     node = new TempNode();
+                    node.id = _busi.id;
                     node.name = _busi.post_business_id;
                     node.displayname= node.name+"\n"+_busi.post_business_name +"\n"+_busi.post_business_description;
                     node.category = _busi.post_professional;
@@ -361,6 +365,7 @@ public class Summary extends CRUD {
                     }
 
                     link = new TempLink();
+                    node.id = _busi.id;
                     link.source = _busi.business_id;
                     link.target = _busi.post_business_id;
                     link.value = _busi.relation;
@@ -396,6 +401,7 @@ public class Summary extends CRUD {
                 
             }else{
                 node = new TempNode();
+                node.id = _busi.id;
                 node.name = _busi.post_business_id;
                 node.displayname= node.name+"\n"+_busi.post_business_name +"\n"+_busi.post_business_description;
                 node.category = _busi.post_professional;
@@ -429,6 +435,7 @@ public class Summary extends CRUD {
                 link.source = _busi.business_id;
                 link.target = _busi.post_business_id;
                 link.value = _busi.relation;
+                link.id = _busi.id;
                 if(!linkSet.contains(link.source+"-"+link.target)) {
                     linkList.add(link);
                     linkSet.add(link.source+"-"+link.target);

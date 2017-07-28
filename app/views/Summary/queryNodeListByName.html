@@ -28,7 +28,8 @@
                         <div class="widget navy-bg p-xs text-center">
                             <div class="m-b-md">
                                 <h2 class="m-xs">${_busi.business}</h2>
-                                <h4 class="font-bold no-margins">${_busi.description}</h4>
+                                <h3 class="m-xs">${_busi.content}</h3>
+                                <h4 class="font-bold no-margins size" >${_busi.description}</h4>
                             </div>
                         </div>
                     </a>
@@ -69,11 +70,24 @@
             }]
         }));
     }
+    
+    $(".size").each(function() {
+        var maxwidth = 150;
+        if ($(this).text().length > maxwidth) {
+            $(this).text($(this).text().substring(0, maxwidth));
+            $(this).html($(this).html() + '…');
+        }
+    });
+    
 </script>
 <style type="text/css">
 .navy-bg, .bg-primary {
-    background-color: red;
+    background-color: #58c5b0;
     color: #ffffff;
+}
+
+.p-xs {
+    height: 220px;
 }
 </style>
 #{/set}

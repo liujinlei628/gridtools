@@ -18,44 +18,42 @@ public class TCfgBusiness  extends Model{
 
     @Required
     @Unique
-    public String business_id;
+    public String business_id; // 业务编号
 
     @Required
-    public String name;
+    public String name; // 业务名称
 
-    public String area;
+    public String area; // 所属板块
 
-    public String professional;
+    public String professional; // 专业
 
-    public String value;
-
-    @MaxSize(5120)
-    @MaxLength(5120)
-    public String content;
+    public String value; // 值
 
     @MaxSize(5120)
     @MaxLength(5120)
-    public String description;
-
-    @MaxSize(5120)
-    public String relation;
-
-    public String post_business_id;
-
-    public String post_business_name;
-
-    public String post_area;
-
-    public String post_professional;
-
+    public String content; // 业务内容
 
     @MaxSize(5120)
     @MaxLength(5120)
-    public String post_business_content;
+    public String description; // 业务内容描述
 
+    @MaxSize(5120)
+    public String relation; // 关系
+
+    public String post_business_id; // 衔接业务编号
+
+    public String post_business_name; // 衔接业务名称
+
+    public String post_area; // 衔接板块
+
+    public String post_professional; // 衔接专业
 
     @MaxSize(5120)
     @MaxLength(5120)
-    public String post_business_description;
+    public String post_business_content; // 衔接业务内容
+
+    @MaxSize(5120)
+    @MaxLength(5120)
+    public String post_business_description; // 衔接业务内容描述
 
 }

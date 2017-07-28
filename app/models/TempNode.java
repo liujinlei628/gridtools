@@ -5,6 +5,9 @@ package models;
  */
 public class TempNode implements Comparable<TempNode> {
 
+    
+    public Long id;
+    
     public String name;
 
     public String shortname;

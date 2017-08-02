@@ -42,9 +42,10 @@
                     <a href="#"><i class="fa fa-th-large"></i> <span class="nav-label">&{'business.summary'}</span></a>
                     <ul class="nav nav-second-level">
                         <li><a href="/">&{'business.summary.overview'}</a></li>
-                        <li><a href="@{controllers.Summary.queryBusNodeList()}">&{'business.summary.segment'}</a></li>
-                        <li><a href="@{controllers.Summary.list()}">&{'business.summary.detailmanage'}</a></li>
-                        <li><a href="#">&{'business.summary.nodemanage'}</a></li>
+                        <li><a href="@{controllers.Summary.queryAreaList()}">&{'business.summary.segment'}</a></li>
+                        <li><a href="@{Business.query()}">&{'business.summary.detailmanage'}</a></li>
+                        <!-- <li><a href="@{controllers.Summary.list()}">&{'business.summary.nodemanage'}</a></li> -->
+                        <li><a href="@{Business.toUpload()}">&{'business.summary.nodemanage'}</a></li>
                     </ul>
                 </li>
                 <li>
@@ -62,9 +63,9 @@
                             <span class="nav-label">&{'business.management'}</span> <span class="fa arrow"></span></a>
                         <ul class="nav nav-second-level">
                             <li><a href="#">&{'business.management.optquery'}</a></li>
-                            <li><a href="@{Business.query()}">&{'business.management.busquery'}</a></li>
+                            <li><a href="#">&{'business.management.busquery'}</a></li>
                             <li><a href="#">&{'business.management.dataquery'}</a></li>
-                            <li><a href="@{Business.toUpload()}">&{'business.management.busupload'}</a></li>
+                            <!-- <li><a href="@{Business.toUpload()}">&{'business.management.busupload'}</a></li> -->
                         </ul>
                     </li>
                     <li>

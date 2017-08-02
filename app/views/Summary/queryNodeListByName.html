@@ -5,37 +5,60 @@
     <div class="col-lg-12">
         <div class="ibox float-e-margins" id="_qunee">
             <div class="ibox-content" style="overflow: hidden;">
-                <!-- <div class="search-form">
-                    <form action="@{controllers.summary.queryNodeListByName(busName)}" method="get">
-                        <div class="input-group">
-                            <input type="text" placeholder="${busName}" name="busName" id="busName" value="${busName}" class="form-control input-lg">
-                            <div class="input-group-btn">
-                                <button class="btn btn-lg btn-primary" type="submit">搜索</button>
-                            </div>
-                        </div>
-                    </form>
-                </div> -->
                 <h2>${busName} 发现：<span class="text-navy">“${busNodeList.size()}”</span>个子业务</h2>
-                *{<small>Request time  (0.23 seconds)</small>}*
-                %{
-                    com.google.gson.Gson gson = new com.google.gson.Gson();
-                    businessList = gson.toJson(busNodeList);
-                }%
-                #{list items:busNodeList,as:'_busi'}
+                <br/>
+                <table width="100%" class="table table-striped table-bordered table-hover">
+                    <thead>
+                        <tr>
+                            <th width="10%">序号</th>
+                            <th width="10%">业务编号</th>
+                            <th width="15%">业务名称</th>
+                            <th width="15%">业务内容</th>
+                            <th width="20%">业务内容描述</th>
+                            <th width="10%">所属板块</th>
+                            <th width="10%">专业</th>
+                            <th width="10%">操作</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                            #{list items:busNodeList,as:'_busi'}
+                            <tr>
+                                <td>${_busi_index}</td>
+                                <td>${_busi.business}</td>
+                                <td>${_busi.name}</td>
+                                <td>
+                                    ${_busi.content.length() > 9 ? _busi.content[0..9] + '…' : _busi.content}
+                                </td>
+                                <td>
+                                    ${_busi.title.length() > 9 ? _busi.title[0..9] + '…' : _busi.title}
+                                </td>
+                                <td>${_busi.area}</td>
+                                <td>${_busi.major}</td>
+                                <td>
+                                    <a href="javascript:void(0);" onclick="toDetailInfo('${_busi.id}')" >查看</a>
+                                </td>
+                            </tr>
+                            #{/list}
+                        </tbody>
+                </table>
+                
+                <!-- #{list items:busNodeList,as:'_busi'}
                 <div class="col-xs-6 col-sm-6 col-md-4 col-lg-3">
-                    <!-- <a href="@{Summary.show(_busi.id)}"> -->
+                    <a href="@{Summary.show(_busi.id)}">
                     <a href="javascript:void(0);" onclick="toDetailInfo('${_busi.id}')" >
                         <div class="widget navy-bg p-xs text-center">
                             <div class="m-b-md">
-                                <h2 class="m-xs">${_busi.business}</h2>
-                                <h3 class="m-xs">${_busi.content}</h3>
-                                <h4 class="font-bold no-margins size" >${_busi.description}</h4>
+                                <h1 class="m-xs">${_busi.business}</h1>
+                                <h5 class="font-bold no-margins">
+                                    ${_busi.content}
+                                </h5>
+                                <small>${_busi.content} / ${_busi.description}</small>
                             </div>
                         </div>
                     </a>
                     <div id="${_busi.business}" style="height: 300px; display: none;">${_busi.business}</div>
                 </div>
-                #{/list}
+                #{/list} -->
             </div>
         </div>
     </div>
@@ -82,7 +105,7 @@
 </script>
 <style type="text/css">
 .navy-bg, .bg-primary {
-    background-color: #58c5b0;
+    background-color: #1891d2;
     color: #ffffff;
 }
 

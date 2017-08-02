@@ -7,7 +7,7 @@
         <div class="ibox float-e-margins" id="_qunee">
             <div class="ibox-content" style="overflow: hidden;">
                 <div class="search-form">
-                    <form action="@{controllers.Summary.queryBusNodeList(busName)}" method="get">
+                    <form action="@{controllers.Summary.queryBusNodeList(areaName, busName)}" method="get">
                         <div class="input-group">
                             <input type="text" placeholder="${busName}" name="busName" id="busName" value="${busName}" class="form-control input-lg">
                             <div class="input-group-btn">
@@ -18,19 +18,13 @@
                 </div>
                 <h2>发现: 
                     <span class="text-navy">“${busNodeList.size()}”</span>个一级业务 
-                    <!-- <a href="@{Business.export(keyword)}" class="btn btn-success">导出</a>
-                    <a href="javascript:void(0);" id="download" onclick="exportAllImg();" class="btn btn-success">一键导出</a> -->
                 </h2>
-                *{<small>Request time  (0.23 seconds)</small>}*
-                %{
-                    com.google.gson.Gson gson = new com.google.gson.Gson();
-                    businessList = gson.toJson(busNodeList);
-                }%
             </div>
         </div>
     </div>
 </div>
 
+#{if areaName == '电网业务' }
 <div class="row">
     <div class="col-lg-12">
         <div class="ibox float-e-margins" id="_qunee">
@@ -41,9 +35,9 @@
                     #{if _busi.area == '电网业务' }
                     <div class="col-xs-6 col-sm-6 col-md-4 col-lg-3">
                         <a href="@{Summary.queryNodeListByName(_busi.name)}">
-                            <div class="widget navy-bg p-xs text-center">
+                            <div class="widget navy-bg p-xs text-center dw-nodes">
                                 <div class="m-b-md">
-                                    <h1 class="m-xs">${_busi.name}</h1>
+                                    <h4 class="font-bold no-margins">${_busi.name}</h4>
                                 </div>
                             </div>
                         </a>
@@ -55,7 +49,8 @@
         </div>
     </div>
 </div>
-
+#{/if}
+#{if areaName == '资源保障' }
 <div class="row">
     <div class="col-lg-12">
         <div class="ibox float-e-margins" id="_qunee">
@@ -66,9 +61,9 @@
                     #{if _busi.area == '资源保障' }
                     <div class="col-xs-6 col-sm-6 col-md-4 col-lg-3">
                         <a href="@{Summary.queryNodeListByName(_busi.name)}">
-                            <div class="widget navy-bg p-xs text-center">
+                            <div class="widget navy-bg p-xs text-center zy-nodes">
                                 <div class="m-b-md">
-                                    <h1 class="m-xs">${_busi.name}</h1>
+                                    <h4 class="font-bold no-margins">${_busi.name}</h4>
                                 </div>
                             </div>
                         </a>
@@ -80,7 +75,8 @@
         </div>
     </div>
 </div>
-
+#{/if}
+#{if areaName == '辅助保障' }
 <div class="row">
     <div class="col-lg-12">
         <div class="ibox float-e-margins" id="_qunee">
@@ -91,9 +87,9 @@
                     #{if _busi.area == '辅助保障' }
                     <div class="col-xs-6 col-sm-6 col-md-4 col-lg-3">
                         <a href="@{Summary.queryNodeListByName(_busi.name)}">
-                            <div class="widget navy-bg p-xs text-center">
+                            <div class="widget navy-bg p-xs text-center fz-nodes">
                                 <div class="m-b-md">
-                                    <h1 class="m-xs">${_busi.name}</h1>
+                                    <h4 class="font-bold no-margins">${_busi.name}</h4>
                                 </div>
                             </div>
                         </a>
@@ -105,8 +101,8 @@
         </div>
     </div>
 </div>
-
-<div class="row">
+#{/if}
+<!-- <div class="row">
     <div class="col-lg-12">
         <div class="ibox float-e-margins" id="_qunee">
             <div class="ibox-content" style="overflow: hidden;">
@@ -118,7 +114,7 @@
                         <a href="@{Summary.queryNodeListByName(_busi.name)}">
                             <div class="widget navy-bg p-xs text-center">
                                 <div class="m-b-md">
-                                    <h1 class="m-xs">${_busi.name}</h1>
+                                    <h4 class="font-bold no-margins">${_busi.name}</h4>
                                 </div>
                             </div>
                         </a>
@@ -129,17 +125,37 @@
             </div>
         </div>
     </div>
-</div>
+</div> -->
 
 #{set 'moreScripts'}
 
 <style type="text/css">
 .p-xs {
-    height: 100px;
+    height: 50px;
+    text-align: center;
 }
 
 .m-xs {
     font-size: 25px;
+}
+
+.font-bold{
+    padding-top: 10px;
+}
+
+.dw-nodes {
+    background-color: #684f80;
+    color: #ffffff;
+}
+
+.zy-nodes {
+    background-color: #61a0a8;
+    color: #ffffff;
+}
+
+.fz-nodes {
+    background-color: #d48265;
+    color: #ffffff;
 }
 </style>
 

@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+<meta charset="utf-8">
+<meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+<script type="text/javascript" src="@{'/public/js/jquery-3.1.1.min.js'}"></script>
+<script type="text/javascript" src="@{'/public/js/jquery-form.min.js'}"></script>
+<script type="text/javascript" src="@{'/public/js/jquery.validate.min.js'}"></script>
+<script type="text/javascript" src="@{'/public/js/plugins/jquery-ui/jquery-ui.min.js'}"></script>
+
+<!-- Basic Styles -->
+<link rel="stylesheet" type="text/css" media="screen" href="@{'/public/css/bootstrap.min.css'}">
+<!-- SmartAdmin Styles : Please note (smartadmin-production.css) was created using LESS variables -->
+<link rel="stylesheet" type="text/css" media="screen" href="@{'/public/css/smartadmin-skins.min.css'}">
+<link rel="stylesheet" type="text/css" media="screen" href="@{'/public/css/add-app-class.css'}">
+<link href="@{'/public/js/plugins/jquery-ui/jquery-ui.min.css'}" rel="stylesheet">
+<link href="@{'/public/font-awesome/css/font-awesome.css'}" rel="stylesheet">
+<link href="@{'/public/css/animate.css'}" rel="stylesheet">
+<script type="text/javascript">
+function changeMajor(obj){
+    
+    var label = $(obj).find("option:selected").text();  //获取Select选择的Text
+    $("#majorName").val(label);
+}
+</script>
+
+<style type="text/css">
+.form-group {
+    margin-top: 10px;
+}
+
+</style>
+</head>
+<body>
+    <div>
+        <form id="summaryForm" name="summaryForm" class="form-horizontal mar-tb-10" action="" autoscroll="false" method="post"
+            style="padding-right: 5%">
+            <fieldset>
+                <div class="form-group">
+                    <label class="col-xs-2 txt-al-mar-pad">业务编号：</label>
+                    <div class="col-xs-10">
+                        <input class="form-control required" type="text" name="business" value="${businessDesc?.business}" id="name"
+                            maxlength="100">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="col-xs-2 txt-al-mar-pad">业务名称：</label>
+                    <div class="col-xs-10">
+                        <input class="form-control required" type="text" name="name" value="${businessDesc?.name}" id="name"
+                            maxlength="100">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="col-xs-2 txt-al-mar-pad">业务内容：</label>
+                    <div class="col-xs-10">
+                        <input class="form-control required" type="text" name="content" value="${businessDesc?.content}" id="name"
+                            maxlength="100">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="col-xs-2 txt-al-mar-pad">业务内容描述：</label>
+                    <div class="col-xs-10">
+                        <input class="form-control required" type="text" name="title" value="${businessDesc?.title}" id="name"
+                            maxlength="100">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="col-xs-2 txt-al-mar-pad">专业：</label>
+                    <div class="col-xs-10">
+                        <select name="major" id="major" class="form-control required" onchange="changeMajor(this)" >
+                            <option value="">-- 请选择 --</option>
+                            #{list items:dictList,as:'_dict'}
+                                #{if _dict.type == 'major' }
+                                    <option value="${_dict.value}" #{if _dict.label == businessDesc.major}selected="selected"#{/if} >${_dict.label}</option>
+                                #{/if}
+                            #{/list}
+                        </select>
+                        <input type="hidden" name="majorName" value="" id="majorName" >
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="col-xs-2 txt-al-mar-pad">所属板块：</label>
+                    <div class="col-xs-10">
+                        <select name="area" id="area" class="form-control required" onchange="changeMajor(this)" >
+                            <option value="">-- 请选择 --</option>
+                            #{list items:dictList,as:'_dict'}
+                                #{if _dict.type == 'area' }
+                                    <option value="${_dict.value}" #{if _dict.label == businessDesc.area}selected="selected"#{/if} >${_dict.label}</option>
+                                #{/if}
+                            #{/list}
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="col-xs-2 txt-al-mar-pad" id="labelDescription">业务内容描述详情：</label>
+                    <div class="col-xs-10">
+                        <textarea rows="3" class="form-control" cols="50" name="descrition" id="descrition">${businessDesc?.description}</textarea>
+                    </div>
+                </div>
+            </fieldset>
+        </form>
+    </div>
+</body>
+</html>
+#{set 'moreScripts'} #{/set}

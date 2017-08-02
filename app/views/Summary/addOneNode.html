@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en-us">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+        <script type="text/javascript" src="@{'/public/js/jquery-3.1.1.min.js'}"></script>
+        <script type="text/javascript" src="@{'/public/js/jquery-form.min.js'}"></script>
+        <script type="text/javascript" src="@{'/public/js/jquery.validate.min.js'}"></script>
+        <script type="text/javascript" src="@{'/public/js/plugins/jquery-ui/jquery-ui.min.js'}"></script>
+        
+        <!-- Basic Styles -->
+        <link rel="stylesheet" type="text/css" media="screen" href="@{'/public/css/bootstrap.min.css'}">
+        <!-- SmartAdmin Styles : Please note (smartadmin-production.css) was created using LESS variables -->
+        <link rel="stylesheet" type="text/css" media="screen" href="@{'/public/css/smartadmin-skins.min.css'}">
+        <link rel="stylesheet" type="text/css" media="screen" href="@{'/public/css/add-app-class.css'}">
+        <link href="@{'/public/js/plugins/jquery-ui/jquery-ui.min.css'}" rel="stylesheet">
+        <link href="@{'/public/font-awesome/css/font-awesome.css'}" rel="stylesheet">
+        <link href="@{'/public/css/animate.css'}" rel="stylesheet">
+        <script type="text/javascript">
+            $(document).ready(function() {
+                
+            });
+            
+            function changeProcess(obj){
+                
+            	var label = $(obj).find("option:selected").text();  //获取Select选择的Text
+                $("#processName").val(label);
+                
+                $.ajax({
+                    url:"/Summary/queryProcessByCode",
+                    type:"post",
+                    data:"processCode="+obj.value,
+                    success:function(data){
+                        var nodes = JSON.parse(data).nodes;
+                        var html = "";
+                        $("#prevNode").html(html);
+                        $("#nextNode").html(html);
+                        html +="<option value=''>--请选择--</option>";
+                        for(var i = 0 ; i < nodes.length ; i ++){
+                            var str = "<option value='"+nodes[i].busCode+"'>"+nodes[i].busCode+"</option>";
+                            html += str;
+                        }
+                        $("#prevNode").append(html);
+                        $("#nextNode").append(html);
+                        
+                        $("#prevNode").val('');
+                        $("#nextNode").val('');
+                        /* var options = [];
+                        options.push($('<option>', {value: '', text: '--请选择--'}));
+                        $.each(nodes, function(i, item){
+                            var _val = nodes[i].busCode, 
+                                _text = nodes[i].busCode,
+                                _option = $('<option>', {value: _val, text: _text});
+                            options.push(_option);
+                        }); */
+                        /* if(options.length > 0){
+                        	$("#prevNode").append(options);
+                        	$("#nextNode").append(options);
+                        } */
+                    }
+                });
+            }
+            
+            function changeMajor(obj){
+                
+                var label = $(obj).find("option:selected").text();  //获取Select选择的Text
+                $("#majorName").val(label);
+            }
+            
+            function queryBusName(areaName){
+                
+                $.ajax({
+                    url:"/Summary/queryBusName",
+                    type:"post",
+                    data:"busName=" + encodeURI(areaName),
+                    success:function(data){
+                        var nodes = JSON.parse(data).nodes;
+                        var html = "";
+                        $("#name").html(html);
+                        html +="<option value=''>--请选择--</option>";
+                        for(var i = 0 ; i < nodes.length ; i ++){
+                            var str = "<option value='"+nodes[i].name+"'>"+nodes[i].name+"</option>";
+                            html += str;
+                        }
+                        $("#name").append(html);
+                        $("#name").val('');
+                    }
+                });
+            }
+            
+        </script>
+    </head>
+    <body>
+        <form id="summaryForm" name="summaryForm" class="form-horizontal mar-tb-10" action="@{controllers.Summary.save()}" autoscroll="false" method="post" style="padding-right: 5%">
+            <fieldset>
+                <input type="hidden" name="keyWord" id="keyWord" value="${keyWord}" />
+                
+                <div class="form-group">
+                    <label class="col-xs-2 txt-al-mar-pad" id="labelErrorCode">所属版块：<font style="color:red;"> * </font></label>
+                    <div class="col-xs-2">
+                        <select name="area" id="area" class="form-control required" onchange="queryBusName(this.value)">
+                            <option value="">请选择</option>
+                            #{list items:dictList,as:'_dict'}
+                                #{if _dict.type == 'area' }
+                                    <option value="${_dict.label}" >${_dict.label}</option>
+                                #{/if}
+                            #{/list}
+                        </select>
+                    </div>
+                    <div class="col-xs-2">
+                        <button class="btn btn btn-primary" type="button" onclick="#">新增版块</button>
+                    </div>
+                    
+                    <label class="col-xs-2 txt-al-mar-pad" id="labelErrorCode">专业：<font style="color:red;"> * </font></label>
+                    <div class="col-xs-2">
+                        <select name="major" id="major" class="form-control required" onchange="changeMajor(this)" >
+                            <option value="">请选择</option>
+                            #{list items:dictList,as:'_dict'}
+                                #{if _dict.type == 'major' }
+                                    <option value="${_dict.value}" >${_dict.label}</option>
+                                #{/if}
+                            #{/list}
+                        </select>
+                        <input type="hidden" name="majorName" id="majorName" value="" />
+                    </div>
+                    <div class="col-xs-2">
+                        <button class="btn btn btn-primary" type="button" onclick="#">新增专业</button>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label class="col-xs-2 txt-al-mar-pad">业务名称：<font style="color:red;"> * </font></label>
+                    <div class="col-xs-8">
+                        <!-- <input class="form-control required" type="text" name="name" id="name" maxlength="100"> -->
+                        <select name="name" id="name" class="form-control required">
+                            <!-- <option value="">请选择</option>
+                            #{list items:busiInfoList,as:'_busi'}
+                                <option value="${_busi.business}" >${_busi.name}</option>
+                            #{/list} -->
+                        </select>
+                    </div>
+                    <button class="btn btn btn-primary" type="button" onclick="#">新增业务名称</button>
+                </div>
+                
+                <div class="form-group">
+                    <label class="col-xs-2 txt-al-mar-pad">业务编号：<font style="color:red;"> * </font></label>
+                    <div class="col-xs-10">
+                        <input class="form-control required" type="text" name="business" id="business" maxlength="100">
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label class="col-xs-2 txt-al-mar-pad" id="labelErrorCode">业务内容：<font style="color:red;"> * </font></label>
+                    <div class="col-xs-10">
+                        <input class="form-control required" type="text" name="content" id="content" maxlength="100">
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label class="col-xs-2 txt-al-mar-pad" id="labelErrorCode">业务内容描述：<font style="color:red;"> * </font></label>
+                    <div class="col-xs-10">
+                        <input class="form-control required" type="text" name="title" id="title" maxlength="100">
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label class="col-xs-2 txt-al-mar-pad" id="labelDescription">业务内容描述详情：<font style="color:red;"> * </font></label>
+                    <div class="col-xs-10">
+                        <textarea rows="3" class="form-control" cols="50" name="description" id="description"></textarea>
+                    </div>
+                </div>
+                
+                <!-- <div class="form-group">
+                    <label class="col-xs-2 txt-al-mar-pad" id="labelDescription">业务流程：<font style="color:red;"> * </font></label>
+                    <div class="col-xs-10">
+                        <select name="process" id="process" class="form-control required" onchange="changeProcess(this)">
+                            <option value="">请选择</option>
+                            #{list items:processList,as:'_process'}
+                                <option value="${_process.processCode}" >${_process.processName}</option>
+                            #{/list}
+                        </select>
+                        <input type="hidden" name="processName" id="processName" value="" />
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-xs-2 txt-al-mar-pad">前置节点：</label>
+                    <div class="col-xs-4">
+                        <select name="prevNode" id="prevNode" class="form-control required"></select>
+                    </div>
+                
+                    <label class="col-xs-2 txt-al-mar-pad">后置节点：</label>
+                    <div class="col-xs-4">
+                        <select name="nextNode" id="nextNode" class="form-control required"></select> 
+                    </div>
+                </div> -->
+            </fieldset>
+        </form>
+    </body>
+</html>

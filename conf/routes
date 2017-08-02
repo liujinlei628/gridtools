@@ -12,7 +12,8 @@ GET     /favicon.ico                            404
 GET     /public/                                staticDir:public
 
 # 业务板块浏览
-GET     /Summary/oneLevelList                   Summary.queryBusNodeList
+GET     /Summary/queryAreaList                  Summary.queryAreaList
+GET     /Summary/oneLevelList/{areaName}        Summary.queryBusNodeList
 GET     /Summary/oneLevelChilds/{busName}       Summary.queryNodeListByName
 
 # Catch all

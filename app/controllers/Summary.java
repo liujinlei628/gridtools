@@ -8,15 +8,21 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
 
+import org.eclipse.jdt.internal.compiler.ast.MagicLiteral;
 import org.springframework.web.bind.annotation.ResponseBody;
+
+import com.google.gson.Gson;
+import com.google.gson.JsonObject;
 
 import models.TCfgBusiness;
 import models.TCfgBusinessDesc;
+import models.TCfgBusinessProcess;
 import models.TCfgDict;
 import models.TempCategory;
 import models.TempLink;
 import models.TempNode;
 import play.Logger;
+import play.db.jpa.GenericModel.JPAQuery;
 import play.db.jpa.JPA;
 
 /**
@@ -25,21 +31,32 @@ import play.db.jpa.JPA;
 @CRUD.For(TCfgBusinessDesc.class)
 public class Summary extends CRUD {
 
+    
+    /**
+     * 跳转到业务版块业务
+     */
+    public static void queryAreaList() {
+        render();
+    }
+    
     /**
      * 查询所有的一级业务节点
      * @param busName
      */
-    public static void queryBusNodeList(String busName){
+    public static void queryBusNodeList(String areaName, String busName){
         
         String query=" 1=1 ";
+        if(areaName !=null && !"".equals(areaName)){
+            query += " AND area ='" + areaName + "'" ;
+        }
         if(busName !=null && !"".equals(busName)){
-            query += "AND name like '%" + busName + "%'" ;
+            query += " AND name like '%" + busName + "%'" ;
         }
         query +=" GROUP BY name";
         Logger.info(query);
         // 根据业务名称查询
         List<TCfgBusinessDesc> busNodeList = TCfgBusinessDesc.find(query).fetch();
-        render(busName, busNodeList);
+        render(areaName, busName, busNodeList);
     }
     
     /**
@@ -59,18 +76,8 @@ public class Summary extends CRUD {
     }
     
     /**
-     * 跳转到新增页面
-     */
-    /*public static void form(Long id) {
-        if(id != null && !"".equals(id)) {
-            TCfgBusinessDesc businessDesc = TCfgBusinessDesc.findById(id);
-            render(businessDesc);
-        }
-        render();
-    }*/
-    
-    /**
      * 跳转到信息查看页面
+     * @param id 
      */
     public static void detail(Long id) {
         if(id != null && !"".equals(id)) {
@@ -81,53 +88,249 @@ public class Summary extends CRUD {
     }
     
     /**
-     * 跳转到新增业务信息页面
-     * @param keyWord
+     * 跳转到信息查看页面
+     * @param id 
      */
-    public static void addOneNode(String keyWord){
+    public static void list(int startPosition, String business, String name, String content) {
+        // 总数
+        int totalReport = TCfgBusinessDesc.findAll().size();
         
-        Map<String, Object> map = queryNodeList(keyWord);
-        List<TempNode> nodes = (List<TempNode>) map.get("nodes");
-        List<TempLink> links = (List<TempLink>) map.get("links");
-        List<TempCategory> categoryList = (List<TempCategory>) map.get("categoryList");
+        String query=" 1=1 ";
+        if(business !=null && !"".equals(business)){
+            query += " AND business ='" + business + "'" ;
+        }
         
-        // 数据字典集合
-        List<TCfgDict> dictList = TCfgDict.findAll();
-        if(nodes.size() > 0){
-            render(keyWord, nodes, links, categoryList, dictList);
+        if(name !=null && !"".equals(name)){
+            query += " AND name ='" + name + "'" ;
+        }
+        
+        if(content !=null && !"".equals(content)){
+            query += " AND content ='" + content + "'" ;
+        }
+        query += " ORDER BY ID" ;
+        
+        List<TCfgBusinessDesc> list =TCfgBusinessDesc.find(query).from(startPosition*10).fetch(10);
+
+        render(startPosition, totalReport, list, business, name, content);
+        
+    }
+    
+    /**
+     * 分页方法：上一页
+     * @param startPosition 页码
+     * @param business 编号
+     * @param name 名称
+     * @param content 内容
+     */
+    @SuppressWarnings("unused")
+    public static void previousPage(int startPosition, String business, String name, String content) {  
+        int totalUpload = TCfgBusinessDesc.findAll().size()/10;  
+        if(startPosition == 0) {  
+            startPosition = startPosition;
+        } else {  
+            startPosition = startPosition - 1;
+        }  
+        list(startPosition, business, name, content);
+    }  
+
+    /**
+     * 分页方法：下一页
+     * @param startPosition 页码
+     * @param business 编号
+     * @param name 名称
+     * @param content 内容
+     */
+    public static void nextPage(int startPosition, String business, String name, String content) {  
+        int totalUpload = TCfgBusinessDesc.findAll().size();  
+        if(startPosition >= totalUpload/10) {
+            startPosition = startPosition;
+        } else {  
+            startPosition = startPosition + 1;
+        }  
+        list(startPosition, business, name, content);
+    }
+    
+    /**
+     * 跳转到修改页面页面
+     */
+    public static void form(Long id) {
+        if(id != null && !"".equals(id)) {
+            TCfgBusinessDesc businessDesc = TCfgBusinessDesc.findById(id);
+            // 数据字典集合
+            List<TCfgDict> dictList = TCfgDict.findAll();
+            render(businessDesc, dictList);
         }
         render();
     }
     
     /**
+     * 跳转到新增业务信息页面
+     * @param keyWord
+     */
+    public static void addOneNode(String keyWord){
+        
+        
+        String query=" 1=1 ";
+        query +=" GROUP BY name ORDER BY Id";
+        Logger.info(query);
+        // 根据业务名称分组查询一级业务
+        List<TCfgBusinessDesc> busiInfoList = TCfgBusinessDesc.find(query).fetch();
+        
+        // 数据字典集合
+        List<TCfgDict> dictList = TCfgDict.findAll();
+        
+        render(keyWord, busiInfoList, dictList);
+    }
+    
+    /**
+     * 根据版块名称查询该版块下的的全部一级业务
+     * @param proecessCode
+     * @return List<TCfgBusinessProcess>
+     */
+    public @ResponseBody JsonObject queryBusName(String busName) {
+        String query=" 1=1 ";
+        if(busName !=null && !"".equals(busName)){
+            query += "AND area = '" + busName + "'" ;
+        }
+        query += " GROUP BY name ";
+        Logger.info(query);
+        // 根据业务名称查询
+        List<TCfgBusinessDesc> busInfoList = TCfgBusinessDesc.find(query).fetch();
+        JsonObject _output = new JsonObject();
+        Gson gson = new Gson();
+        _output.add("nodes", gson.toJsonTree(busInfoList));
+        return _output;
+    }
+    
+    /**
+     * 根据流程编号查询该流程的全部节点信息
+     * @param proecessCode
+     * @return List<TCfgBusinessProcess>
+     */
+    public @ResponseBody JsonObject queryProcessByCode(String processCode) {
+        String query=" 1=1 ";
+        if(processCode !=null && !"".equals(processCode)){
+            query += "AND processCode = '" + processCode + "' ORDER BY ID" ;
+        }
+        Logger.info(query);
+        // 根据业务名称查询
+        List<TCfgBusinessProcess> processList = TCfgBusinessProcess.find(query).fetch();
+        
+        JsonObject _output = new JsonObject();
+        Gson gson = new Gson();
+        _output.add("nodes", gson.toJsonTree(processList));
+        
+        return _output;
+    }
+    
+    /**
      * 保存节点信息与关系
-     * @param id ID
+     * @param keyWord
      * @param name 业务名称
      * @param content 业务内容
      * @param title 业务事项
      * @param major 专业
      * @param area 所属板块
      * @param description 业务内容描述
+     * @param process 所属流程
+     * @param processName 流程名称
      * @param prevNode 前置节点
      * @param nextNode 后置节点
      */
-    public static void save(String keyWord, String name, String content, String title, 
-                    String major,String majorName, String area, String description, String prevNode, String nextNode) {
+    public @ResponseBody String save(String keyWord, String name, String business, String content, String title, 
+                    String major,String majorName, String area, String description, 
+                    String process, String processName, String prevNode, String nextNode) {
         
-        TCfgBusinessDesc tCfgBusinessDesc = new TCfgBusinessDesc();
-        // 获取某一个专业总数量
-        long majorCount = TCfgBusinessDesc.count("major = ?", majorName);
-        if(!"".equals(name)) {
-            tCfgBusinessDesc.name = name;
-            tCfgBusinessDesc.content = content;
-            tCfgBusinessDesc.title = title;
-            tCfgBusinessDesc.area = area;
-            tCfgBusinessDesc.major = majorName;
-            tCfgBusinessDesc.description = description;
-            tCfgBusinessDesc.business = (major + "-" + (majorCount + 1));
-            tCfgBusinessDesc.delFlag = "0";
+        String msg = "0";
+        try {
+            TCfgBusinessDesc tCfgBusinessDesc = new TCfgBusinessDesc();
+            TCfgBusinessProcess tBusinessProcess = new TCfgBusinessProcess();
+            // 获取某一个专业总数量
+            long majorCount = TCfgBusinessDesc.count("major = ?", majorName);
+            // 保存节点信息
+            if(!"".equals(name)) {
+                tCfgBusinessDesc.name = name;
+                tCfgBusinessDesc.content = content;
+                tCfgBusinessDesc.title = title;
+                tCfgBusinessDesc.area = area;
+                tCfgBusinessDesc.major = majorName;
+                tCfgBusinessDesc.description = description;
+                // tCfgBusinessDesc.business = (major + "-" + (majorCount + 1));
+                tCfgBusinessDesc.business = business;
+                tCfgBusinessDesc.delFlag = "0";
+            }
+            tCfgBusinessDesc.save();
+            msg = "1";
+        } catch (Exception e) {
+            msg = "-1";
         }
-        tCfgBusinessDesc.save();
+        
+        // 保存业务流程信息
+        /*if(!"".equals(process)){
+            tBusinessProcess.processCode = process;
+            tBusinessProcess.processName = processName;
+            tBusinessProcess.busName = name;
+            tBusinessProcess.busContent = content;
+            tBusinessProcess.busItem = title;
+            tBusinessProcess.busArea = area;
+            tBusinessProcess.busMajor = majorName;
+            tBusinessProcess.busDescription = description;
+            tBusinessProcess.busCode = (major + "-" + (majorCount + 1));
+            tBusinessProcess.delFlag = "0";
+        }
+        tBusinessProcess.save();
+        // 保存串接关系表数据:前置节点
+        TCfgBusiness prevBusiness = new TCfgBusiness();
+        if(!"".equals(prevNode)){
+            
+            // 获取前置节点的详细信息
+            String query=" 1=1 ";
+            query += "AND business ='" + prevNode + "'" ;
+            TCfgBusinessDesc descVo = (TCfgBusinessDesc) TCfgBusinessDesc.find(query).fetch().get(0);
+            // 获取关系 先不考虑
+            TCfgBusiness vo = new TCfgBusiness();
+            String query1=" 1=1 ";
+            query1 += "AND business ='" + prevNode + "'" ;
+            vo = TCfgBusiness.find(query).fetch().get(0);
+            
+            prevBusiness.business_id = descVo.business;
+            prevBusiness.area = descVo.area;
+            prevBusiness.professional = descVo.major;
+            prevBusiness.value = "";
+            prevBusiness.content = descVo.content;
+            prevBusiness.description = descVo.description;
+            prevBusiness.relation = "后置";
+            prevBusiness.post_business_id = (major + "-" + (majorCount + 1));
+            prevBusiness.post_business_name = name;
+            prevBusiness.post_area = area;
+            prevBusiness.post_professional = majorName;
+            prevBusiness.post_business_content = content;
+            prevBusiness.post_business_description = description;
+            prevBusiness.save();
+        }
+        // 保存串接关系表数据:后置节点
+        TCfgBusiness nextBusiness = new TCfgBusiness();
+        if(!"".equals(nextNode)){
+            String query=" 1=1 ";
+            query += "AND business ='" + prevNode + "'" ;
+            TCfgBusinessDesc descVo = (TCfgBusinessDesc) TCfgBusinessDesc.find(query).fetch().get(0);
+            nextBusiness.business_id = (major + "-" + (majorCount + 1));
+            nextBusiness.area = area;
+            nextBusiness.professional = major;
+            nextBusiness.value = "";
+            nextBusiness.content = content;
+            nextBusiness.description = description;
+            nextBusiness.relation = "后置";
+            nextBusiness.post_business_id = descVo.business;
+            nextBusiness.post_business_name = descVo.name;
+            nextBusiness.post_area = descVo.area;
+            nextBusiness.post_professional = descVo.major;
+            nextBusiness.post_business_content = descVo.content;
+            nextBusiness.post_business_description = descVo.description;
+            nextBusiness.save();
+        }*/
+        
+        return msg;
     }
     
     /**
@@ -155,6 +358,12 @@ public class Summary extends CRUD {
      */
     @SuppressWarnings("unused")
     public static Map<String, Object> queryNodeList(String keyword) {
+        
+        /*Map<String, Object> map = queryNodeList(keyWord);
+        List<TempNode> nodes = (List<TempNode>) map.get("nodes");
+        List<TempLink> links = (List<TempLink>) map.get("links");
+        List<TempCategory> categoryList = (List<TempCategory>) map.get("categoryList");*/
+        
         String query="";
         String keyId = ""; // ljl
         if(keyword != null){

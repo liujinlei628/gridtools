@@ -16,7 +16,6 @@ import java.util.TreeSet;
 import java.util.UUID;
 
 import org.apache.poi.ss.usermodel.Workbook;
-import org.apache.poi.util.IntList;
 import org.jeecgframework.poi.excel.ExcelExportUtil;
 import org.jeecgframework.poi.excel.ExcelImportUtil;
 import org.jeecgframework.poi.excel.entity.ExportParams;
@@ -28,12 +27,12 @@ import com.google.gson.JsonObject;
 
 import models.TCfgBusiness;
 import models.TCfgBusinessDesc;
+import models.TCfgBusinessProcess;
 import models.TempCategory;
 import models.TempLink;
 import models.TempNode;
 import play.Logger;
 import play.Play;
-import sun.security.krb5.KdcComm;
 
 public class Business extends CRUD {
 
@@ -208,7 +207,6 @@ public class Business extends CRUD {
 				_key_set.add(b.business_id);
 			}
 		}
-
 
 		render(keyword, _distinct_business);
 	}
@@ -1237,6 +1235,241 @@ public class Business extends CRUD {
 			_businesses.add(business);
 			findNextPoint(_businesses, business.post_business_id);
 		}
+	}
+	
+	/**
+	 * 
+	 */
+	public static void saveProcess(String keyword) {
+	    
+	    String query="";
+        if(keyword!=null ){
+            keyword = keyword.toUpperCase();
+            if(keyword.contains(" ")){
+                for(String k:keyword.split(" ")){
+                    if(!query.equals("")){
+                        query+=" or ";
+                    }
+                    query+= "business_id = '"+k+"'";
+                }
+            }
+        }
+
+        if(query.equals("")){
+            query= "business_id = '"+keyword+"'";
+        }
+
+        query ="("+query+")";
+
+        Logger.info(query);
+
+        List<TCfgBusiness> _businesses = TCfgBusiness.find("  business_id not in (select post_business_id from TCfgBusiness where post_business_id is not null and post_business_id <> '/')").fetch();
+
+        if(_businesses==null || _businesses.size()==0){
+            query= "business_id like '%"+keyword+"%'";
+
+            query ="("+query+")";
+
+            Logger.info(query +";"+_businesses.size());
+
+            _businesses = TCfgBusiness.find(query+" and business_id not in (select post_business_id from TCfgBusiness where post_business_id is not null and post_business_id <> '/')").fetch();
+
+
+        }
+
+        Set<String> _key_set = new HashSet<String>();
+
+        List<TCfgBusiness> _distinct_business = new ArrayList<TCfgBusiness>();
+        for(TCfgBusiness b: _businesses){
+
+            if(_key_set.contains(b.business_id)){
+
+            } else {
+                _distinct_business.add(b);
+                _key_set.add(b.business_id);
+            }
+        }
+        int i = 0;
+        System.out.println(_distinct_business.size());
+        for(TCfgBusiness business : _distinct_business){
+            List<TempNode> tempNodes = queryNodesByCode(business.business_id);
+            if(tempNodes.size() > 0){
+                for (TempNode tempNode : tempNodes){
+                    TCfgBusinessProcess process = new TCfgBusinessProcess();
+                    process.processCode = "processCode" + i;
+                    process.processName = "业务流程" + i;
+                    process.busCode = tempNode.name;
+                    process.save();
+                }
+                i ++;
+            }
+        }
+	}
+	
+	@SuppressWarnings("unused")
+    public static List<TempNode> queryNodesByCode(String keyword){
+	    String query="";
+        String keyId = ""; // ljl
+        if(keyword != null){
+            keyword = keyword.toUpperCase();
+            keyId = keyword.substring(0,2);
+            if(keyword.contains(",")){
+                for(String k:keyword.split(",")){
+                    if(!query.equals("")){
+                        query+=" or ";
+                    }
+                    query+= "business_id = '"+k+"'";
+                }
+            }
+        }
+
+        if(query.equals("")){
+            query= "business_id = '"+keyword+"'";
+        }
+
+        query ="("+query+")";
+
+        Logger.info(query);
+
+        List<TCfgBusiness> _businesses = TCfgBusiness.find(query+" and business_id not in (select post_business_id from TCfgBusiness where post_business_id is not null and post_business_id <> '/')").fetch();
+
+        if(_businesses==null || _businesses.size()==0){
+            query= "business_id like '%"+keyword+"%'";
+            query ="("+query+")";
+
+            _businesses = TCfgBusiness.find(query+" and business_id not in (select post_business_id from TCfgBusiness where post_business_id is not null and post_business_id <> '/')").fetch();
+
+        }
+
+        Logger.info("SQL:"+query);
+
+        Map<String, List<TCfgBusiness>> trees = new TreeMap<String, List<TCfgBusiness>>();
+
+        List<TCfgBusiness> _child_business = null;
+
+        Set<String> _id_set = new HashSet<String>();;
+
+        Set<String> nodeSet = new HashSet<String>();
+
+        Set<String> linkSet = new HashSet<String>();
+
+        Set<String> categorySet = new HashSet<String>();
+
+        Set<String> leaderSet = new HashSet<String>();
+
+        List<TempNode> nodeList = new ArrayList<TempNode>();
+        List<TempLink> linkList = new ArrayList<TempLink>();
+        List<TempCategory> categoryList = new ArrayList<TempCategory>();
+
+        TempNode node = null;
+
+        TempLink link = null;
+
+        TempCategory category = null;
+
+        Integer _x_min=80;
+        Integer _y_min=50;
+
+        Integer _x_d = 230;
+        Integer _y_d = 200;
+
+        Integer xx = 1;
+
+        int i = 0;
+
+        for(TCfgBusiness _busi: _businesses){
+            node = new TempNode();
+            node.name = _busi.business_id;
+            node.displayname= node.name+"\n"+_busi.name +"\n"+_busi.description;
+            node.category = _busi.professional;
+            node.source = _busi.business_id;
+            node.target = _busi.post_business_id;
+            node.x=_x_min + (i*_x_d);
+            node.y=_y_min + (i*_y_d);
+            if(!nodeSet.contains(node.name)) {
+                nodeList.add(node);
+                nodeSet.add(node.name);
+            }
+
+            if(!leaderSet.contains(node.name)){
+                leaderSet.add(node.name);
+            }
+
+            category = new TempCategory();
+            category.name = _busi.professional;
+            if(!categorySet.contains(category.name)) {
+                categoryList.add(category);
+                categorySet.add(category.name);
+            }
+            
+            if(keyId.equalsIgnoreCase("GH")){
+                if( _busi.post_business_id.substring(0, 2).equalsIgnoreCase("GH")){ //ljl
+                    node = new TempNode();
+                    node.name = _busi.post_business_id;
+                    node.displayname= node.name+"\n"+_busi.post_business_name +"\n"+_busi.post_business_description;
+                    node.category = _busi.post_professional;
+                    node.source = _busi.business_id;
+                    node.target = _busi.post_business_id;
+                    node.x = _x_min + _x_d ;
+                    node.y = _y_min +((i-_businesses.size()/2)*_y_d);
+                    if(!nodeSet.contains(node.name)) {
+                        nodeList.add(node);
+                        nodeSet.add(node.name);
+                    }
+                }
+            }else{
+                node = new TempNode();
+                node.name = _busi.post_business_id;
+                node.displayname= node.name+"\n"+_busi.post_business_name +"\n"+_busi.post_business_description;
+                node.category = _busi.post_professional;
+                node.source = _busi.business_id;
+                node.target = _busi.post_business_id;
+                node.x = _x_min + _x_d ;
+                node.y = _y_min +((i-_businesses.size()/2)*_y_d);
+                if(!nodeSet.contains(node.name)) {
+                    nodeList.add(node);
+                    nodeSet.add(node.name);
+                }
+            }
+            
+            category = new TempCategory();
+            category.name = _busi.post_professional;
+            if(!categorySet.contains(category.name)) {
+                categoryList.add(category);
+                categorySet.add(category.name);
+            }
+
+            link = new TempLink();
+            link.source = _busi.business_id;
+            link.target = _busi.post_business_id;
+            link.value = _busi.relation;
+            if(!linkSet.contains(link.source+"-"+link.target)) {
+                linkList.add(link);
+                linkSet.add(link.source+"-"+link.target);
+            }
+
+            i++;
+
+            if(!_busi.relation.equalsIgnoreCase("引用")) {
+                findNext(leaderSet, nodeSet, linkSet, categorySet, nodeList, linkList, categoryList, _busi.post_business_id, keyword, node.x, node.y, _x_d, _y_d, xx);
+            }
+        }
+
+        JsonObject _output = new JsonObject();
+        Gson gson = new Gson();
+
+        Boolean _r = true;
+        if(keyword!=null){
+            keyword = keyword.toUpperCase();
+            if(keyword.contains(",")){
+                for(String k:keyword.split(",")){
+                    if(!nodeSet.contains(k)){
+                        _r = false;
+                    }
+                }
+            }
+        }
+        return nodeList;
 	}
 	
 }

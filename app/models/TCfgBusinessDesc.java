@@ -30,6 +30,7 @@ public class TCfgBusinessDesc extends Model {
 
     @MaxSize(100000)
     @MaxLength(100000)
+    @Required
     public String description; // 业务内容描述
     
     @Required
@@ -44,5 +45,5 @@ public class TCfgBusinessDesc extends Model {
     public String toString(){
         return this.business + "-" + this.name + "-" + this.title + "-" + this.content;
     }
-
+    
 }

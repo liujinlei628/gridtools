@@ -1,5 +1,6 @@
 package controllers;
 
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -8,11 +9,13 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
 
-import org.eclipse.jdt.internal.compiler.ast.MagicLiteral;
+import org.hibernate.engine.jdbc.spi.ResultSetReturn;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
+import com.mysql.jdbc.Connection;
+import com.mysql.jdbc.PreparedStatement;
 
 import models.TCfgBusiness;
 import models.TCfgBusinessDesc;
@@ -22,7 +25,6 @@ import models.TempCategory;
 import models.TempLink;
 import models.TempNode;
 import play.Logger;
-import play.db.jpa.GenericModel.JPAQuery;
 import play.db.jpa.JPA;
 
 /**
@@ -154,11 +156,32 @@ public class Summary extends CRUD {
      * 跳转到修改页面页面
      */
     public static void form(Long id) {
+        
         if(id != null && !"".equals(id)) {
             TCfgBusinessDesc businessDesc = TCfgBusinessDesc.findById(id);
+            
+            String queryArea=" 1=1 ";
+            if(businessDesc.area !=null && !"".equals(businessDesc.area)){
+                queryArea += "AND area = '" + businessDesc.area + "'" ;
+            }
+            queryArea += " GROUP BY major ";
+            Logger.info(queryArea);
+            List<TCfgBusinessDesc> majorList = TCfgBusinessDesc.find(queryArea).fetch();
+            
+            String queryMajor=" 1=1 ";
+            if(businessDesc.area !=null && !"".equals(businessDesc.area)){
+                queryMajor += "AND area = '" + businessDesc.area + "'" ;
+            }
+            if(businessDesc.major !=null && !"".equals(businessDesc.major)){
+                queryMajor += "AND major = '" + businessDesc.major + "'" ;
+            }
+            queryMajor += " GROUP BY name ";
+            Logger.info(queryMajor);
+            List<TCfgBusinessDesc> busNameList = TCfgBusinessDesc.find(queryMajor).fetch();
+            
             // 数据字典集合
             List<TCfgDict> dictList = TCfgDict.findAll();
-            render(businessDesc, dictList);
+            render(businessDesc, dictList, majorList, busNameList);
         }
         render();
     }
@@ -168,7 +191,6 @@ public class Summary extends CRUD {
      * @param keyWord
      */
     public static void addOneNode(String keyWord){
-        
         
         String query=" 1=1 ";
         query +=" GROUP BY name ORDER BY Id";
@@ -183,18 +205,92 @@ public class Summary extends CRUD {
     }
     
     /**
-     * 根据版块名称查询该版块下的的全部一级业务
+     * 跳转到新增业务信息页面
+     * @param keyWord
+     */
+    public static void addOneLevel(){
+        
+        String query=" 1=1 ";
+        query +=" GROUP BY name ORDER BY Id";
+        Logger.info(query);
+        // 根据业务名称分组查询一级业务
+        List<TCfgBusinessDesc> busiInfoList = TCfgBusinessDesc.find(query).fetch();
+        
+        // 数据字典集合
+        List<TCfgDict> dictList = TCfgDict.findAll();
+        
+        render(busiInfoList, dictList);
+    }
+    
+    /**
+     * 验证一级业务名称是否重复
+     * @return
+     */
+    public @ResponseBody String checkBusName(String areaName, String majorName, String busName){
+        
+        String msg = "0";
+        
+        String query=" 1=1 ";
+        if(areaName !=null && !"".equals(areaName)){
+            query += " AND area = '" + areaName + "'" ;
+        }
+        
+        if(majorName !=null && !"".equals(majorName)){
+            query += " AND major = '" + majorName + "'" ;
+        }
+        
+        query += " GROUP BY name ";
+        Logger.info(query);
+        List<TCfgBusinessDesc> busInfoList = TCfgBusinessDesc.find(query).fetch();
+        
+        for(int i = 0 ; i < busInfoList.size() ; i ++){
+            
+            if(busName.equals(busInfoList.get(i).name)){
+                msg = "2";
+                return msg;
+            }
+        }
+        return msg;
+    }
+    
+    /**
+     * 根据版块名称查询该版块下的全部专业
      * @param proecessCode
      * @return List<TCfgBusinessProcess>
      */
-    public @ResponseBody JsonObject queryBusName(String busName) {
+    public @ResponseBody JsonObject queryBusName(String areaName) {
         String query=" 1=1 ";
-        if(busName !=null && !"".equals(busName)){
-            query += "AND area = '" + busName + "'" ;
+        if(areaName !=null && !"".equals(areaName)){
+            query += "AND area = '" + areaName + "'" ;
         }
-        query += " GROUP BY name ";
+        query += " GROUP BY major ";
         Logger.info(query);
         // 根据业务名称查询
+        List<TCfgBusinessDesc> busInfoList = TCfgBusinessDesc.find(query).fetch();
+        JsonObject _output = new JsonObject();
+        Gson gson = new Gson();
+        _output.add("majors", gson.toJsonTree(busInfoList));
+        return _output;
+    }
+    
+    /**
+     * 根据专业名称查询该专业下的全部一级业务名称
+     * @param proecessCode
+     * @return List<TCfgBusinessProcess>
+     */
+    public @ResponseBody JsonObject queryMajorName(String areaName, String majorName) {
+        
+        String query=" 1=1 ";
+        if(areaName !=null && !"".equals(areaName)){
+            query += " AND area = '" + areaName + "'" ;
+        }
+        
+        if(majorName !=null && !"".equals(majorName)){
+            query += " AND major = '" + majorName + "'" ;
+        }
+        
+        query += " GROUP BY name ";
+        Logger.info(query);
         List<TCfgBusinessDesc> busInfoList = TCfgBusinessDesc.find(query).fetch();
         JsonObject _output = new JsonObject();
         Gson gson = new Gson();
@@ -232,21 +328,33 @@ public class Summary extends CRUD {
      * @param major 专业
      * @param area 所属板块
      * @param description 业务内容描述
-     * @param process 所属流程
-     * @param processName 流程名称
-     * @param prevNode 前置节点
-     * @param nextNode 后置节点
      */
     public @ResponseBody String save(String keyWord, String name, String business, String content, String title, 
-                    String major,String majorName, String area, String description, 
-                    String process, String processName, String prevNode, String nextNode) {
+                    String major,String majorName, String area, String description) {
         
         String msg = "0";
+        
+        // 如果有新增的一级业务名称，其他字段都为空的情况下，先删除一级业务，后插入新的数据。
+        String query=" 1=1 ";
+        if(area !=null && !"".equals(area)){
+            query += " AND area = '" + area + "'" ;
+        }
+        if(majorName !=null && !"".equals(majorName)){
+            query += " AND major = '" + majorName + "'" ;
+        }
+        query += " GROUP BY name ";
+        Logger.info(query);
+        List<TCfgBusinessDesc> busInfoList = TCfgBusinessDesc.find(query).fetch();
+        
+        if(busInfoList.size() > 0){
+            TCfgBusinessDesc tempVo = busInfoList.get(0);
+            if(tempVo.business == null && tempVo.content == null && tempVo.title == null){
+                tempVo.delete();
+            }
+        }
+        
         try {
             TCfgBusinessDesc tCfgBusinessDesc = new TCfgBusinessDesc();
-            TCfgBusinessProcess tBusinessProcess = new TCfgBusinessProcess();
-            // 获取某一个专业总数量
-            long majorCount = TCfgBusinessDesc.count("major = ?", majorName);
             // 保存节点信息
             if(!"".equals(name)) {
                 tCfgBusinessDesc.name = name;
@@ -255,7 +363,6 @@ public class Summary extends CRUD {
                 tCfgBusinessDesc.area = area;
                 tCfgBusinessDesc.major = majorName;
                 tCfgBusinessDesc.description = description;
-                // tCfgBusinessDesc.business = (major + "-" + (majorCount + 1));
                 tCfgBusinessDesc.business = business;
                 tCfgBusinessDesc.delFlag = "0";
             }
@@ -334,20 +441,75 @@ public class Summary extends CRUD {
     }
     
     /**
+     * 验证编号是否重复
+     * @return
+     */
+    public @ResponseBody String checkBusCode(String business){
+        
+        String msg = "0";
+        String query=" 1=1 ";
+        query += "AND business ='" + business + "'" ;
+        List<TCfgBusinessDesc> tempVo = TCfgBusinessDesc.find(query).fetch();
+        // 如果编号重复，则返回
+        if(tempVo.size() > 0){
+            if(tempVo.get(0).business != null && !"".equals(tempVo.get(0).business)){
+                msg = "2";
+                return msg;
+            }
+        }
+        return msg;
+    }
+    
+    /**
+     * 保存节点信息与关系
+     * @param keyWord
+     * @param name 业务名称
+     * @param content 业务内容
+     * @param title 业务事项
+     * @param major 专业
+     * @param area 所属板块
+     * @param description 业务内容描述
+     */
+    public @ResponseBody String edit(Long id, String name, String business, String content, String title, 
+                    String major,String majorName, String area, String description) {
+        
+        String msg = "0";
+        try {
+            TCfgBusinessDesc tCfgBusinessDesc = TCfgBusinessDesc.findById(id);
+            // 保存节点信息
+            if(!"".equals(name)) {
+                tCfgBusinessDesc.name = name;
+                tCfgBusinessDesc.content = content;
+                tCfgBusinessDesc.title = title;
+                tCfgBusinessDesc.area = area;
+                tCfgBusinessDesc.major = majorName;
+                tCfgBusinessDesc.description = description;
+                tCfgBusinessDesc.business = business;
+                tCfgBusinessDesc.delFlag = "0";
+            }
+            tCfgBusinessDesc.save();
+            msg = "1";
+        } catch (Exception e) {
+            msg = "-1";
+        }
+        return msg;
+    }
+    /**
      * 根据业务ID删除节点信息
      * @param businessId
      */
-    public @ResponseBody static String deleteSummaryById(String businessId) {
+    public @ResponseBody static String deleteSummaryById(Long businessId) {
         
         String msg = "0";
-        String sql = "UPDATE t_cfg_business_desc SET del_flag = 1 WHERE business = " + businessId;
-        int count = JPA.em().createQuery(sql).executeUpdate();
-        Logger.info("删除个数:" + count);
-        if(count > 0){
+        try {
+            TCfgBusinessDesc tCfgBusinessDesc = TCfgBusinessDesc.findById(businessId);
+            tCfgBusinessDesc.delFlag = "1";
+            tCfgBusinessDesc.save();
             msg = "1";
-        } else {
+        } catch (Exception e) {
             msg = "-1";
         }
+        
         return msg;
     }
     

@@ -4,7 +4,7 @@
 <ul class="nav nav-tabs">
     <li><a href="@{Business.toUpload()}">串接关系导入</a></li>
     <li class="active"><a href="@{controllers.Summary.list()}">业务节点维护</a></li>
-    <li><a href="#">业务关系维护</a></li>
+    <li><a href="@{controllers.Business.list()}">业务关系维护</a></li>
 </ul>
 
 <div class="row">
@@ -36,7 +36,8 @@
                             </div>
                             <div class="input-group-btn">
                                 <button class="btn btn btn-primary" type="submit">搜索</button>
-                                <button class="btn btn btn-primary" style="margin-left: 10px;" type="button" onclick="addNodeInfo()">新增节点</button>
+                                <button class="btn btn btn-primary" style="margin-left: 10px;" type="button" onclick="addNodeInfo()">新增业务</button>
+                                <button class="btn btn btn-primary" style="margin-left: 10px;" type="button" onclick="addOneLevel()">一级业务</button>
                             </div>
                         </div>
                     </form>
@@ -54,12 +55,12 @@
                         <thead>
                             <tr>
                                 <th width="10%">序号</th>
+                                <th width="10%">所属版块</th>
+                                <th width="10%">专业</th>
                                 <th width="10%">业务编号</th>
                                 <th width="15%">业务名称</th>
                                 <th width="15%">业务内容</th>
                                 <th width="20%">业务内容描述</th>
-                                <th width="10%">所属板块</th>
-                                <th width="10%">专业</th>
                                 <th width="10%">操作</th>
                             </tr>
                         </thead>
@@ -67,6 +68,8 @@
                             #{list items:list,as:'_busi'}
                             <tr>
                                 <td>${_busi_index}</td>
+                                <td>${_busi.area}</td>
+                                <td>${_busi.major}</td>
                                 <td>${_busi.business}</td>
                                 <td>${_busi.name}</td>
                                 <td>
@@ -75,13 +78,13 @@
                                 <td>
                                     ${_busi.title.length() > 9 ? _busi.title[0..9] + '…' : _busi.title}
                                 </td>
-                                <td>${_busi.area}</td>
-                                <td>${_busi.major}</td>
                                 <td>
                                     <a href="javascript:void(0);" onclick="queryNodeInfoById('${_busi.id}')" >查看</a>
-                                    <a href="javascript:void(0);" onclick="#" >修改</a>
-                                    <!-- <a href="javascript:void(0);" onclick="toEditById('${_busi.id}')" >修改</a> -->
-                                    <a href="javascript:void(0);" onclick="#" >删除</a>
+                                    <!-- <a href="javascript:void(0);" onclick="#" >修改</a> -->
+                                    #{if _busi.delFlag == '0'}
+                                        <a href="javascript:void(0);" onclick="toEditById('${_busi.id}')" >修改</a>
+                                        <a href="javascript:void(0);" onclick="deleteById('${_busi.id}')" >删除</a>
+                                    #{/if}
                                 </td>
                             </tr>
                             #{/list}
@@ -147,7 +150,7 @@
     }
     
     function toEditById(nodeId){
-    	var html = "<div id='dialog-window' title='业务信息'><iframe id='myFrame' src='/Summary/form?id="+nodeId+"' frameBorder='0' style='border: 0;margin-bottom:-5px;margin-top:-3px;' scrolling='no' height='100%' width='100%'></iframe></div>";
+        var html = "<div id='dialog-window' title='业务信息'><iframe id='myFrame' src='/Summary/form?id="+nodeId+"' frameBorder='0' style='border: 0;margin-bottom:-5px;margin-top:-3px;' scrolling='no' height='100%' width='100%'></iframe></div>";
         $(html).dialog($.extend({
             modal: true,
             width: 800,
@@ -156,16 +159,53 @@
             draggable: true,
             resizable: false,
             'class': 'overflow-y:hidden',
-            close: function(event, ui) {
-              $(this).dialog("destroy"); 
-            },
             buttons : [{
+                html : "确定",
+                id:"addSubmitButton",
+                'class' : "btn btn-primary btn-sm",
+                click : function(btn) {
+                    var myFrameWin = document.getElementById("myFrame").contentWindow;
+                    var myForm = myFrameWin.document.getElementById("summaryForm");
+                    var _this = this;
+                    $(myForm).validate({
+                        meta: "validate",
+                        onsubmit:true,
+                        onblur:false,
+                        onkeyup :false,
+                        rules: {
+                            vendorName: {
+                                required: true,
+                                specialChart: true
+                            },
+                            errorCode: {
+                                required: true,
+                                specialChart: true
+                            },
+                            codeSeverity: {
+                                required: true,
+                                specialChart: true
+                            }
+                        },
+                        submitHandler: function(){
+                            ajaxSubmit(myForm);
+                            $(_this).dialog("close");
+                        },
+                        invalidHandler: function(){
+                            return false;
+                        }
+                    });
+                    $(myForm).submit();
+                }
+            },{
                 html : "取消",
                 'class' : "btn btn-default btn-sm",
                 click : function() {
                     $(this).dialog("close");
                 }
-            }]
+            }],
+            close: function(event, ui) {
+                $(this).dialog("destroy"); 
+            }
         }));
     }
     
@@ -178,11 +218,11 @@
     });
     
     function addNodeInfo(){
-        var html ='<div id="dialog-window" title="新增节点"><iframe id="myFrame" src="@{controllers.Summary.addOneNode(keyword)}" frameBorder="0" style="border: 0;margin-bottom:-5px;margin-top:-3px;" scrolling="no" height="100%" width="100%"></iframe></div>';
+        var html ='<div id="dialog-window" title="新增业务"><iframe id="myFrame" src="@{controllers.Summary.addOneNode(keyword)}" frameBorder="0" style="border: 0;margin-bottom:-5px;margin-top:-3px;" scrolling="no" height="100%" width="100%"></iframe></div>';
         $(html).dialog($.extend({
             modal: true,
             width: 800,
-            height: 450,
+            height: 550,
             closeOnEscape: false,
             draggable: true,
             resizable: false,
@@ -195,39 +235,42 @@
                 id:"addSubmitButton",
                 'class' : "btn btn-primary btn-sm",
                 click : function(btn) {
-                var myFrameWin = document.getElementById("myFrame").contentWindow;
-                var myForm = myFrameWin.document.getElementById("summaryForm");
-                var _this = this;
-                $(myForm).validate({
-                    meta: "validate",
-                    onsubmit:true,
-                    onblur:false,
-                    onkeyup :false,
-                    rules: {
-                        vendorName: {
-                            required: true,
-                            specialChart: true
+                    var myFrameWin = document.getElementById("myFrame").contentWindow;
+                    var myForm = myFrameWin.document.getElementById("summaryForm");
+                    var _this = this;
+                    $(myForm).validate({
+                        meta: "validate",
+                        onsubmit:true,
+                        onblur:false,
+                        onkeyup :false,
+                        rules: {
+                            vendorName: {
+                                required: true,
+                                specialChart: true
+                            },
+                            errorCode: {
+                                required: true,
+                                specialChart: true
+                            },
+                            codeSeverity: {
+                                required: true,
+                                specialChart: true
+                            }
                         },
-                        errorCode: {
-                            required: true,
-                            specialChart: true
+                        submitHandler: function(){
+                            if(ajaxSubmit(myForm)){
+                                $(_this).dialog("close");
+                            } else {
+                                return false;
+                            }
                         },
-                        codeSeverity: {
-                            required: true,
-                            specialChart: true
+                        invalidHandler: function(){
+                            return false;
                         }
-                    },
-                    submitHandler: function(){
-                        ajaxSubmit(myForm);
-                        $(_this).dialog("close");
-                    },
-                    invalidHandler: function(){
-                        return false;
-                    }
-                });
-                $(myForm).submit();
-             }
-         },{
+                    });
+                    $(myForm).submit();
+                }
+            },{
                 html : "取消",
                 'class' : "btn btn-default btn-sm",
                 click : function() {
@@ -237,25 +280,125 @@
         }));
     }
     
-    //将form转为AJAX提交
-    function ajaxSubmit(frm) {
-    	
-        var dataPara = getFormJson(frm);
-        $.ajax({
-            url: frm.action,
-            type: frm.method,
-            data: dataPara,
-            dataType:"json",
-            success: function(data){
-                if(data == '1'){
-                	alert("操作成功！");
-                    window.location.reload(true);
-                } else {
-                    alert("操作失败，请联系系统管理员！");
+    function addOneLevel(){
+        var html ='<div id="dialog-window" title="新增业务"><iframe id="myFrame" src="@{controllers.Summary.addOneLevel()}" frameBorder="0" style="border: 0;margin-bottom:-5px;margin-top:-3px;" scrolling="no" height="100%" width="100%"></iframe></div>';
+        $(html).dialog($.extend({
+            modal: true,
+            width: 800,
+            height: 300,
+            closeOnEscape: false,
+            draggable: true,
+            resizable: false,
+            'class': 'overflow-y:hidden',
+            close: function(event, ui) {
+              $(this).dialog("destroy"); 
+            },
+            buttons : [{
+                html : "确定",
+                id:"addSubmitButton",
+                'class' : "btn btn-primary btn-sm",
+                click : function(btn) {
+                    var myFrameWin = document.getElementById("myFrame").contentWindow;
+                    var myForm = myFrameWin.document.getElementById("summaryForm");
+                    var _this = this;
+                    $(myForm).validate({
+                        meta: "validate",
+                        onsubmit:true,
+                        onblur:false,
+                        onkeyup :false,
+                        rules: {
+                            vendorName: {
+                                required: true,
+                                specialChart: true
+                            },
+                            errorCode: {
+                                required: true,
+                                specialChart: true
+                            },
+                            codeSeverity: {
+                                required: true,
+                                specialChart: true
+                            }
+                        },
+                        submitHandler: function(){
+                            if(ajaxSubmit1(myForm)){
+                                $(_this).dialog("close");
+                            } else {
+                                return false;
+                            }
+                        },
+                        invalidHandler: function(){
+                            return false;
+                        }
+                    });
+                    $(myForm).submit();
                 }
-                    
-            } 
-        });
+            },{
+                html : "取消",
+                'class' : "btn btn-default btn-sm",
+                click : function() {
+                    $(this).dialog("close");
+                }
+          }]
+        }));
+    }
+    
+    //三级业务新增
+    function ajaxSubmit(frm) {
+        
+        var bol = true;
+        var dataPara = getFormJson(frm);
+        var business = dataPara.business;
+        if(checkBusCode(business)){
+            $.ajax({
+                url: frm.action,
+                type: frm.method,
+                async: false,
+                data: dataPara,
+                dataType:"json",
+                success: function(data){
+                    if(data == '1'){
+                        alert("操作成功！");
+                        window.location.reload(true);
+                    } else {
+                        alert("操作失败，请联系系统管理员！");
+                    }
+                } 
+            });
+        } else {
+            bol = false;
+        }
+        return bol;
+    }
+    
+    //一级业务新增
+    function ajaxSubmit1(frm) {
+        
+        var bol = true;
+        var dataPara = getFormJson(frm);
+        var areaName = dataPara.area;
+        var majorName = dataPara.major;
+        var busName = dataPara.name;
+        if(checkBusName(areaName, majorName, busName)){
+            $.ajax({
+                url: frm.action,
+                type: frm.method,
+                async: false,
+                data: dataPara,
+                dataType:"json",
+                success: function(data){
+                    if(data == '1'){
+                        alert("操作成功！");
+                        window.location.reload(true);
+                    } else {
+                        alert("操作失败，请联系系统管理员！");
+                    }
+                } 
+            });
+        } else {
+            bol = false;
+        }
+        return bol;
     }
     
     //将form中的值转换为键值对。
@@ -273,6 +416,70 @@
             }
         });
         return o;
+    }
+    
+    // 验证业务编号是否重复
+    function checkBusCode(business){
+        
+        var bol = true;
+        $.ajax({
+            url:"/Summary/checkBusCode",
+            type:"post",
+            async: false,
+            data:{
+                "business":business
+            },
+            success:function(data){
+                if(data == '2'){
+                    alert("业务编号重复，请重新输入！");
+                    bol = false;
+                }
+            }
+        });
+        return bol;
+    }
+    
+    // 验证业务编号是否重复
+    function checkBusName(areaName, majorName, busName){
+        
+        var bol = true;
+        $.ajax({
+            url:"/Summary/checkBusName",
+            type:"post",
+            async: false,
+            data:{
+                "areaName":areaName,
+                "majorName":majorName,
+                "busName":busName
+            },
+            success:function(data){
+                if(data == '2'){
+                    alert("业务名称重复，请重新输入！");
+                    bol = false;
+                }
+            }
+        });
+        return bol;
+    }
+    
+    // 根据ID删除业务信息
+    function deleteById(nodeId){
+        
+        $.ajax({
+            url:"/Summary/deleteSummaryById",
+            type:"post",
+            data:{
+                "businessId":nodeId
+            },
+            success:function(data){
+                if(data == '1'){
+                    alert("操作成功！");
+                    window.location.reload(true);
+                } else {
+                    alert("操作失败，请联系系统管理员！");
+                }
+            }
+        });
     }
     
 </script>

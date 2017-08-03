@@ -19,11 +19,17 @@
         <script type="text/javascript">
             $(document).ready(function() {
                 
+                $("#major").attr("disabled","true");
+                $("#name").attr("disabled","true");
+                $("#business").attr("disabled","true");
+                $("#content").attr("disabled","true");
+                $("#title").attr("disabled","true");
+                $("#description").attr("disabled","true");
             });
             
             function changeProcess(obj){
                 
-            	var label = $(obj).find("option:selected").text();  //获取Select选择的Text
+                var label = $(obj).find("option:selected").text();  //获取Select选择的Text
                 $("#processName").val(label);
                 
                 $.ajax({
@@ -54,39 +60,191 @@
                             options.push(_option);
                         }); */
                         /* if(options.length > 0){
-                        	$("#prevNode").append(options);
-                        	$("#nextNode").append(options);
+                            $("#prevNode").append(options);
+                            $("#nextNode").append(options);
                         } */
                     }
                 });
             }
             
-            function changeMajor(obj){
-                
-                var label = $(obj).find("option:selected").text();  //获取Select选择的Text
-                $("#majorName").val(label);
-            }
-            
             function queryBusName(areaName){
                 
-                $.ajax({
-                    url:"/Summary/queryBusName",
-                    type:"post",
-                    data:"busName=" + encodeURI(areaName),
-                    success:function(data){
-                        var nodes = JSON.parse(data).nodes;
-                        var html = "";
-                        $("#name").html(html);
-                        html +="<option value=''>--请选择--</option>";
-                        for(var i = 0 ; i < nodes.length ; i ++){
-                            var str = "<option value='"+nodes[i].name+"'>"+nodes[i].name+"</option>";
-                            html += str;
+                if(areaName != ''){
+                    $.ajax({
+                        url:"/Summary/queryBusName",
+                        type:"post",
+                        data:"areaName=" + encodeURI(areaName),
+                        success:function(data){
+                            var majors = JSON.parse(data).majors;
+                            var html = "";
+                            $("#major").html(html);
+                            html +="<option value=''>请选择</option>";
+                            for(var i = 0 ; i < majors.length ; i ++){
+                                var str = "<option value='"+majors[i].major+"'>"+majors[i].major+"</option>";
+                                html += str;
+                            }
+                            $("#major").append(html);
+                            $("#major").val('');
+                            $("#major").removeAttr("disabled");
                         }
-                        $("#name").append(html);
-                        $("#name").val('');
-                    }
+                    });
+                } else {
+                    var html = "";
+                    $("#major").html(html);
+                    $("#major").attr("disabled", "true");
+                    $("#name").html(html);
+                    $("#name").attr("disabled", "true");
+                    alert("所属版块不能为空！");
+                }
+            }
+            
+            function queryMajorName(majorName){
+                
+                if(majorName != ''){
+                    $("#majorName").val(majorName);
+                    var areaName = $("#area").val();
+                    $.ajax({
+                        url:"/Summary/queryMajorName",
+                        type:"post",
+                        data:{
+                            "areaName":areaName,
+                            "majorName":majorName,
+                        },
+                        success:function(data){
+                            var majors = JSON.parse(data).nodes;
+                            var html = "";
+                            $("#name").html(html);
+                            html +="<option value=''>请选择</option>";
+                            for(var i = 0 ; i < majors.length ; i ++){
+                                var str = "<option value='"+majors[i].name+"'>"+majors[i].name+"</option>";
+                                html += str;
+                            }
+                            $("#name").append(html);
+                            $("#name").val('');
+                            $("#name").removeAttr("disabled");
+                        }
+                    });
+                } else {
+                    var html = "";
+                    $("#name").html(html);
+                    $("#name").attr("disabled","true");
+                    alert("专业不能为空！");
+                }
+            }
+            
+            function changeBusName(busName) {
+                
+                if(busName != ''){
+                    $("#business").removeAttr("disabled");
+                    $("#content").removeAttr("disabled");
+                    $("#title").removeAttr("disabled");
+                    $("#description").removeAttr("disabled");
+                } else {
+                    $("#business").attr("disabled","true");
+                    $("#content").attr("disabled","true");
+                    $("#title").attr("disabled","true");
+                    $("#description").attr("disabled","true");
+                }
+            }
+            
+            function addOneLevel(){
+                var html ='<div id="dialog-window" title="新增一级业务"><iframe id="myFrame1" src="@{controllers.Summary.addOneLevel()}" frameBorder="0" style="border: 0;margin-bottom:-5px;margin-top:-3px;" scrolling="no" height="100%" width="100%"></iframe></div>';
+                $(html).dialog($.extend({
+                    modal: true,
+                    width: 800,
+                    height: 550,
+                    closeOnEscape: false,
+                    draggable: true,
+                    resizable: false,
+                    'class': 'overflow-y:hidden',
+                    close: function(event, ui) {
+                      $(this).dialog("destroy"); 
+                    },
+                    buttons : [{
+                        html : "确定",
+                        id:"addSubmitButton",
+                        'class' : "btn btn-primary btn-sm",
+                        click : function(btn) {
+                        var myFrameWin = document.getElementById("myFrame").contentWindow;
+                        var myForm = myFrameWin.document.getElementById("summaryForm");
+                        var _this = this;
+                        $(myForm).validate({
+                            meta: "validate",
+                            onsubmit:true,
+                            onblur:false,
+                            onkeyup :false,
+                            rules: {
+                                vendorName: {
+                                    required: true,
+                                    specialChart: true
+                                },
+                                errorCode: {
+                                    required: true,
+                                    specialChart: true
+                                },
+                                codeSeverity: {
+                                    required: true,
+                                    specialChart: true
+                                }
+                            },
+                            submitHandler: function(){
+                                ajaxSubmit(myForm);
+                                $(_this).dialog("close");
+                            },
+                            invalidHandler: function(){
+                                return false;
+                            }
+                        });
+                        $(myForm).submit();
+                     }
+                 },{
+                        html : "取消",
+                        'class' : "btn btn-default btn-sm",
+                        click : function() {
+                            $(this).dialog("close");
+                        }
+                  }]
+                }));
+            }
+            
+            //将form转为AJAX提交
+            function ajaxSubmit(frm) {
+                
+                var dataPara = getFormJson(frm);
+                $.ajax({
+                    url: frm.action,
+                    type: frm.method,
+                    data: dataPara,
+                    dataType:"json",
+                    success: function(data){
+                        if(data == '1'){
+                            alert("操作成功！");
+                            window.location.reload(true);
+                        } else {
+                            alert("操作失败，请联系系统管理员！");
+                        }
+                            
+                    } 
                 });
             }
+            
+            //将form中的值转换为键值对。
+            function getFormJson(frm) {
+                var o = {};
+                var a = $(frm).serializeArray();
+                $.each(a, function () {
+                    if (o[this.name] !== undefined) {
+                        if (!o[this.name].push) {
+                            o[this.name] = [o[this.name]];
+                        }
+                        o[this.name].push(this.value || '');
+                    } else {
+                        o[this.name] = this.value || '';
+                    }
+                });
+                return o;
+            }
+            
             
         </script>
     </head>
@@ -97,7 +255,7 @@
                 
                 <div class="form-group">
                     <label class="col-xs-2 txt-al-mar-pad" id="labelErrorCode">所属版块：<font style="color:red;"> * </font></label>
-                    <div class="col-xs-2">
+                    <div class="col-xs-8">
                         <select name="area" id="area" class="form-control required" onchange="queryBusName(this.value)">
                             <option value="">请选择</option>
                             #{list items:dictList,as:'_dict'}
@@ -110,17 +268,12 @@
                     <div class="col-xs-2">
                         <button class="btn btn btn-primary" type="button" onclick="#">新增版块</button>
                     </div>
-                    
+                </div>
+                
+                <div class="form-group">
                     <label class="col-xs-2 txt-al-mar-pad" id="labelErrorCode">专业：<font style="color:red;"> * </font></label>
-                    <div class="col-xs-2">
-                        <select name="major" id="major" class="form-control required" onchange="changeMajor(this)" >
-                            <option value="">请选择</option>
-                            #{list items:dictList,as:'_dict'}
-                                #{if _dict.type == 'major' }
-                                    <option value="${_dict.value}" >${_dict.label}</option>
-                                #{/if}
-                            #{/list}
-                        </select>
+                    <div class="col-xs-8">
+                        <select name="major" id="major" class="form-control required" onchange="queryMajorName(this.value)" ></select>
                         <input type="hidden" name="majorName" id="majorName" value="" />
                     </div>
                     <div class="col-xs-2">
@@ -130,16 +283,18 @@
                 
                 <div class="form-group">
                     <label class="col-xs-2 txt-al-mar-pad">业务名称：<font style="color:red;"> * </font></label>
-                    <div class="col-xs-8">
+                    <div class="col-xs-10">
                         <!-- <input class="form-control required" type="text" name="name" id="name" maxlength="100"> -->
-                        <select name="name" id="name" class="form-control required">
-                            <!-- <option value="">请选择</option>
-                            #{list items:busiInfoList,as:'_busi'}
-                                <option value="${_busi.business}" >${_busi.name}</option>
-                            #{/list} -->
+                        <select name="name" id="name" class="form-control required" onchange="changeBusName(this.value)" >
                         </select>
                     </div>
-                    <button class="btn btn btn-primary" type="button" onclick="#">新增业务名称</button>
+                </div>
+                
+                <div class="form-group">
+                    <label class="col-xs-2 txt-al-mar-pad">业务内容：<font style="color:red;"> * </font></label>
+                    <div class="col-xs-10">
+                        <input class="form-control required" type="text" name="content" id="content" maxlength="100">
+                    </div>
                 </div>
                 
                 <div class="form-group">
@@ -150,23 +305,16 @@
                 </div>
                 
                 <div class="form-group">
-                    <label class="col-xs-2 txt-al-mar-pad" id="labelErrorCode">业务内容：<font style="color:red;"> * </font></label>
-                    <div class="col-xs-10">
-                        <input class="form-control required" type="text" name="content" id="content" maxlength="100">
-                    </div>
-                </div>
-                
-                <div class="form-group">
-                    <label class="col-xs-2 txt-al-mar-pad" id="labelErrorCode">业务内容描述：<font style="color:red;"> * </font></label>
+                    <label class="col-xs-2 txt-al-mar-pad">业务内容描述：<font style="color:red;"> * </font></label>
                     <div class="col-xs-10">
                         <input class="form-control required" type="text" name="title" id="title" maxlength="100">
                     </div>
                 </div>
                 
                 <div class="form-group">
-                    <label class="col-xs-2 txt-al-mar-pad" id="labelDescription">业务内容描述详情：<font style="color:red;"> * </font></label>
+                    <label class="col-xs-2 txt-al-mar-pad">业务内容描述详情：<font style="color:red;"> * </font></label>
                     <div class="col-xs-10">
-                        <textarea rows="3" class="form-control" cols="50" name="description" id="description"></textarea>
+                        <textarea rows="3" class="form-control required" cols="50" name="description" id="description"></textarea>
                     </div>
                 </div>
                 

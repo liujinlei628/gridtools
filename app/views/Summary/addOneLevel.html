@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en-us">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+        <script type="text/javascript" src="@{'/public/js/jquery-3.1.1.min.js'}"></script>
+        <script type="text/javascript" src="@{'/public/js/jquery-form.min.js'}"></script>
+        <script type="text/javascript" src="@{'/public/js/jquery.validate.min.js'}"></script>
+        <script type="text/javascript" src="@{'/public/js/plugins/jquery-ui/jquery-ui.min.js'}"></script>
+        
+        <!-- Basic Styles -->
+        <link rel="stylesheet" type="text/css" media="screen" href="@{'/public/css/bootstrap.min.css'}">
+        <!-- SmartAdmin Styles : Please note (smartadmin-production.css) was created using LESS variables -->
+        <link rel="stylesheet" type="text/css" media="screen" href="@{'/public/css/smartadmin-skins.min.css'}">
+        <link rel="stylesheet" type="text/css" media="screen" href="@{'/public/css/add-app-class.css'}">
+        <link href="@{'/public/js/plugins/jquery-ui/jquery-ui.min.css'}" rel="stylesheet">
+        <link href="@{'/public/font-awesome/css/font-awesome.css'}" rel="stylesheet">
+        <link href="@{'/public/css/animate.css'}" rel="stylesheet">
+        <script type="text/javascript">
+            $(document).ready(function() {
+                $("#major").attr("disabled","true");
+                $("#name").attr("disabled","true");
+            });
+            
+            function queryBusName(areaName){
+                
+                if(areaName != ''){
+                    $.ajax({
+                        url:"/Summary/queryBusName",
+                        type:"post",
+                        data:"areaName=" + encodeURI(areaName),
+                        success:function(data){
+                            var majors = JSON.parse(data).majors;
+                            var html = "";
+                            $("#major").html(html);
+                            html +="<option value=''>请选择</option>";
+                            for(var i = 0 ; i < majors.length ; i ++){
+                                var str = "<option value='"+majors[i].major+"'>"+majors[i].major+"</option>";
+                                html += str;
+                            }
+                            $("#major").append(html);
+                            $("#major").val('');
+                            $("#major").removeAttr("disabled");
+                        }
+                    });
+                } else {
+                    var html = "";
+                    $("#major").html(html);
+                    $("#major").attr("disabled", "true");
+                    $("#name").html(html);
+                    $("#name").attr("disabled", "true");
+                    alert("所属版块不能为空！");
+                }
+            }
+            
+            function queryMajorName(majorName){
+                
+                if(majorName != ''){
+                    
+                    $("#majorName").val(majorName);
+                    $("#name").removeAttr("disabled");
+                } else {
+                    
+                    var html = "";
+                    $("#name").html(html);
+                    $("#name").attr("disabled","true");
+                    alert("专业不能为空！");
+                }
+            }
+        </script>
+    </head>
+    <body>
+        <form id="summaryForm" name="summaryForm" class="form-horizontal mar-tb-10" action="@{controllers.Summary.save()}" autoscroll="false" method="post" style="padding-right: 5%">
+            <fieldset>
+                <input type="hidden" name="keyWord" id="keyWord" value="${keyWord}" />
+                
+                <div class="form-group">
+                    <label class="col-xs-2 txt-al-mar-pad" id="labelErrorCode">所属版块：<font style="color:red;"> * </font></label>
+                    <div class="col-xs-10">
+                        <select name="area" id="area" class="form-control required" onchange="queryBusName(this.value)">
+                            <option value="">请选择</option>
+                            #{list items:dictList,as:'_dict'}
+                                #{if _dict.type == 'area' }
+                                    <option value="${_dict.label}" >${_dict.label}</option>
+                                #{/if}
+                            #{/list}
+                        </select>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label class="col-xs-2 txt-al-mar-pad" id="labelErrorCode">专业：<font style="color:red;"> * </font></label>
+                    <div class="col-xs-10">
+                        <select name="major" id="major" class="form-control required" onchange="queryMajorName(this.value)" ></select>
+                        <input type="hidden" name="majorName" id="majorName" value="" />
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label class="col-xs-2 txt-al-mar-pad">业务名称：<font style="color:red;"> * </font></label>
+                    <div class="col-xs-10">
+                        <input class="form-control required" type="text" name="name" id="name" maxlength="100">
+                    </div>
+                </div>
+            </fieldset>
+        </form>
+    </body>
+</html>

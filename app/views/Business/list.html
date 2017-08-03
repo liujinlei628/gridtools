@@ -1,0 +1,258 @@
+#{extends 'main.html' /}
+#{set title:'index.html' /}
+
+<ul class="nav nav-tabs">
+    <li><a href="@{Business.toUpload()}">串接关系导入</a></li>
+    <li><a href="@{controllers.Summary.list()}">业务节点维护</a></li>
+    <li class="active"><a href="@{controllers.Business.list()}">业务关系维护</a></li>
+</ul>
+
+<div class="row">
+    <div class="col-lg-12">
+        <div class="ibox float-e-margins" id="_qunee">
+            <div class="ibox-content" style="overflow: hidden;">
+                <div class="search-form">
+                    <form action="" id="searchForm" class="form-horizontal">
+                        <div class="form-group">
+                            <label class="col-xs-2 txt-al-mar-pad">业务编号：</label>
+                            <div class="col-md-2">
+                                <input class="form-control input-sm" placeholder="请输入业务编号" type="text" name="business" value="${business}">
+                            </div>
+                            <label class="col-xs-2 txt-al-mar-pad">业务名称：</label>
+                            <div class="col-md-2">
+                                <input class="form-control input-sm" placeholder="请输入业务名称" type="text" name="name" value="${name}">
+                            </div>
+                            <label class="col-xs-2 txt-al-mar-pad">业务内容：</label>
+                            <div class="col-md-2">
+                                <input class="form-control input-sm" placeholder="请输入业务内容" type="text" name="content" value="${content}">
+                            </div>
+                            <div class="input-group-btn">
+                                <button class="btn btn btn-primary" type="submit">搜索</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="row">
+    <div class="col-lg-12">
+        <div class="ibox float-e-margins" id="_qunee">
+            <div class="ibox-content" style="overflow: hidden;">
+                <div id="crudListTable">
+                    <table width="100%" class="table table-striped table-bordered table-hover tab tr th ">
+                        <thead>
+                            <tr>
+                                <th width="5%">序号</th>
+                                <th width="8%">所属版块</th>
+                                <th width="7%">专业</th>
+                                <th width="8%">业务编号</th>
+                                <th width="10%">业务名称</th>
+                                <th width="10%">业务内容</th>
+                                <th width="8%">衔接版块</th>
+                                <th width="8%">衔接专业</th>
+                                <th width="10%">衔接业务编号</th>
+                                <th width="10%">衔接业务名称</th>
+                                <th width="10%">衔接业务内容</th>
+                                <th width="10%">操作</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            #{list items:list,as:'_busi'}
+                            <tr>
+                                <td>${_busi_index}</td>
+                                <td>${_busi.area}</td>
+                                <td>${_busi.professional}</td>
+                                <td>${_busi.business_id}</td>
+                                <td>${_busi.name}</td>
+                                <td>
+                                    ${_busi.content.length() > 9 ? _busi.content[0..9] + '…' : _busi.content}
+                                </td>
+                                <td>${_busi.post_area}</td>
+                                <td>${_busi.post_professional}</td>
+                                <td>${_busi.post_business_id}</td>
+                                <td>${_busi.post_business_name}</td>
+                                <td>
+                                    ${_busi.post_business_content.length() > 9 ? _busi.post_business_content[0..9] + '…' : _busi.post_business_content}
+                                </td>
+                                <td>
+                                    <a href="javascript:void(0);" onclick="#" >查看</a>
+                                    <a href="javascript:void(0);" onclick="#" >删除</a>
+                                </td>
+                            </tr>
+                            #{/list}
+                        </tbody>
+                    </table>
+                </div>
+                <div class="page-box">
+                    <button class="next-page-btn page-box-row"><a class="next-page-btn-a" href="@{Business.previousPage(0)}">首页</a></button>
+                    <button class="next-page-btn page-box-row"><a class="next-page-btn-a" href="@{Business.previousPage(startPosition)}">上一页</a></button>
+                    <div class="page-box-row">
+                        <!-- <li class="page-item current-page-li ">当前第&nbsp;${startPosition}&nbsp;页，一共&nbsp;${totalReport/10}&nbsp;页</li>
+                        <li class="page-item current-page-li"><a href="@{Summary.list(this.text)}">跳转到第<input type="text" >页</a></li> -->
+                    </div>
+                    <button class="next-page-btn page-box-row"><a class="next-page-btn-a" href="@{Business.nextPage(startPosition)}">下一页</a></button>
+                    <button class="next-page-btn page-box-row"><a class="next-page-btn-a" href="@{Business.nextPage(totalReport/20)}">尾页</a></button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+#{set 'moreScripts'}
+<script type="text/javascript" src="@{'/public/js/echarts.min.js'}"></script>
+<script type="text/javascript" src="@{'/public/js/jquery-form.min.js'}"></script>
+<script type="text/javascript" src="@{'/public/js/jquery.validate.min.js'}"></script>
+<script type="text/javascript" src="@{'/public/js/plugins/jquery-ui/jquery-ui.min.js'}"></script>
+<link href="@{'/public/js/plugins/jquery-ui/jquery-ui.min.css'}" rel="stylesheet">
+<script type="text/javascript">
+
+    
+    function addNodeInfo(){
+        var html ='<div id="dialog-window" title="新增业务"><iframe id="myFrame" src="@{controllers.Summary.addOneNode(keyword)}" frameBorder="0" style="border: 0;margin-bottom:-5px;margin-top:-3px;" scrolling="no" height="100%" width="100%"></iframe></div>';
+        $(html).dialog($.extend({
+            modal: true,
+            width: 800,
+            height: 550,
+            closeOnEscape: false,
+            draggable: true,
+            resizable: false,
+            'class': 'overflow-y:hidden',
+            close: function(event, ui) {
+              $(this).dialog("destroy"); 
+            },
+            buttons : [{
+                html : "确定",
+                id:"addSubmitButton",
+                'class' : "btn btn-primary btn-sm",
+                click : function(btn) {
+                    var myFrameWin = document.getElementById("myFrame").contentWindow;
+                    var myForm = myFrameWin.document.getElementById("summaryForm");
+                    var _this = this;
+                    $(myForm).validate({
+                        meta: "validate",
+                        onsubmit:true,
+                        onblur:false,
+                        onkeyup :false,
+                        rules: {
+                            vendorName: {
+                                required: true,
+                                specialChart: true
+                            },
+                            errorCode: {
+                                required: true,
+                                specialChart: true
+                            },
+                            codeSeverity: {
+                                required: true,
+                                specialChart: true
+                            }
+                        },
+                        submitHandler: function(){
+                            if(ajaxSubmit(myForm)){
+                                $(_this).dialog("close");
+                            } else {
+                                return false;
+                            }
+                        },
+                        invalidHandler: function(){
+                            return false;
+                        }
+                    });
+                    $(myForm).submit();
+                }
+            },{
+                html : "取消",
+                'class' : "btn btn-default btn-sm",
+                click : function() {
+                    $(this).dialog("close");
+                }
+          }]
+        }));
+    }
+    
+    function ajaxSubmit(frm) {
+        
+        var dataPara = getFormJson(frm);
+        $.ajax({
+            url: frm.action,
+            type: frm.method,
+            data: dataPara,
+            dataType:"json",
+            success: function(data){
+                if(data == '1'){
+                    alert("操作成功！");
+                    window.location.reload(true);
+                } else {
+                    alert("操作失败，请联系系统管理员！");
+                }
+            } 
+        });
+    }
+    
+    //将form中的值转换为键值对。
+    function getFormJson(frm) {
+        var o = {};
+        var a = $(frm).serializeArray();
+        $.each(a, function () {
+            if (o[this.name] !== undefined) {
+                if (!o[this.name].push) {
+                    o[this.name] = [o[this.name]];
+                }
+                o[this.name].push(this.value || '');
+            } else {
+                o[this.name] = this.value || '';
+            }
+        });
+        return o;
+    }
+    
+    // 根据ID删除业务信息
+    function deleteById(nodeId){
+        
+        $.ajax({
+            url:"/Summary/deleteSummaryById",
+            type:"post",
+            data:{
+                "businessId":nodeId
+            },
+            success:function(data){
+                if(data == '1'){
+                    alert("操作成功！");
+                    window.location.reload(true);
+                } else {
+                    alert("操作失败，请联系系统管理员！");
+                }
+            }
+        });
+    }
+    
+</script>
+
+<style type="text/css">
+.col-xs-2 {
+    width: 10%;
+    padding-top: 5px;
+}
+
+/* .tab tr th{
+    text-align: center;
+} */
+
+.btn{
+    padding: 5px;
+}
+
+.current-page-li {
+    list-style-type:none;
+}
+
+.page-box-row{
+    margin-top: 10px;
+    margin-left: 20px;
+    float: left;
+}
+
+</style>
+
+#{/set}

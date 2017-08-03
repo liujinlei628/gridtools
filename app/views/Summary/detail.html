@@ -26,52 +26,53 @@
     <div>
     <form id="summaryForm" name="summaryForm" class="form-horizontal mar-tb-10" action="" autoscroll="false" method="post" style="padding-right: 5%">
        <fieldset>
-           <div class="form-group">
-               <label class="col-xs-2 txt-al-mar-pad">业务编号：</label>
-               <div class="col-xs-10">
-                   <input class="form-control required" type="text" name="business" value="${businessDesc?.business}" id="name" maxlength="100">
-               </div>
-           </div>
            
            <div class="form-group">
-               <label class="col-xs-2 txt-al-mar-pad">业务名称：</label>
+               <label class="col-xs-2 txt-al-mar-pad">所属板块：</label>
                <div class="col-xs-10">
-                   <input class="form-control required" type="text" name="name" value="${businessDesc?.name}" id="name" maxlength="100">
-               </div>
-           </div>
-           
-           <div class="form-group">
-               <label class="col-xs-2 txt-al-mar-pad">业务内容：</label>
-               <div class="col-xs-10">
-                   <input class="form-control required" type="text" name="content" value="${businessDesc?.content}" id="name" maxlength="100">
-               </div>
-           </div>
-           
-           <div class="form-group">
-               <label class="col-xs-2 txt-al-mar-pad">业务内容描述：</label>
-               <div class="col-xs-10">
-                   <input class="form-control required" type="text" name="title" value="${businessDesc?.title}" id="name" maxlength="100">
+                   <input class="form-control required" type="text" name="area" readonly="readonly" value="${businessDesc?.area}" id="name" maxlength="100">
                </div>
            </div>
            
            <div class="form-group">
                <label class="col-xs-2 txt-al-mar-pad">专业：</label>
                <div class="col-xs-10">
-                   <input class="form-control required" type="text" name="major" value="${businessDesc?.major}" id="name" maxlength="100">
+                   <input class="form-control required" type="text" name="major" readonly="readonly" value="${businessDesc?.major}" id="name" maxlength="100">
                </div>
            </div>
            
            <div class="form-group">
-               <label class="col-xs-2 txt-al-mar-pad">所属板块：</label>
+               <label class="col-xs-2 txt-al-mar-pad">业务名称：</label>
                <div class="col-xs-10">
-                   <input class="form-control required" type="text" name="area" value="${businessDesc?.area}" id="name" maxlength="100">
+                   <input class="form-control required" type="text" name="name" readonly="readonly" value="${businessDesc?.name}" id="name" maxlength="100">
+               </div>
+           </div>
+           
+           <div class="form-group">
+               <label class="col-xs-2 txt-al-mar-pad">业务内容：</label>
+               <div class="col-xs-10">
+                   <input class="form-control required" type="text" name="content" readonly="readonly" value="${businessDesc?.content}" id="name" maxlength="100">
+               </div>
+           </div>
+           
+           <div class="form-group">
+               <label class="col-xs-2 txt-al-mar-pad">业务编号：</label>
+               <div class="col-xs-10">
+                   <input class="form-control required" type="text" name="business" readonly="readonly" value="${businessDesc?.business}" id="name" maxlength="100">
+               </div>
+           </div>
+           
+           <div class="form-group">
+               <label class="col-xs-2 txt-al-mar-pad">业务内容描述：</label>
+               <div class="col-xs-10">
+                   <input class="form-control required" type="text" name="title" readonly="readonly" value="${businessDesc?.title}" id="name" maxlength="100">
                </div>
            </div>
            
            <div class="form-group">
                <label class="col-xs-2 txt-al-mar-pad" id="labelDescription">业务内容描述详情：</label>
                <div class="col-xs-10">
-                   <textarea rows="3" class="form-control" cols="50" name="descrition" id="descrition">${businessDesc?.description}</textarea>
+                   <textarea rows="3" class="form-control" cols="50" name="descrition" id="descrition" readonly="readonly">${businessDesc?.description}</textarea>
                </div>
            </div>
        </fieldset>

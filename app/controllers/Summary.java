@@ -180,7 +180,10 @@ public class Summary extends CRUD {
             List<TCfgBusinessDesc> busNameList = TCfgBusinessDesc.find(queryMajor).fetch();
             
             // 数据字典集合
-            List<TCfgDict> dictList = TCfgDict.findAll();
+            String query=" 1=1 ";
+            query += " AND delFlag = 0 " ;
+            Logger.info(query);
+            List<TCfgDict> dictList = TCfgDict.find(query).fetch();
             render(businessDesc, dictList, majorList, busNameList);
         }
         render();
@@ -199,7 +202,10 @@ public class Summary extends CRUD {
         List<TCfgBusinessDesc> busiInfoList = TCfgBusinessDesc.find(query).fetch();
         
         // 数据字典集合
-        List<TCfgDict> dictList = TCfgDict.findAll();
+        String queryDict=" 1=1 ";
+        queryDict += " AND delFlag = 0 " ;
+        Logger.info(queryDict);
+        List<TCfgDict> dictList = TCfgDict.find(queryDict).fetch();
         
         render(keyWord, busiInfoList, dictList);
     }
@@ -217,7 +223,10 @@ public class Summary extends CRUD {
         List<TCfgBusinessDesc> busiInfoList = TCfgBusinessDesc.find(query).fetch();
         
         // 数据字典集合
-        List<TCfgDict> dictList = TCfgDict.findAll();
+        String queryDict=" 1=1 ";
+        queryDict += " AND delFlag = 0 " ;
+        Logger.info(queryDict);
+        List<TCfgDict> dictList = TCfgDict.find(queryDict).fetch();
         
         render(busiInfoList, dictList);
     }
@@ -348,7 +357,7 @@ public class Summary extends CRUD {
         
         if(busInfoList.size() > 0){
             TCfgBusinessDesc tempVo = busInfoList.get(0);
-            if(tempVo.business == null && tempVo.content == null && tempVo.title == null){
+            if(tempVo.business == null && tempVo.title == null){
                 tempVo.delete();
             }
         }
@@ -494,6 +503,7 @@ public class Summary extends CRUD {
         }
         return msg;
     }
+    
     /**
      * 根据业务ID删除节点信息
      * @param businessId

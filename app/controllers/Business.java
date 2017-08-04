@@ -21,6 +21,7 @@ import org.jeecgframework.poi.excel.ExcelImportUtil;
 import org.jeecgframework.poi.excel.entity.ExportParams;
 import org.jeecgframework.poi.excel.entity.ImportParams;
 import org.jeecgframework.poi.excel.entity.params.ExcelExportEntity;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
@@ -28,6 +29,7 @@ import com.google.gson.JsonObject;
 import models.TCfgBusiness;
 import models.TCfgBusinessDesc;
 import models.TCfgBusinessProcess;
+import models.TCfgDict;
 import models.TempCategory;
 import models.TempLink;
 import models.TempNode;
@@ -118,9 +120,7 @@ public class Business extends CRUD {
                 if(map.get("衔接专业")!=null){
                     busi.post_professional=map.get("衔接专业").toString();
                 }
-
-
-
+                
                 if(map.get("衔接业务名称")!=null){
                     busi.post_business_name=map.get("衔接业务名称").toString();
                 }
@@ -132,11 +132,9 @@ public class Business extends CRUD {
                 if(map.get("衔接业务内容描述")!=null){
                     busi.post_business_description=map.get("衔接业务内容描述").toString();
                 }
-
+                busi.delFlag = "0";
                 busi.save();
             }
-
-
         }
         
     }
@@ -191,8 +189,6 @@ public class Business extends CRUD {
             Logger.info(query +";"+_businesses.size());
 
             _businesses = TCfgBusiness.find(query+" and business_id not in (select post_business_id from TCfgBusiness where post_business_id is not null and post_business_id <> '/')").fetch();
-
-
         }
 
         Set<String> _key_set = new HashSet<String>();
@@ -1480,6 +1476,19 @@ public class Business extends CRUD {
         // 总数
         int totalReport = TCfgBusiness.findAll().size();
         String query=" 1=1 ";
+        
+        if(business !=null && !"".equals(business)){
+            query += " AND business_id ='" + business + "'" ;
+        }
+        
+        if(name !=null && !"".equals(name)){
+            query += " AND name ='" + name + "'" ;
+        }
+        
+        if(content !=null && !"".equals(content)){
+            query += " AND content ='" + content + "'" ;
+        }
+        
         query += " ORDER BY ID" ;
         List<TCfgBusiness> list =TCfgBusiness.find(query).from(startPosition*10).fetch(10);
         render(startPosition, totalReport, list, business, name, content);
@@ -1519,5 +1528,126 @@ public class Business extends CRUD {
             startPosition = startPosition + 1;
         }  
         list(startPosition, business, name, content);
+    }
+    
+    /**
+     * 跳转到新增/修改页面页面
+     */
+    public static void form(Long id) {
+        
+        // 数据字典集合
+        String query=" 1=1 ";
+        query += " AND delFlag = 0 " ;
+        Logger.info(query);
+        List<TCfgDict> dictList = TCfgDict.find(query).fetch();
+        render(dictList);
+    }
+    
+    /**
+     * 跳转到查看页面
+     */
+    public static void detail(Long id) {
+        
+        TCfgBusiness tCfgBusiness = TCfgBusiness.findById(id);
+        render(tCfgBusiness);
+    }
+    
+    /**
+     * 根据ID查询业务信息
+     * @param id
+     * @return Gson
+     */
+    public @ResponseBody String queryBusInfoById(Long id) {
+        
+        String obj = "";
+        Gson gson = new Gson();
+        TCfgBusinessDesc tCfgBusinessDesc = new TCfgBusinessDesc();
+        if(id != null && !"".equals(id)){
+            // 业务信息
+            tCfgBusinessDesc = TCfgBusinessDesc.findById(id);
+        }
+        obj = gson.toJson(tCfgBusinessDesc);
+        return obj;
+    }
+    
+    /**
+     * 根据所属版块、专业名称查询业务名称
+     * @param proecessCode
+     * @return List<TCfgBusinessProcess>
+     */
+    public @ResponseBody JsonObject queryBusCode(String areaName, String majorName) {
+        
+        String query=" 1=1 ";
+        if(areaName !=null && !"".equals(areaName)){
+            query += " AND area = '" + areaName + "'" ;
+        }
+        if(majorName !=null && !"".equals(majorName)){
+            query += " AND major = '" + majorName + "'" ;
+        }
+        Logger.info(query);
+        List<TCfgBusinessDesc> busInfoList = TCfgBusinessDesc.find(query).fetch();
+        JsonObject _output = new JsonObject();
+        Gson gson = new Gson();
+        _output.add("nodes", gson.toJsonTree(busInfoList));
+        return _output;
+    }
+    
+    /**
+     * 保存节点信息与关系
+     * @param name 业务名称
+     * @param content 业务内容
+     * @param title 业务事项
+     * @param major 专业
+     * @param area 所属板块
+     * @param description 业务内容描述
+     */
+    public @ResponseBody String save(String area, String professional, String business_hi, String name, String content, 
+                    String description,String post_area, String post_professional, String post_business_hi, 
+                    String post_name, String post_content, String post_description, String relation) {
+        
+        String msg = "0";
+        try {
+            TCfgBusiness tCfgBusiness = new TCfgBusiness();
+            // 保存节点信息
+            if(!"".equals(business_hi) && !"".equals(post_business_hi)) {
+                tCfgBusiness.area = area;
+                tCfgBusiness.professional = professional;
+                tCfgBusiness.business_id = business_hi;
+                tCfgBusiness.name = name;
+                tCfgBusiness.content = content;
+                tCfgBusiness.description = description;
+                tCfgBusiness.post_area = post_area;
+                tCfgBusiness.post_professional = post_professional;
+                tCfgBusiness.post_business_id = post_business_hi;
+                tCfgBusiness.post_business_name = post_name;
+                tCfgBusiness.post_business_content = post_content;
+                tCfgBusiness.post_business_description = post_description;
+                tCfgBusiness.relation = relation;
+                tCfgBusiness.delFlag = "0";
+            }
+            tCfgBusiness.save();
+            msg = "1";
+        } catch (Exception e) {
+            msg = "-1";
+        }
+        return msg;
+    }
+    
+    /**
+     * 根据业务关系ID删除业务关系信息
+     * @param businessId
+     */
+    public @ResponseBody static String deleteBusinessById(Long businessId) {
+        
+        String msg = "0";
+        try {
+            TCfgBusiness tCfgBusiness = TCfgBusiness.findById(businessId);
+            tCfgBusiness.delFlag = "1";
+            tCfgBusiness.save();
+            msg = "1";
+        } catch (Exception e) {
+            msg = "-1";
+        }
+        return msg;
     }
 }

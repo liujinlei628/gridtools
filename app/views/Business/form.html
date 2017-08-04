@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="en-us">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+        <script type="text/javascript" src="@{'/public/js/jquery-3.1.1.min.js'}"></script>
+        <script type="text/javascript" src="@{'/public/js/jquery-form.min.js'}"></script>
+        <script type="text/javascript" src="@{'/public/js/jquery.validate.min.js'}"></script>
+        <script type="text/javascript" src="@{'/public/js/plugins/jquery-ui/jquery-ui.min.js'}"></script>
+        
+        <!-- Basic Styles -->
+        <link rel="stylesheet" type="text/css" media="screen" href="@{'/public/css/bootstrap.min.css'}">
+        <!-- SmartAdmin Styles : Please note (smartadmin-production.css) was created using LESS variables -->
+        <link rel="stylesheet" type="text/css" media="screen" href="@{'/public/css/smartadmin-skins.min.css'}">
+        <link rel="stylesheet" type="text/css" media="screen" href="@{'/public/css/add-app-class.css'}">
+        <link href="@{'/public/js/plugins/jquery-ui/jquery-ui.min.css'}" rel="stylesheet">
+        <link href="@{'/public/font-awesome/css/font-awesome.css'}" rel="stylesheet">
+        <link href="@{'/public/css/animate.css'}" rel="stylesheet">
+        <script type="text/javascript">
+            $(document).ready(function() {
+                
+                $("#professional").attr("disabled","true");
+                $("#business").attr("disabled","true");
+                $("#post_professional").attr("disabled","true");
+                $("#post_business").attr("disabled","true");
+            });
+            
+            // 修改所属版块
+            function queryBusName(areaName, type){
+                
+                if(areaName != ''){
+                    if(type == '1'){
+                        $("#professional").val('');
+                        $("#professional").removeAttr("disabled");    
+                    } else {
+                        $("#post_professional").val('');
+                        $("#post_professional").removeAttr("disabled");  
+                    }
+                    
+                } else {
+                    
+                    if(type == '1'){
+                        $("#professional").val('');
+                        $("#professional").attr("disabled", "true");
+                        alert("所属版块不能为空！");
+                    } else {
+                        $("#post_professional").val('');
+                        $("#post_professional").attr("disabled", "true");
+                        alert("衔接版块不能为空！");
+                    }
+                }
+            }
+            
+            // 修改专业
+            function queryMajorName(majorName, type){
+                
+                if(majorName != ''){
+                    
+                    var areaName = "";
+                    if(type == '1'){
+                        $("#majorName").val(majorName);
+                        areaName = $("#area").val();
+                    } else {
+                        $("#post_majorName").val(majorName);
+                        areaName = $("#post_area").val();
+                    }
+                    $.ajax({
+                        url:"/Business/queryBusCode",
+                        type:"post",
+                        data:{
+                            "areaName":areaName,
+                            "majorName":majorName,
+                        },
+                        success:function(data){
+                            var nodes = JSON.parse(data).nodes;
+                            var html = "";
+                            if(type == '1'){
+                                $("#business").html(html);    
+                            } else {
+                                $("#post_business").html(html); 
+                            }
+                            html +="<option value=''>请选择</option>";
+                            for(var i = 0 ; i < nodes.length ; i ++){
+                                var str = "<option value='"+nodes[i].id+"'>"+nodes[i].business+"</option>";
+                                html += str;
+                            }
+                            
+                            if(type == '1'){
+                                $("#business").append(html);
+                                $("#business").val('');
+                                $("#business").removeAttr("disabled");
+                            } else {
+                                $("#post_business").append(html);
+                                $("#post_business").val('');
+                                $("#post_business").removeAttr("disabled");
+                            }
+                        }
+                    });
+                } else {
+                    var html = "";
+                    if(type == '1'){
+                        $("#business").html(html);
+                        $("#business").attr("disabled","true");
+                        alert("专业不能为空！");
+                    } else {
+                        $("#post_business").html(html);
+                        $("#post_business").attr("disabled","true");
+                        alert("衔接专业不能为空！");
+                    }
+                }
+            }
+            
+            // 修改业务编号
+            function changeBusCode(busCode, type){
+                
+                if(busCode != ''){
+                    if(type == '1'){
+                        var business = $("#business").find("option:selected").text();  //获取Select选择的Text
+                        $("#business_hi").val(business);
+                    } else {
+                        var post_business = $("#post_business").find("option:selected").text();  //获取Select选择的Text
+                        $("#post_business_hi").val(post_business);
+                    }
+                    $.ajax({
+                        url:"/Business/queryBusInfoById",
+                        type:"post",
+                        data:{
+                            "id":busCode,
+                        },
+                        success:function(data){
+                            var node = JSON.parse(data);
+                            if(type == '1'){
+                                $("#name").val(node.name);
+                                $("#content").val(node.content);
+                                $("#description").val(node.title);
+                            } else {
+                                $("#post_name").val(node.name);
+                                $("#post_content").val(node.content);
+                                $("#post_description").val(node.title);
+                            }
+                        }
+                    });
+                } else {
+                    
+                    if(type == '1'){
+                        $("#name").val("");
+                        $("#content").val("");
+                        $("#post_description").val("");
+                    } else {
+                        $("#post_name").val("");
+                        $("#post_content").val("");
+                        $("#post_description").val("");
+                    }
+                }
+            }
+            
+        </script>
+    </head>
+    <body>
+        <form id="summaryForm" name="summaryForm" class="form-horizontal mar-tb-10" action="@{controllers.Business.save()}" autoscroll="false" method="post" style="padding-right: 5%">
+            <fieldset>
+                
+                <div class="form-group">
+                    <label class="col-xs-2 txt-al-mar-pad" id="labelErrorCode">所属版块：<font style="color:red;"> * </font></label>
+                    <div class="col-xs-4">
+                        <select name="area" id="area" class="form-control required" onchange="queryBusName(this.value, '1')">
+                            <option value="">请选择</option>
+                            #{list items:dictList,as:'_dict'}
+                                #{if _dict.type == 'area' }
+                                    <option value="${_dict.label}" >${_dict.label}</option>
+                                #{/if}
+                            #{/list}
+                        </select>
+                    </div>
+                    
+                    <label class="col-xs-2 txt-al-mar-pad" id="labelErrorCode">专业：<font style="color:red;"> * </font></label>
+                    <div class="col-xs-4">
+                        <select name="professional" id="professional" class="form-control required" onchange="queryMajorName(this.value, '1')" >
+                            <option value="">请选择</option>
+                            #{list items:dictList,as:'_dict'}
+                                #{if _dict.type == 'major'}
+                                    <option value="${_dict.label}">${_dict.label}</option>
+                                #{/if}
+                            #{/list}
+                        </select>
+                        <input type="hidden" name="majorName" id="majorName" value="" />
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label class="col-xs-2 txt-al-mar-pad">业务编号：</label>
+                    <div class="col-xs-10">
+                        <select name="business_id" id="business" class="form-control required" onchange="changeBusCode(this.value, '1')" ></select>
+                        <input type="hidden" name="business_hi" id="business_hi" value="" />
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label class="col-xs-2 txt-al-mar-pad">业务名称：<font style="color:red;"> * </font></label>
+                    <div class="col-xs-4">
+                        <input class="form-control" type="text" name="name" id="name" maxlength="100" readonly="readonly" />
+                    </div>
+                    
+                    <label class="col-xs-2 txt-al-mar-pad">业务内容：</label>
+                    <div class="col-xs-4">
+                        <input class="form-control" type="text" name="content" id="content" maxlength="100" readonly="readonly" />
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label class="col-xs-2 txt-al-mar-pad">业务内容描述：</label>
+                    <div class="col-xs-10">
+                        <input class="form-control" type="text" name="description" id="description" maxlength="100" readonly="readonly" />
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label class="col-xs-2 txt-al-mar-pad" id="labelErrorCode">衔接版块：<font style="color:red;"> * </font></label>
+                    <div class="col-xs-4">
+                        <select name="post_area" id="post_area" class="form-control required" onchange="queryBusName(this.value, '2')">
+                            <option value="">请选择</option>
+                            #{list items:dictList,as:'_dict'}
+                                #{if _dict.type == 'area' }
+                                    <option value="${_dict.label}" >${_dict.label}</option>
+                                #{/if}
+                            #{/list}
+                        </select>
+                    </div>
+                    
+                    <label class="col-xs-2 txt-al-mar-pad" id="labelErrorCode">衔接专业：<font style="color:red;"> * </font></label>
+                    <div class="col-xs-4">
+                        <select name="post_professional" id="post_professional" class="form-control required" onchange="queryMajorName(this.value, '2')" >
+                            <option value="">请选择</option>
+                            #{list items:dictList,as:'_dict'}
+                                #{if _dict.type == 'major'}
+                                    <option value="${_dict.label}">${_dict.label}</option>
+                                #{/if}
+                            #{/list}
+                        </select>
+                        <input type="hidden" name="post_majorName" id="post_majorName" value="" />
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label class="col-xs-2 txt-al-mar-pad">衔接业务编号：</label>
+                    <div class="col-xs-10">
+                        <select name="post_business_id" id="post_business" class="form-control required" onchange="changeBusCode(this.value, '2')" ></select>
+                        <input type="hidden" name="post_business_hi" id="post_business_hi" value="" />
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label class="col-xs-2 txt-al-mar-pad">衔接业务名称：<font style="color:red;"> * </font></label>
+                    <div class="col-xs-4">
+                        <input class="form-control" type="text" name="post_name" id="post_name" maxlength="100" readonly="readonly" />
+                    </div>
+                    
+                    <label class="col-xs-2 txt-al-mar-pad">衔接业务内容：</label>
+                    <div class="col-xs-4">
+                        <input class="form-control" type="text" name="post_content" id="post_content" maxlength="100" readonly="readonly" />
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label class="col-xs-2 txt-al-mar-pad">衔接业务内容描述：</label>
+                    <div class="col-xs-10">
+                        <input class="form-control" type="text" name="post_description" id="post_description" maxlength="100" readonly="readonly" />
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label class="col-xs-2 txt-al-mar-pad">关系：</label>
+                    <div class="col-xs-10">
+                        <select name="relation" id="relation" class="form-control required" >
+                            <option value="">请选择</option>
+                            #{list items:dictList,as:'_dict'}
+                                #{if _dict.type == 'relation'}
+                                    <option value="${_dict.label}">${_dict.label}</option>
+                                #{/if}
+                            #{/list}
+                        </select>
+                    </div>
+                </div>
+                
+            </fieldset>
+        </form>
+    </body>
+</html>

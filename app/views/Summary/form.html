@@ -21,29 +21,12 @@
 function queryBusName(areaName){
     
     if(areaName != ''){
-        $.ajax({
-            url:"/Summary/queryBusName",
-            type:"post",
-            data:"areaName=" + encodeURI(areaName),
-            success:function(data){
-                var majors = JSON.parse(data).majors;
-                var html = "";
-                $("#major").html(html);
-                html +="<option value=''>请选择</option>";
-                for(var i = 0 ; i < majors.length ; i ++){
-                    var str = "<option value='"+majors[i].major+"'>"+majors[i].major+"</option>";
-                    html += str;
-                }
-                $("#major").append(html);
-                $("#major").val('');
-                $("#major").removeAttr("disabled");
-            }
-        });
+        $("#major").val('');
+        $("#major").removeAttr("disabled");
     } else {
-        var html = "";
-        $("#major").html(html);
+        $("#major").val('');
         $("#major").attr("disabled", "true");
-        $("#name").html(html);
+        $("#name").val('');
         $("#name").attr("disabled", "true");
         alert("所属版块不能为空！");
     }
@@ -132,11 +115,13 @@ function changeBusName(busName) {
                     <div class="col-xs-10">
                         <select name="major" id="major" class="form-control required" onchange="queryMajorName(this.value)" >
                             <option value="">请选择</option>
-                            #{list items:majorList,as:'_busi'}
-                                <option value="${_busi.major}" #{if _busi.major == businessDesc.major}selected="selected"#{/if} >${_busi.major}</option>
+                            #{list items:dictList,as:'_dict'}
+                                #{if _dict.type == 'major' }
+                                    <option value="${_dict.label}" #{if _dict.label == businessDesc.major}selected="selected"#{/if} >${_dict.label}</option>
+                                #{/if}
                             #{/list}
                         </select>
-                        <input type="hidden" name="majorName" value="${_busi.major}" id="majorName" >
+                        <input type="hidden" name="majorName" value="${businessDesc.major}" id="majorName" >
                     </div>
                 </div>
 
@@ -164,7 +149,7 @@ function changeBusName(busName) {
                     <label class="col-xs-2 txt-al-mar-pad">业务编号：</label>
                     <div class="col-xs-10">
                         <input class="form-control required" type="text" name="business" value="${businessDesc?.business}" id="name"
-                            maxlength="100">
+                            readonly="readonly" maxlength="100">
                     </div>
                 </div>
 

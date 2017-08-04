@@ -5,6 +5,7 @@
     <li><a href="@{Business.toUpload()}">串接关系导入</a></li>
     <li class="active"><a href="@{controllers.Summary.list()}">业务节点维护</a></li>
     <li><a href="@{controllers.Business.list()}">业务关系维护</a></li>
+    <li><a href="@{controllers.Dicts.list()}">基础数据维护</a></li>
 </ul>
 
 <div class="row">
@@ -348,7 +349,12 @@
         
         var bol = true;
         var dataPara = getFormJson(frm);
+        var areaName = dataPara.area;
+        var majorName = dataPara.major;
+        var busName = dataPara.name;
         var business = dataPara.business;
+        // 验证一级业务名称是否重复 与 验证三级业务编号是否重复
+        /* if(checkBusCode(business) && checkBusName(areaName, majorName, busName)){ */
         if(checkBusCode(business)){
             $.ajax({
                 url: frm.action,
@@ -465,21 +471,24 @@
     // 根据ID删除业务信息
     function deleteById(nodeId){
         
-        $.ajax({
-            url:"/Summary/deleteSummaryById",
-            type:"post",
-            data:{
-                "businessId":nodeId
-            },
-            success:function(data){
-                if(data == '1'){
-                    alert("操作成功！");
-                    window.location.reload(true);
-                } else {
-                    alert("操作失败，请联系系统管理员！");
+        var r = confirm("确定删除该条记录么？");
+        if (r == true) {
+            $.ajax({
+                url:"/Summary/deleteSummaryById",
+                type:"post",
+                data:{
+                    "businessId":nodeId
+                },
+                success:function(data){
+                    if(data == '1'){
+                        alert("操作成功！");
+                        window.location.reload(true);
+                    } else {
+                        alert("操作失败，请联系系统管理员！");
+                    }
                 }
-            }
-        });
+            });
+        }
     }
     
 </script>

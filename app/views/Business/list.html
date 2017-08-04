@@ -5,6 +5,7 @@
     <li><a href="@{Business.toUpload()}">串接关系导入</a></li>
     <li><a href="@{controllers.Summary.list()}">业务节点维护</a></li>
     <li class="active"><a href="@{controllers.Business.list()}">业务关系维护</a></li>
+    <li><a href="@{controllers.Dicts.list()}">基础数据维护</a></li>
 </ul>
 
 <div class="row">
@@ -28,6 +29,7 @@
                             </div>
                             <div class="input-group-btn">
                                 <button class="btn btn btn-primary" type="submit">搜索</button>
+                                <button class="btn btn btn-primary" style="margin-left: 10px;" type="button" onclick="addNodeInfo()">新增关系</button>
                             </div>
                         </div>
                     </form>
@@ -46,7 +48,7 @@
                             <tr>
                                 <th width="5%">序号</th>
                                 <th width="8%">所属版块</th>
-                                <th width="7%">专业</th>
+                                <th width="5%">专业</th>
                                 <th width="8%">业务编号</th>
                                 <th width="10%">业务名称</th>
                                 <th width="10%">业务内容</th>
@@ -55,7 +57,7 @@
                                 <th width="10%">衔接业务编号</th>
                                 <th width="10%">衔接业务名称</th>
                                 <th width="10%">衔接业务内容</th>
-                                <th width="10%">操作</th>
+                                <th width="12%">操作</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -67,18 +69,20 @@
                                 <td>${_busi.business_id}</td>
                                 <td>${_busi.name}</td>
                                 <td>
-                                    ${_busi.content.length() > 9 ? _busi.content[0..9] + '…' : _busi.content}
+                                    ${_busi.content.length() > 5 ? _busi.content[0..5] + '…' : _busi.content}
                                 </td>
                                 <td>${_busi.post_area}</td>
                                 <td>${_busi.post_professional}</td>
                                 <td>${_busi.post_business_id}</td>
                                 <td>${_busi.post_business_name}</td>
                                 <td>
-                                    ${_busi.post_business_content.length() > 9 ? _busi.post_business_content[0..9] + '…' : _busi.post_business_content}
+                                    ${_busi.post_business_content.length() > 5 ? _busi.post_business_content[0..5] + '…' : _busi.post_business_content}
                                 </td>
                                 <td>
-                                    <a href="javascript:void(0);" onclick="#" >查看</a>
-                                    <a href="javascript:void(0);" onclick="#" >删除</a>
+                                    <a href="javascript:void(0);" onclick="toDetail('${_busi.id}')" >查看</a>
+                                    #{if _busi.delFlag == '0'}
+                                        <a href="javascript:void(0);" onclick="toDelete('${_busi.id}')" >删除</a>
+                                    #{/if}
                                 </td>
                             </tr>
                             #{/list}
@@ -106,14 +110,13 @@
 <script type="text/javascript" src="@{'/public/js/plugins/jquery-ui/jquery-ui.min.js'}"></script>
 <link href="@{'/public/js/plugins/jquery-ui/jquery-ui.min.css'}" rel="stylesheet">
 <script type="text/javascript">
-
     
     function addNodeInfo(){
-        var html ='<div id="dialog-window" title="新增业务"><iframe id="myFrame" src="@{controllers.Summary.addOneNode(keyword)}" frameBorder="0" style="border: 0;margin-bottom:-5px;margin-top:-3px;" scrolling="no" height="100%" width="100%"></iframe></div>';
+        var html ='<div id="dialog-window" title="新增业务关系"><iframe id="myFrame" src="@{controllers.Business.form()}" frameBorder="0" style="border: 0;margin-bottom:-5px;margin-top:-3px;" scrolling="no" height="100%" width="100%"></iframe></div>';
         $(html).dialog($.extend({
             modal: true,
             width: 800,
-            height: 550,
+            height: 580,
             closeOnEscape: false,
             draggable: true,
             resizable: false,
@@ -149,11 +152,8 @@
                             }
                         },
                         submitHandler: function(){
-                            if(ajaxSubmit(myForm)){
-                                $(_this).dialog("close");
-                            } else {
-                                return false;
-                            }
+                            ajaxSubmit(myForm);
+                            $(_this).dialog("close");
                         },
                         invalidHandler: function(){
                             return false;
@@ -171,8 +171,30 @@
         }));
     }
     
+    function toDetail(busId){
+        var html = "<div id='dialog-window' title='业务关系信息'><iframe id='myFrame' src='/Business/detail?id="+busId+"' frameBorder='0' style='border: 0;margin-bottom:-5px;margin-top:-3px;' scrolling='no' height='100%' width='100%'></iframe></div>";
+        $(html).dialog($.extend({
+            modal: true,
+            width: 800,
+            height: 580,
+            closeOnEscape: false,
+            draggable: true,
+            resizable: false,
+            'class': 'overflow-y:hidden',
+            close: function(event, ui) {
+              $(this).dialog("destroy"); 
+            },
+            buttons : [{
+                html : "关闭",
+                'class' : "btn btn-default btn-sm",
+                click : function() {
+                    $(this).dialog("close");
+                }
+          }]
+        }));
+    }
+    
     function ajaxSubmit(frm) {
-        
         var dataPara = getFormJson(frm);
         $.ajax({
             url: frm.action,
@@ -208,23 +230,27 @@
     }
     
     // 根据ID删除业务信息
-    function deleteById(nodeId){
+    function toDelete(businessId){
         
-        $.ajax({
-            url:"/Summary/deleteSummaryById",
-            type:"post",
-            data:{
-                "businessId":nodeId
-            },
-            success:function(data){
-                if(data == '1'){
-                    alert("操作成功！");
-                    window.location.reload(true);
-                } else {
-                    alert("操作失败，请联系系统管理员！");
+        var r = confirm("确定删除该条记录么？");
+        if (r == true){
+            $.ajax({
+                url:"/Business/deleteBusinessById",
+                type:"POST",
+                data:{
+                    "businessId":businessId
+                },
+                success:function(data){
+                    if(data == '1'){
+                        alert("操作成功！");
+                        window.location.reload(true);
+                    } else {
+                        alert("操作失败，请联系系统管理员！");
+                    }
                 }
-            }
-        });
+            });
+        }
+        
     }
     
 </script>

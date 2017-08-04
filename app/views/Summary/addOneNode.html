@@ -70,29 +70,12 @@
             function queryBusName(areaName){
                 
                 if(areaName != ''){
-                    $.ajax({
-                        url:"/Summary/queryBusName",
-                        type:"post",
-                        data:"areaName=" + encodeURI(areaName),
-                        success:function(data){
-                            var majors = JSON.parse(data).majors;
-                            var html = "";
-                            $("#major").html(html);
-                            html +="<option value=''>请选择</option>";
-                            for(var i = 0 ; i < majors.length ; i ++){
-                                var str = "<option value='"+majors[i].major+"'>"+majors[i].major+"</option>";
-                                html += str;
-                            }
-                            $("#major").append(html);
-                            $("#major").val('');
-                            $("#major").removeAttr("disabled");
-                        }
-                    });
+                    $("#major").val('');
+                    $("#major").removeAttr("disabled");
                 } else {
-                    var html = "";
-                    $("#major").html(html);
+                    $("#major").val('');
                     $("#major").attr("disabled", "true");
-                    $("#name").html(html);
+                    $("#name").val('');
                     $("#name").attr("disabled", "true");
                     alert("所属版块不能为空！");
                 }
@@ -135,15 +118,15 @@
             function changeBusName(busName) {
                 
                 if(busName != ''){
-                    $("#business").removeAttr("disabled");
                     $("#content").removeAttr("disabled");
+                    /* $("#business").removeAttr("disabled");
                     $("#title").removeAttr("disabled");
-                    $("#description").removeAttr("disabled");
+                    $("#description").removeAttr("disabled"); */
                 } else {
-                    $("#business").attr("disabled","true");
                     $("#content").attr("disabled","true");
+                    /* $("#business").attr("disabled","true");
                     $("#title").attr("disabled","true");
-                    $("#description").attr("disabled","true");
+                    $("#description").attr("disabled","true"); */
                 }
             }
             
@@ -245,7 +228,51 @@
                 return o;
             }
             
+            function checkBusName(busName){
+                
+                if(busName != ''){
+                    $("#business").removeAttr("disabled");
+                    $("#title").removeAttr("disabled");
+                    $("#description").removeAttr("disabled");
+                } else {
+                    $("#business").attr("disabled","true");
+                    $("#title").attr("disabled","true");
+                    $("#description").attr("disabled","true");
+                }
+            }
             
+            function checkBusCode(busCode){
+                
+                if(busCode != ''){
+                    $("#title").addClass("required");
+                    $("#description").addClass("required");
+                } else {
+                    $('#title').removeClass("required");
+                    $('#description').removeClass("required");
+                }
+            }
+            
+            function checkBusTitle(busTitle){
+                
+                if(busTitle != ''){
+                	$("#business").addClass("required");
+                    $("#description").addClass("required");
+                } else {
+                    $('#business').removeClass("required");
+                    $('#description').removeClass("required");
+                }
+            }
+            
+            function checkDesc(busDesc){
+                
+                if(busDesc != ''){
+                    $("#business").addClass("required");
+                    $("#title").addClass("required");
+                } else {
+                    $('#business').removeClass("required");
+                    $('#title').removeClass("required");
+                }
+            }
         </script>
     </head>
     <body>
@@ -255,7 +282,7 @@
                 
                 <div class="form-group">
                     <label class="col-xs-2 txt-al-mar-pad" id="labelErrorCode">所属版块：<font style="color:red;"> * </font></label>
-                    <div class="col-xs-8">
+                    <div class="col-xs-10">
                         <select name="area" id="area" class="form-control required" onchange="queryBusName(this.value)">
                             <option value="">请选择</option>
                             #{list items:dictList,as:'_dict'}
@@ -265,19 +292,20 @@
                             #{/list}
                         </select>
                     </div>
-                    <div class="col-xs-2">
-                        <button class="btn btn btn-primary" type="button" onclick="#">新增版块</button>
-                    </div>
                 </div>
                 
                 <div class="form-group">
                     <label class="col-xs-2 txt-al-mar-pad" id="labelErrorCode">专业：<font style="color:red;"> * </font></label>
-                    <div class="col-xs-8">
-                        <select name="major" id="major" class="form-control required" onchange="queryMajorName(this.value)" ></select>
+                    <div class="col-xs-10">
+                        <select name="major" id="major" class="form-control required" onchange="queryMajorName(this.value)" >
+                            <option value="">请选择</option>
+                            #{list items:dictList,as:'_dict'}
+                                #{if _dict.type == 'major'}
+                                    <option value="${_dict.label}">${_dict.label}</option>
+                                #{/if}
+                            #{/list}
+                        </select>
                         <input type="hidden" name="majorName" id="majorName" value="" />
-                    </div>
-                    <div class="col-xs-2">
-                        <button class="btn btn btn-primary" type="button" onclick="#">新增专业</button>
                     </div>
                 </div>
                 
@@ -285,62 +313,37 @@
                     <label class="col-xs-2 txt-al-mar-pad">业务名称：<font style="color:red;"> * </font></label>
                     <div class="col-xs-10">
                         <!-- <input class="form-control required" type="text" name="name" id="name" maxlength="100"> -->
-                        <select name="name" id="name" class="form-control required" onchange="changeBusName(this.value)" >
-                        </select>
+                        <select name="name" id="name" class="form-control required" onchange="changeBusName(this.value)" ></select>
                     </div>
                 </div>
                 
                 <div class="form-group">
-                    <label class="col-xs-2 txt-al-mar-pad">业务内容：<font style="color:red;"> * </font></label>
+                    <label class="col-xs-2 txt-al-mar-pad">业务内容：</label>
                     <div class="col-xs-10">
-                        <input class="form-control required" type="text" name="content" id="content" maxlength="100">
+                        <input class="form-control" type="text" name="content" id="content" maxlength="100" onblur="checkBusName(this.value)" />
                     </div>
                 </div>
                 
                 <div class="form-group">
-                    <label class="col-xs-2 txt-al-mar-pad">业务编号：<font style="color:red;"> * </font></label>
+                    <label class="col-xs-2 txt-al-mar-pad">业务编号：</label>
                     <div class="col-xs-10">
-                        <input class="form-control required" type="text" name="business" id="business" maxlength="100">
+                        <input class="form-control" type="text" name="business" id="business" maxlength="100" onblur="checkBusCode(this.value)" />
                     </div>
                 </div>
                 
                 <div class="form-group">
-                    <label class="col-xs-2 txt-al-mar-pad">业务内容描述：<font style="color:red;"> * </font></label>
+                    <label class="col-xs-2 txt-al-mar-pad">业务内容描述：</label>
                     <div class="col-xs-10">
-                        <input class="form-control required" type="text" name="title" id="title" maxlength="100">
+                        <input class="form-control" type="text" name="title" id="title" maxlength="100" onblur="checkBusTitle(this.value)" />
                     </div>
                 </div>
                 
                 <div class="form-group">
-                    <label class="col-xs-2 txt-al-mar-pad">业务内容描述详情：<font style="color:red;"> * </font></label>
+                    <label class="col-xs-2 txt-al-mar-pad">业务内容描述详情：</label>
                     <div class="col-xs-10">
-                        <textarea rows="3" class="form-control required" cols="50" name="description" id="description"></textarea>
+                        <textarea rows="3" class="form-control" cols="50" name="description" id="description" onblur="checkDesc(this.value)" ></textarea>
                     </div>
                 </div>
-                
-                <!-- <div class="form-group">
-                    <label class="col-xs-2 txt-al-mar-pad" id="labelDescription">业务流程：<font style="color:red;"> * </font></label>
-                    <div class="col-xs-10">
-                        <select name="process" id="process" class="form-control required" onchange="changeProcess(this)">
-                            <option value="">请选择</option>
-                            #{list items:processList,as:'_process'}
-                                <option value="${_process.processCode}" >${_process.processName}</option>
-                            #{/list}
-                        </select>
-                        <input type="hidden" name="processName" id="processName" value="" />
-                    </div>
-                </div>
-                <div class="form-group">
-                    <label class="col-xs-2 txt-al-mar-pad">前置节点：</label>
-                    <div class="col-xs-4">
-                        <select name="prevNode" id="prevNode" class="form-control required"></select>
-                    </div>
-                
-                    <label class="col-xs-2 txt-al-mar-pad">后置节点：</label>
-                    <div class="col-xs-4">
-                        <select name="nextNode" id="nextNode" class="form-control required"></select> 
-                    </div>
-                </div> -->
             </fieldset>
         </form>
     </body>

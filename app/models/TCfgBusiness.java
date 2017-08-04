@@ -55,5 +55,7 @@ public class TCfgBusiness  extends Model{
     @MaxSize(5120)
     @MaxLength(5120)
     public String post_business_description; // 衔接业务内容描述
+    
+    public String delFlag; // 删除标识
 
 }

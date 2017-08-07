@@ -2,22 +2,33 @@ package controllers;
 
 import java.util.List;
 
-import org.h2.server.TcpServer;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import models.TCfgBusiness;
-import models.TCfgBusinessDesc;
 import models.TCfgDict;
+import models.TCfgUser;
+import play.mvc.Before;
 import play.mvc.Controller;
+import play.mvc.With;
 
+/*@Check("admin")
+@With(Secure.class)*/
 public class Dicts extends Controller {
-
+    
+    /*@Before
+    public static void setConnectedUser() {
+        if(Security.isConnected()) {
+            TCfgUser user = TCfgUser.find("byLoginName", Security.connected()).first();
+            renderArgs.put("user", user.fullname);
+        }
+    }*/
+    
     /**
      * 跳转到基础数据列表页面
      * @param id 
      */
     public static void list(int startPosition, String type, String description) {
         
+        String user = Security.connected();
         // 总数
         int totalReport = TCfgDict.findAll().size();
         String query=" 1=1 ";
@@ -29,7 +40,7 @@ public class Dicts extends Controller {
         }
         query += " AND delFlag = 0 ORDER BY ID" ;
         List<TCfgDict> list =TCfgDict.find(query).from(startPosition*10).fetch(10);
-        render(startPosition, totalReport, list, type, description);
+        render(user, startPosition, totalReport, list, type, description);
         
     }
     

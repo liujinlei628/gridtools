@@ -94,8 +94,16 @@
                             "majorName":majorName,
                         },
                         success:function(data){
+                            
                             var majors = JSON.parse(data).nodes;
                             var html = "";
+                            if(majors.length == 0){
+                                alert("该版块所属专业下未发现核心业务，请维护该版块专业下的核心业务！");
+                                $("#name").html(html);
+                                $("#name").removeAttr("disabled");
+                                return false;
+                            }
+                            
                             $("#name").html(html);
                             html +="<option value=''>请选择</option>";
                             for(var i = 0 ; i < majors.length ; i ++){
@@ -105,12 +113,16 @@
                             $("#name").append(html);
                             $("#name").val('');
                             $("#name").removeAttr("disabled");
+                            $("#content").val('');
+                            $("#content").removeAttr("disabled");
                         }
                     });
                 } else {
                     var html = "";
                     $("#name").html(html);
-                    $("#name").attr("disabled","true");
+                    $("#name").attr("disabled", "true");
+                    $("#content").val('');
+                    $("#content").attr("disabled", "true");
                     alert("专业不能为空！");
                 }
             }
@@ -119,14 +131,14 @@
                 
                 if(busName != ''){
                     $("#content").removeAttr("disabled");
-                    /* $("#business").removeAttr("disabled");
+                    $("#business").removeAttr("disabled");
                     $("#title").removeAttr("disabled");
-                    $("#description").removeAttr("disabled"); */
+                    $("#description").removeAttr("disabled");
                 } else {
                     $("#content").attr("disabled","true");
-                    /* $("#business").attr("disabled","true");
+                    $("#business").attr("disabled","true");
                     $("#title").attr("disabled","true");
-                    $("#description").attr("disabled","true"); */
+                    $("#description").attr("disabled","true");
                 }
             }
             
@@ -318,30 +330,30 @@
                 </div>
                 
                 <div class="form-group">
-                    <label class="col-xs-2 txt-al-mar-pad">业务内容：</label>
+                    <label class="col-xs-2 txt-al-mar-pad">业务内容：<font style="color:red;"> * </font></label>
                     <div class="col-xs-10">
-                        <input class="form-control" type="text" name="content" id="content" maxlength="100" onblur="checkBusName(this.value)" />
+                        <input class="form-control required" type="text" name="content" id="content" maxlength="100" />
                     </div>
                 </div>
                 
                 <div class="form-group">
-                    <label class="col-xs-2 txt-al-mar-pad">业务编号：</label>
+                    <label class="col-xs-2 txt-al-mar-pad">业务编号：<font style="color:red;"> * </font></label>
                     <div class="col-xs-10">
-                        <input class="form-control" type="text" name="business" id="business" maxlength="100" onblur="checkBusCode(this.value)" />
+                        <input class="form-control required" type="text" name="business" id="business" maxlength="100" />
                     </div>
                 </div>
                 
                 <div class="form-group">
-                    <label class="col-xs-2 txt-al-mar-pad">业务内容描述：</label>
+                    <label class="col-xs-2 txt-al-mar-pad">业务内容描述：<font style="color:red;"> * </font></label>
                     <div class="col-xs-10">
-                        <input class="form-control" type="text" name="title" id="title" maxlength="100" onblur="checkBusTitle(this.value)" />
+                        <input class="form-control required" type="text" name="title" id="title" maxlength="100" />
                     </div>
                 </div>
                 
                 <div class="form-group">
-                    <label class="col-xs-2 txt-al-mar-pad">业务内容描述详情：</label>
+                    <label class="col-xs-2 txt-al-mar-pad">业务内容描述详情：<font style="color:red;"> * </font></label>
                     <div class="col-xs-10">
-                        <textarea rows="3" class="form-control" cols="50" name="description" id="description" onblur="checkDesc(this.value)" ></textarea>
+                        <textarea rows="3" class="form-control required" cols="50" name="description" id="description" ></textarea>
                     </div>
                 </div>
             </fieldset>

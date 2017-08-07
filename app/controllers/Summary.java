@@ -1,6 +1,5 @@
 package controllers;
 
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -9,13 +8,10 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
 
-import org.hibernate.engine.jdbc.spi.ResultSetReturn;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
-import com.mysql.jdbc.Connection;
-import com.mysql.jdbc.PreparedStatement;
 
 import models.TCfgBusiness;
 import models.TCfgBusinessDesc;
@@ -25,7 +21,6 @@ import models.TempCategory;
 import models.TempLink;
 import models.TempNode;
 import play.Logger;
-import play.db.jpa.JPA;
 
 /**
  * Created by humin on 03/06/2017.
@@ -38,7 +33,13 @@ public class Summary extends CRUD {
      * 跳转到业务版块业务
      */
     public static void queryAreaList() {
-        render();
+        
+        String query=" 1=1 ";
+        query +=" GROUP BY area";
+        Logger.info(query);
+        // 根据业务名称查询
+        List<TCfgBusinessDesc> busNodeList = TCfgBusinessDesc.find(query).fetch();
+        render(busNodeList);
     }
     
     /**

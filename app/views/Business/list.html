@@ -2,33 +2,34 @@
 #{set title:'index.html' /}
 
 <ul class="nav nav-tabs">
-    <li><a href="@{Business.toUpload()}">串接关系导入</a></li>
     <li><a href="@{controllers.Summary.list()}">业务节点维护</a></li>
     <li class="active"><a href="@{controllers.Business.list()}">业务关系维护</a></li>
+    <li><a href="@{Business.toUpload()}">串接关系导入</a></li>
     <li><a href="@{controllers.Dicts.list()}">基础数据维护</a></li>
 </ul>
 
 <div class="row">
     <div class="col-lg-12">
         <div class="ibox float-e-margins" id="_qunee">
-            <div class="ibox-content" style="overflow: hidden;">
+            <div class="ibox-content" style="overflow: hidden;padding-bottom: 0;">
                 <div class="search-form">
                     <form action="" id="searchForm" class="form-horizontal">
                         <div class="form-group">
-                            <label class="col-xs-2 txt-al-mar-pad">业务编号：</label>
-                            <div class="col-md-2">
+                            <label class="txt-al-mar-pad">业务编号：</label>
+                            <div class="col-search-input">
                                 <input class="form-control input-sm" placeholder="请输入业务编号" type="text" name="business" value="${business}">
                             </div>
-                            <label class="col-xs-2 txt-al-mar-pad">业务名称：</label>
-                            <div class="col-md-2">
+                            <label class="txt-al-mar-pad">业务名称：</label>
+                            <div class="col-search-input">
                                 <input class="form-control input-sm" placeholder="请输入业务名称" type="text" name="name" value="${name}">
                             </div>
-                            <label class="col-xs-2 txt-al-mar-pad">业务内容：</label>
-                            <div class="col-md-2">
+                            <label class="txt-al-mar-pad">业务内容：</label>
+                            <div class="col-search-input">
                                 <input class="form-control input-sm" placeholder="请输入业务内容" type="text" name="content" value="${content}">
                             </div>
                             <div class="input-group-btn">
                                 <button class="btn btn btn-primary" type="submit">搜索</button>
+                                <button class="btn btn btn-primary" style="margin-left: 10px;" type="button" onclick="cleanForm()">清空</button>
                                 <button class="btn btn btn-primary" style="margin-left: 10px;" type="button" onclick="addNodeInfo()">新增关系</button>
                             </div>
                         </div>
@@ -250,7 +251,12 @@
                 }
             });
         }
-        
+    }
+    
+    function cleanForm(){
+        $("#searchForm").find("input").each(function(){
+            $(this).val("");
+        });
     }
     
 </script>
@@ -277,6 +283,18 @@
     margin-top: 10px;
     margin-left: 20px;
     float: left;
+}
+
+.txt-al-mar-pad{
+    float: left;
+    margin-top: 5px;
+    margin-left: 10px;
+}
+
+.col-search-input{
+    width: 150px;
+    float: left;
+    margin-right: 10px;
 }
 
 </style>

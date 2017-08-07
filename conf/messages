@@ -40,6 +40,11 @@ business.fenxi.analysissummary=分析汇总业务及数据
 # 系统管理子菜单
 business.sysguanl.jurmanage=权限管理
 
+# 登陆信息
+secure.username=Login Name:
+secure.password=PassWord:
+secure.signin=Log in now
+
 # 业务实体对象
 business=业务编号
 name=业务名称

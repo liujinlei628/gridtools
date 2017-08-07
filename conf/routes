@@ -16,8 +16,13 @@ GET     /Summary/queryAreaList                  Summary.queryAreaList
 GET     /Summary/oneLevelList/{areaName}        Summary.queryBusNodeList
 GET     /Summary/oneLevelChilds/{busName}       Summary.queryNodeListByName
 
+# Import Secure routes
+*       /                                       module:secure
+
+# Administration
+GET     /admin/?                                Admin.index
+*       /admin                                  module:crud
+
 # Catch all
 *       /{controller}/{action}                  {controller}.{action}
 
-# Administration(管理员)
-*       /admin                                  module:crud

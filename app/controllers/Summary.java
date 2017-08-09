@@ -352,7 +352,11 @@ public class Summary extends CRUD {
         if(majorName !=null && !"".equals(majorName)){
             query += " AND major = '" + majorName + "'" ;
         }
-        query += " GROUP BY name ";
+        
+        if(name !=null && !"".equals(name)){
+            query += " AND name = '" + name + "'" ;
+        }
+        
         Logger.info(query);
         List<TCfgBusinessDesc> busInfoList = TCfgBusinessDesc.find(query).fetch();
         

@@ -242,13 +242,12 @@ public class Business extends CRUD {
 
         Logger.info(query);
 
-        List<TCfgBusiness> _businesses = TCfgBusiness.find(query+" and business_id not in (select post_business_id from TCfgBusiness where post_business_id is not null and post_business_id <> '/')").fetch();
+        List<TCfgBusiness> _businesses = TCfgBusiness.find(query+" and business_id not in (select post_business_id from TCfgBusiness where post_business_id is not null and post_business_id <> '/') AND delFlag = '0' ").fetch();
 
         if(_businesses==null || _businesses.size()==0){
             query= "business_id like '%"+keyword+"%'";
             query ="("+query+")";
-
-            _businesses = TCfgBusiness.find(query+" and business_id not in (select post_business_id from TCfgBusiness where post_business_id is not null and post_business_id <> '/')").fetch();
+            _businesses = TCfgBusiness.find(query+" and business_id not in (select post_business_id from TCfgBusiness where post_business_id is not null and post_business_id <> '/')  AND delFlag = '0' ").fetch();
 
         }
 
@@ -760,13 +759,13 @@ public class Business extends CRUD {
 
         Logger.info(query);
 
-        List<TCfgBusiness> _businesses = TCfgBusiness.find(query+" and business_id not in (select post_business_id from TCfgBusiness where post_business_id is not null and post_business_id <> '/')").fetch();
+        List<TCfgBusiness> _businesses = TCfgBusiness.find(query+" and business_id not in (select post_business_id from TCfgBusiness where post_business_id is not null and post_business_id <> '/') AND delFlag = '0' ").fetch();
 
         if(_businesses==null || _businesses.size()==0){
             query= "business_id like '%"+keyword+"%'";
             query ="("+query+")";
 
-            _businesses = TCfgBusiness.find(query+" and business_id not in (select post_business_id from TCfgBusiness where post_business_id is not null and post_business_id <> '/')").fetch();
+            _businesses = TCfgBusiness.find(query+" and business_id not in (select post_business_id from TCfgBusiness where post_business_id is not null and post_business_id <> '/') AND delFlag = '0' ").fetch();
 
         }
 
@@ -916,7 +915,13 @@ public class Business extends CRUD {
         TempNode node = null;
         TempCategory category = null;
         TempLink link = null;
-        List<TCfgBusiness> _child_businesses = TCfgBusiness.find("business_id",_next_id).fetch();
+        
+        String query=" 1=1 ";
+        if(_next_id !=null && !"".equals(_next_id)){
+            query += " AND business_id ='" + _next_id + "'" ;
+        }
+        query += " AND delFlag = '0' ";
+        List<TCfgBusiness> _child_businesses = TCfgBusiness.find(query).fetch();
         if(_child_businesses == null || _child_businesses.size() == 0){
             TempNode nodetmp =  nodeList.get(nodeList.size()-1);
             if(nodetmp.name.startsWith("GH")){

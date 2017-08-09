@@ -22,10 +22,23 @@ business.summary.detailmanage=业务流程
 business.summary.nodemanage=业务变更
 
 # 数据管理子菜单
-business.description.overview=数据总览
-business.description.browsing=数据浏览
-business.description.detailmanage=数据详情
-business.description.maintenance=数据维护
+business.description.overview=数据资源展示
+business.description.browsing=数据资源管理
+business.description.detailmanage=数据资源分析
+
+# 数据资源展示三级菜单
+business.description.dataArchitecture=数据架构
+business.description.dataFlowDirection=数据流向
+business.description.dataLifeCycle=数据生命周期
+
+# 数据资源管理三级菜单
+business.description.metadataManagement=元数据管理
+business.description.masterDataManagement=主数据管理
+
+# 数据资源分析三级菜单
+business.description.dataQuality=数据质量
+business.description.dataStandard=数据标准
+business.description.dataRatio=数据占比
 
 # 综合查询子菜单
 business.management.optquery=业务/数据查询

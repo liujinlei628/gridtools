@@ -135,7 +135,7 @@
             width: 850,
             height: 500,
             closeOnEscape: false,
-            draggable: true,
+            draggable: false,
             resizable: false,
             'class': 'overflow-y:hidden',
             close: function(event, ui) {
@@ -158,7 +158,7 @@
             width: 800,
             height: 500,
             closeOnEscape: false,
-            draggable: true,
+            draggable: false,
             resizable: false,
             'class': 'overflow-y:hidden',
             buttons : [{
@@ -226,7 +226,7 @@
             width: 800,
             height: 550,
             closeOnEscape: false,
-            draggable: true,
+            draggable: false,
             resizable: false,
             'class': 'overflow-y:hidden',
             close: function(event, ui) {
@@ -289,7 +289,7 @@
             width: 800,
             height: 400,
             closeOnEscape: false,
-            draggable: true,
+            draggable: false,
             resizable: false,
             'class': 'overflow-y:hidden',
             close: function(event, ui) {
@@ -354,9 +354,11 @@
         var majorName = dataPara.major;
         var busName = dataPara.name;
         var business = dataPara.business;
+        var nodeId = dataPara.id;
         // 验证一级业务名称是否重复 与 验证三级业务编号是否重复
         /* if(checkBusCode(business) && checkBusName(areaName, majorName, busName)){ */
-        if(checkBusCode(business)){
+        
+        if(nodeId != null || nodeId != ""){
             $.ajax({
                 url: frm.action,
                 type: frm.method,
@@ -373,7 +375,25 @@
                 } 
             });
         } else {
-            bol = false;
+            if(checkBusCode(business)){
+                $.ajax({
+                    url: frm.action,
+                    type: frm.method,
+                    async: false,
+                    data: dataPara,
+                    dataType:"json",
+                    success: function(data){
+                        if(data == '1'){
+                            alert("操作成功！");
+                            window.location.reload(true);
+                        } else {
+                            alert("操作失败，请联系系统管理员！");
+                        }
+                    } 
+                });
+            } else {
+                bol = false;
+            }
         }
         return bol;
     }

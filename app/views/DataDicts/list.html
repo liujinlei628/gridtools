@@ -2,10 +2,9 @@
 #{set title:'index.html' /}
 
 <ul class="nav nav-tabs">
-    <li><a href="@{controllers.Summary.list()}">业务节点维护</a></li>
-    <li><a href="@{controllers.Business.list()}">业务关系维护</a></li>
-    <li><a href="@{Business.toUpload()}">串接关系导入</a></li>
-    <li class="active"><a href="@{controllers.Dicts.list()}">基础数据维护</a></li>
+    <li class="active"><a href="@{controllers.DataDicts.list()}">业务数据维护</a></li>
+    <!-- <li><a href="#">业务关系导入</a></li> -->
+    <li><a href="@{controllers.DataDicts.toUpload()}">业务数据导入</a></li>
 </ul>
 
 <div class="row">
@@ -15,18 +14,26 @@
                 <div class="search-form">
                     <form action="" id="searchForm" class="form-horizontal">
                         <div class="form-group">
-                            <label class="txt-al-mar-pad">类型：</label>
+                            <label class="txt-al-mar-pad">序号1：</label>
                             <div class="col-search-input">
-                                <input class="form-control input-sm" placeholder="请输入类型" type="text" name="type" value="${type}">
+                                <input class="form-control input-sm" placeholder="请输入序号1" type="text" name="data_mainid" value="${data_mainid}">
                             </div>
-                            <label class="txt-al-mar-pad">类型描述：</label>
+                            <label class="txt-al-mar-pad">业务事项：</label>
                             <div class="col-search-input">
-                                <input class="form-control input-sm" placeholder="请输入类型描述" type="text" name="description" value="${description}">
+                                <input class="form-control input-sm" placeholder="请输入业务事项" type="text" name="busi_des" value="${busi_des}">
+                            </div>
+                            <label class="txt-al-mar-pad">数据项：</label>
+                            <div class="col-search-input">
+                                <input class="form-control input-sm" placeholder="请输入数据项" type="text" name="data_item" value="${data_item}">
+                            </div>
+                            <label class="txt-al-mar-pad">系统名称：</label>
+                            <div class="col-search-input">
+                                <input class="form-control input-sm" placeholder="请输入系统名称" type="text" name="sys_name" value="${sys_name}">
                             </div>
                             <div class="input-group-btn">
                                 <button class="btn btn btn-primary" type="submit">搜索</button>
                                 <button class="btn btn btn-primary" style="margin-left: 10px;" type="button" onclick="cleanForm()">清空</button>
-                                <button class="btn btn btn-primary" style="margin-left: 10px;" type="button" onclick="addDictInfo()">新增</button>
+                                <!-- <button class="btn btn btn-primary" style="margin-left: 10px;" type="button" onclick="#">新增</button> -->
                             </div>
                         </div>
                     </form>
@@ -43,30 +50,44 @@
                     <table width="100%" class="table table-striped table-bordered table-hover tab tr th ">
                         <thead>
                             <tr>
-                                <th width="10%">序号</th>
-                                <th width="15%">键值</th>
-                                <th width="15%">标签</th>
-                                <th width="15%">类型</th>
-                                <th width="10%">排序</th>
-                                <th width="20%">描述</th>
-                                <th width="20%">操作</th>
+                                <th width="5%">序号</th>
+                                <th width="5%">专业</th>
+                                <th width="5%">序号1</th>
+                                <th width="5%">序号2</th>
+                                <th width="10%">业务事项</th>
+                                <th width="10%">数据项</th>
+                                <th width="5%">是否线上数据</th>
+                                <th width="8%">是否结构化数据</th>
+                                <th width="5%">传输方式</th>
+                                <th width="8%">来源系统</th>
+                                <th width="7%">接收系统</th>
+                                <th width="7%">是否可做主数据</th>
+                                <th width="10%">系统名称</th>
+                                <th width="10%">操作</th>
                             </tr>
                         </thead>
                         <tbody>
-                            #{list items:list,as:'_busi'}
+                            #{list items:list,as:'_data'}
                             <tr>
-                                <td>${_busi_index}</td>
-                                <td>${_busi.value}</td>
-                                <td>${_busi.label}</td>
-                                <td>${_busi.type}</td>
-                                <td>${_busi.sort}</td>
+                                <td>${_data_index}</td>
+                                <td>${_data.prof_name}</td>
+                                <td>${_data.data_mainid}</td>
+                                <td>${_data.data_subid}</td>
+                                <td>${_data.busi_des}</td>
+                                <td>${_data.data_item}</td>
+                                <td>${_data.if_online}</td>
+                                <td>${_data.if_struct}</td>
+                                <td>${_data.trans_type}</td>
+                                <td>${_data.src_sys}</td>
+                                <td>${_data.rec_sys}</td>
+                                <td>${_data.if_maindata}</td>
+                                <td>${_data.sys_name}</td>
                                 <td>
-                                    ${_busi.description.length() > 9 ? _busi.description[0..9] + '…' : _busi.description}
-                                </td>
-                                <td>
-                                    <a href="javascript:void(0);" onclick="toEditDictInfo('${_busi.id}')" >修改</a>
-                                    <a href="javascript:void(0);" onclick="deleteById('${_busi.id}')" >删除</a>
-                                    <a href="javascript:void(0);" onclick="toAddDictInfo('${_busi.type}','${_busi.description}')" >添加键值</a>
+                                    <a href="javascript:void(0);" onclick="toDetail('${_data.id}')" >查看</a>
+                                    <!-- <a href="javascript:void(0);" onclick="#" >修改</a>
+                                    <a href="javascript:void(0);" onclick="toEditDictInfo('${_data.id}')" >修改</a>
+                                    <a href="javascript:void(0);" onclick="#" >删除</a>
+                                    <a href="javascript:void(0);" onclick="deleteById('${_data.id}')" >删除</a> -->
                                 </td>
                             </tr>
                             #{/list}
@@ -74,14 +95,10 @@
                     </table>
                 </div>
                 <div class="page-box">
-                    <button class="next-page-btn page-box-row"><a class="next-page-btn-a" href="@{Dicts.previousPage(0)}">首页</a></button>
-                    <button class="next-page-btn page-box-row"><a class="next-page-btn-a" href="@{Dicts.previousPage(startPosition)}">上一页</a></button>
-                    <div class="page-box-row">
-                        <!-- <li class="page-item current-page-li ">当前第&nbsp;${startPosition}&nbsp;页，一共&nbsp;${totalReport/10}&nbsp;页</li>
-                        <li class="page-item current-page-li"><a href="@{Summary.list(this.text)}">跳转到第<input type="text" >页</a></li> -->
-                    </div>
-                    <button class="next-page-btn page-box-row"><a class="next-page-btn-a" href="@{Dicts.nextPage(startPosition)}">下一页</a></button>
-                    <button class="next-page-btn page-box-row"><a class="next-page-btn-a" href="@{Dicts.nextPage(totalReport/20)}">尾页</a></button>
+                    <button class="next-page-btn page-box-row"><a class="next-page-btn-a" href="@{DataDicts.previousPage(0)}">首页</a></button>
+                    <button class="next-page-btn page-box-row"><a class="next-page-btn-a" href="@{DataDicts.previousPage(startPosition)}">上一页</a></button>
+                    <button class="next-page-btn page-box-row"><a class="next-page-btn-a" href="@{DataDicts.nextPage(startPosition)}">下一页</a></button>
+                    <button class="next-page-btn page-box-row"><a class="next-page-btn-a" href="@{DataDicts.nextPage(totalReport/10)}">尾页</a></button>
                 </div>
             </div>
         </div>
@@ -95,8 +112,8 @@
 <link href="@{'/public/js/plugins/jquery-ui/jquery-ui.min.css'}" rel="stylesheet">
 <script type="text/javascript">
 
-    function addDictInfo(){
-        var html ='<div id="dialog-window" title="新增基础数据"><iframe id="myFrame" src="@{controllers.Dicts.form()}" frameBorder="0" style="border: 0;margin-bottom:-5px;margin-top:-3px;" scrolling="no" height="100%" width="100%"></iframe></div>';
+    function toDetail(dataId){
+        var html = "<div id='dialog-window' title='业务信息'><iframe id='myFrame' src='/DataDicts/detail?id="+dataId+"' frameBorder='0' style='border: 0;margin-bottom:-5px;margin-top:-3px;' scrolling='auto' height='100%' width='100%'></iframe></div>";
         $(html).dialog($.extend({
             modal: true,
             width: 800,
@@ -109,44 +126,7 @@
               $(this).dialog("destroy"); 
             },
             buttons : [{
-                html : "确定",
-                id:"addSubmitButton",
-                'class' : "btn btn-primary btn-sm",
-                click : function(btn) {
-                    var myFrameWin = document.getElementById("myFrame").contentWindow;
-                    var myForm = myFrameWin.document.getElementById("summaryForm");
-                    var _this = this;
-                    $(myForm).validate({
-                        meta: "validate",
-                        onsubmit:true,
-                        onblur:false,
-                        onkeyup :false,
-                        rules: {
-                            vendorName: {
-                                required: true,
-                                specialChart: true
-                            },
-                            errorCode: {
-                                required: true,
-                                specialChart: true
-                            },
-                            codeSeverity: {
-                                required: true,
-                                specialChart: true
-                            }
-                        },
-                        submitHandler: function(){
-                            ajaxSubmit(myForm);
-                            $(_this).dialog("close");
-                        },
-                        invalidHandler: function(){
-                            return false;
-                        }
-                    });
-                    $(myForm).submit();
-                }
-            },{
-                html : "取消",
+                html : "关闭",
                 'class' : "btn btn-default btn-sm",
                 click : function() {
                     $(this).dialog("close");

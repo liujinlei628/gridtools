@@ -26,10 +26,10 @@
                                 <td>${_busi_index}</td>
                                 <td>${_busi.business}</td>
                                 <td>${_busi.name}</td>
-                                <td>
+                                <td title="${_busi.content}">
                                     ${_busi.content.length() > 9 ? _busi.content[0..9] + '…' : _busi.content}
                                 </td>
-                                <td>
+                                <td title="${_busi.title}">
                                     ${_busi.title.length() > 9 ? _busi.title[0..9] + '…' : _busi.title}
                                 </td>
                                 <td>${_busi.area}</td>
@@ -78,7 +78,7 @@
             width: 800,
             height: 500,
             closeOnEscape: false,
-            draggable: true,
+            draggable: false,
             resizable: false,
             'class': 'overflow-y:hidden',
             close: function(event, ui) {

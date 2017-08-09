@@ -20,6 +20,7 @@
             $(document).ready(function() {
                 $("#major").attr("disabled","true");
                 $("#name").attr("disabled","true");
+                $("#content").attr("disabled","true");
             });
             
             function queryBusName(areaName){
@@ -56,14 +57,14 @@
             function queryMajorName(majorName){
                 
                 if(majorName != ''){
-                    
                     $("#majorName").val(majorName);
                     $("#name").removeAttr("disabled");
+                    $("#content").removeAttr("disabled");
                 } else {
-                    
                     var html = "";
                     $("#name").html(html);
-                    $("#name").attr("disabled","true");
+                    $("#name").attr("disabled", "true");
+                    $("#content").attr("disabled", "true");
                     alert("专业不能为空！");
                 }
             }

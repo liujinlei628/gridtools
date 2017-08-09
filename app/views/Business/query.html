@@ -11,25 +11,21 @@
                         <div class="input-group">
                             <input type="text" placeholder="${keyword}" name="keyword" id="keyword" class="form-control input-lg">
                             <div class="input-group-btn">
-                                <button class="btn btn-lg btn-primary" type="submit">
-                                    搜索
-                                </button>
+                                <button class="btn btn-lg btn-primary" type="submit">搜索</button>
                             </div>
                         </div>
 
                     </form>
                 </div>
 
-                <h2>
-                    发现: <span class="text-navy">“${_distinct_business.size()}”</span>个起始节点 
+                <h2>发现: <span class="text-navy">“${_distinct_business.size()}”</span>个起始节点 
                     <a href="@{Business.export(keyword)}" class="btn btn-success">导出</a>
                     <a href="javascript:void(0);" id="download" onclick="exportAllImg();" class="btn btn-success">一键导出</a>
                 </h2>
                 *{<small>Request time  (0.23 seconds)</small>}*
-
- 				%{
-                	com.google.gson.Gson gson = new com.google.gson.Gson();
-                	businessList = gson.toJson(_distinct_business);
+                %{
+                    com.google.gson.Gson gson = new com.google.gson.Gson();
+                    businessList = gson.toJson(_distinct_business);
                 }%
                 #{list items:_distinct_business,as:'_busi'}
                 <div class="col-xs-6 col-sm-6 col-md-4 col-lg-3">
@@ -44,7 +40,7 @@
                         </div>
                     </div>
                     </a>
-					<div id="${_busi.business_id}" style="height: 300px; display: none;">${_busi.business_id}</div>
+                    <div id="${_busi.business_id}" style="height: 300px; display: none;">${_busi.business_id}</div>
                 </div>
                 #{/list}
             </div>
@@ -242,5 +238,13 @@
     }, false); */
     
 </script>
+<style type="text/css">
+.p-xs {
+    height: 120px;
+}
+
+</style>
+
+
 #{/set}
 

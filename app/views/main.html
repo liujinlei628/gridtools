@@ -49,13 +49,42 @@
                     </ul>
                 </li>
                 <li>
-                    <a href="#"><i class="fa fa-th-large"></i>
-                        <span class="nav-label">&{'business.description'}</span> <span class="fa arrow"></span></a>
+                    <a href="#"><i class="fa fa-th-large"></i><span class="nav-label">&{'business.description'}</span> <span class="fa arrow"></span></a>
                     <ul class="nav nav-second-level">
-                        <li><a href="/">&{'business.description.overview'}</a></li>
-                        <li><a href="#">&{'business.description.browsing'}</a></li>
-                        <li><a href="#">&{'business.description.detailmanage'}</a></li>
-                        <li><a href="#">&{'business.description.maintenance'}</a></li>
+                        <li><a href="/">&{'business.description.overview'}</a>
+                            <ul style="display: block;">
+                                <li>
+                                    <a href="#">&{'business.description.dataArchitecture'}</a>
+                                    <a href="#">&{'business.description.dataFlowDirection'}</a>
+                                    <a href="#">&{'business.description.dataLifeCycle'}</a>
+                                </li>
+                            </ul>
+                        </li>
+                        <li><a href="#">&{'business.description.browsing'}</a>
+                            <ul style="display: block;">
+                                <li>
+                                    <a href="@{controllers.DataDicts.list()}">&{'business.description.metadataManagement'}</a>
+                                    <a href="#">&{'business.description.masterDataManagement'}</a>
+                                </li>
+                            </ul>
+                        </li>
+                        <li><a href="#">&{'business.description.detailmanage'}</a>
+                            <ul style="display: block;">
+                                <li>
+                                    <a href="#">&{'business.description.dataQuality'}</a>
+                                    <a href="#">&{'business.description.dataStandard'}</a>
+                                    <a href="#">&{'business.description.dataRatio'}</a>
+                                </li>
+                            </ul>
+                        </li>
+                        <!-- <li>
+                            <a href="@{controllers.DataDicts.list()}">&{'business.description.maintenance'}</a>
+                            <ul style="display: block;">
+                                <li>
+                                    <a id="acl_listUser" href="" onclick="">用户管理</a>
+                                </li>
+                            </ul>
+                        </li> -->
                     </ul>
                 </li>
                 <li>

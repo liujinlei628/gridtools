@@ -130,6 +130,26 @@
             function changeBusName(busName) {
                 
                 if(busName != ''){
+                    
+                    $.ajax({
+                        url:"/Summary/queryMajorName",
+                        type:"post",
+                        data:{
+                            "busName":busName
+                        },
+                        success:function(data){
+                            var contents = JSON.parse(data).nodes;
+                            var html = "";
+                            $("#contents").html(html);
+                            html +="<option value=''>请选择</option>";
+                            for(var i = 0 ; i < contents.length ; i ++){
+                                var str = "<option value='"+contents[i].content+"'>"+contents[i].content+"</option>";
+                                html += str;
+                            }
+                            $("#content").append(html);
+                        }
+                    });
+                    
                     $("#content").removeAttr("disabled");
                     $("#business").removeAttr("disabled");
                     $("#title").removeAttr("disabled");
@@ -346,7 +366,8 @@
                 <div class="form-group">
                     <label class="col-xs-2 txt-al-mar-pad">业务内容：<font style="color:red;"> * </font></label>
                     <div class="col-xs-10">
-                        <input class="form-control required" type="text" name="content" id="content" maxlength="100" />
+                        <!-- <input class="form-control required" type="text" name="content" id="content" maxlength="100" /> -->
+                        <select name="content" id="content" class="form-control required" ></select>
                     </div>
                 </div>
                 

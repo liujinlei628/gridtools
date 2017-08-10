@@ -22,6 +22,8 @@ public class TCfgDataDict  extends Model{
     
     public String data_subid; // 序号2
     
+    public String bus_code; // 业务编号
+    
     public String busi_des; // 业务事项
     
     public String data_item; // 数据项
@@ -83,5 +85,7 @@ public class TCfgDataDict  extends Model{
     public String data_quantity; // 数据量
     
     public String delFlag; // 删除标识
+    
+    public String con; // 数据量
     
 }

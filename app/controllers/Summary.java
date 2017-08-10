@@ -104,13 +104,15 @@ public class Summary extends CRUD {
         }
         
         if(name !=null && !"".equals(name)){
-            query += " AND name ='" + name + "'" ;
+            query += " AND name like '%" + name + "%'" ;
         }
         
         if(content !=null && !"".equals(content)){
-            query += " AND content ='" + content + "'" ;
+            query += " AND content like '%" + content + "%'" ;
         }
         query += " ORDER BY ID" ;
+        
+        Logger.info(query);
         
         List<TCfgBusinessDesc> list =TCfgBusinessDesc.find(query).from(startPosition*10).fetch(10);
 
@@ -309,6 +311,27 @@ public class Summary extends CRUD {
     }
     
     /**
+     * 根据专业名称查询该专业下的全部一级业务名称
+     * @param proecessCode
+     * @return List<TCfgBusinessProcess>
+     */
+    public @ResponseBody JsonObject querybusinessName(String busName) {
+        
+        String query=" 1=1 ";
+        if(busName !=null && !"".equals(busName)){
+            query += " AND name = '" + busName + "'" ;
+        }
+        
+        query += " GROUP BY content ";
+        Logger.info(query);
+        List<TCfgBusinessDesc> busInfoList = TCfgBusinessDesc.find(query).fetch();
+        JsonObject _output = new JsonObject();
+        Gson gson = new Gson();
+        _output.add("nodes", gson.toJsonTree(busInfoList));
+        return _output;
+    }
+    
+    /**
      * 根据流程编号查询该流程的全部节点信息
      * @param proecessCode
      * @return List<TCfgBusinessProcess>
@@ -361,9 +384,10 @@ public class Summary extends CRUD {
         List<TCfgBusinessDesc> busInfoList = TCfgBusinessDesc.find(query).fetch();
         
         if(busInfoList.size() > 0){
-            TCfgBusinessDesc tempVo = busInfoList.get(0);
-            if(tempVo.business == null && tempVo.title == null){
-                tempVo.delete();
+            for(TCfgBusinessDesc tempVo : busInfoList){
+                if(tempVo.business == null && tempVo.title == null){
+                    tempVo.delete();
+                }
             }
         }
         

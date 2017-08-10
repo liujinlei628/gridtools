@@ -75,10 +75,20 @@
                                 <td>${_busi.business}</td>
                                 <td>${_busi.name}</td>
                                 <td>
-                                    ${_busi.content.length() > 9 ? _busi.content[0..9] + '…' : _busi.content}
+                                    #{if _busi.content != null}
+                                        ${_busi.content.length() > 9 ? _busi.content[0..9] + '…' : _busi.content}
+                                    #{/if}
+                                    #{else}
+                                        ${_busi.content}
+                                    #{/else}
                                 </td>
                                 <td>
-                                    ${_busi.title.length() > 9 ? _busi.title[0..9] + '…' : _busi.title}
+                                    #{if _busi.title != null}
+                                        ${_busi.title.length() > 9 ? _busi.title[0..9] + '…' : _busi.title}
+                                    #{/if}
+                                    #{else}
+                                        ${_busi.title}
+                                    #{/else}
                                 </td>
                                 <td>
                                     <a href="javascript:void(0);" onclick="queryNodeInfoById('${_busi.id}')" >查看</a>
@@ -323,11 +333,13 @@
                             }
                         },
                         submitHandler: function(){
-                            if(ajaxSubmit1(myForm)){
+                            /* if(ajaxSubmit1(myForm)){
                                 $(_this).dialog("close");
                             } else {
                                 return false;
-                            }
+                            } */
+                            ajaxSubmit1(myForm);
+                            $(_this).dialog("close");
                         },
                         invalidHandler: function(){
                             return false;
@@ -358,7 +370,7 @@
         // 验证一级业务名称是否重复 与 验证三级业务编号是否重复
         /* if(checkBusCode(business) && checkBusName(areaName, majorName, busName)){ */
         
-        if(nodeId != null || nodeId != ""){
+        if(nodeId != null || nodeId == "undefined"){
             $.ajax({
                 url: frm.action,
                 type: frm.method,
@@ -401,12 +413,13 @@
     //一级业务新增
     function ajaxSubmit1(frm) {
         
-        var bol = true;
+        
         var dataPara = getFormJson(frm);
+        /* var bol = true;
         var areaName = dataPara.area;
         var majorName = dataPara.major;
         var busName = dataPara.name;
-        if(checkBusName(areaName, majorName, busName)){
+        if(checkBusName(areaName, majorName, busName)){ */
             $.ajax({
                 url: frm.action,
                 type: frm.method,
@@ -422,10 +435,10 @@
                     }
                 } 
             });
-        } else {
+        /* } else {
             bol = false;
         }
-        return bol;
+        return bol; */
     }
     
     //将form中的值转换为键值对。

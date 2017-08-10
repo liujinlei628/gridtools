@@ -1,17 +1,20 @@
 package controllers;
 
 import java.io.File;
-import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
-import org.jeecgframework.poi.excel.ExcelImportUtil;
+import javax.persistence.EntityManager;
+import javax.persistence.Query;
+
 import org.jeecgframework.poi.excel.entity.ImportParams;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import controllers.utils.ExcelImportUtil;
 import models.TCfgDataDict;
 import models.TCfgDict;
 import play.Logger;
+import play.db.jpa.JPA;
 import play.mvc.Controller;
 
 public class DataDicts extends Controller {
@@ -48,7 +51,6 @@ public class DataDicts extends Controller {
         query += " AND delFlag = 0 ORDER BY ID" ;
         List<TCfgDataDict> list =TCfgDataDict.find(query).from(startPosition*10).fetch(10);
         render(user, startPosition, totalReport, list, data_mainid, busi_des, data_item, sys_name);
-        
     }
     
     /**
@@ -171,6 +173,35 @@ public class DataDicts extends Controller {
         return msg;
     }
     
+    
+    /**
+     * 跳转到数据架构页面
+     */
+    public static void dataArchitecture() {
+        
+        // 数据字典集合
+        String query=" 1=1 ";
+        query += " AND delFlag = 0 " ;
+        Logger.info(query);
+        List<TCfgDict> dictList = TCfgDict.find(query).fetch();
+        
+        render(dictList);
+    }
+    
+    /**
+     * 跳转到业务数据展示页面
+     */
+    public static void showBusData() {
+        
+        // 业务数据
+        String query=" 1=1 ";
+        query += " AND delFlag = 0 " ;
+        Logger.info(query);
+        List<TCfgDict> dictList = TCfgDict.find(query).fetch();
+        render(dictList);
+    }
+    
+    
     /**
      * 跳转到业务数据导入页面
      */
@@ -188,20 +219,15 @@ public class DataDicts extends Controller {
      * 业务数据excel文件导入
      * @param file
      */
-    public static void uploadDataDicts(File file, String prof_name, Integer con) {
+    public static void uploadDataDicts(File file, String prof_name) {
         
         Logger.info("Get file:"+ file);
         
         ImportParams params = new ImportParams();
         // 表格标题行数
         params.setTitleRows(0);
-        // 上传表格需要读取的sheet 数量,默认为1
-        params.setSheetNum(con);
         // 是否需要保存上传的Excel,默认为false
         // params.setNeedSave(true);
-        
-        // 开始时间
-        long start = new Date().getTime();
         
         List<Map<String, Object>> list = ExcelImportUtil.importExcel(file, Map.class, params);
         
@@ -358,11 +384,6 @@ public class DataDicts extends Controller {
                 dataDict.delFlag = "0";
                 dataDict.save();
             }
-            
-            // 结束时间
-            long end = new Date().getTime();
-            
-            Logger.info("用时：" + (start - end));
         }
     }
 

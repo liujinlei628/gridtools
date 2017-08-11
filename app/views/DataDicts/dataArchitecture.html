@@ -10,7 +10,7 @@
                 #{list items:dictList,as:'_dict'}
                     #{if _dict.type == 'major'}
                         <div class="col-xs-6 col-sm-6 col-md-4 col-lg-3 ">
-                            <a href="#">
+                            <a href="@{DataDicts.showBusData(_dict.label)}">
                                 <div class="widget navy-bg p-xs text-center fz-nodes">
                                     <div class="m-b-md">
                                         <h4 class="font-bold no-margins">${_dict.label}</h4>

@@ -1,0 +1,118 @@
+#{extends 'main.html' /} #{set title:'Home' /} *{
+<div class="row">
+    }* *{
+    <div class="col-lg-12">
+        }* *{
+        <div class="ibox float-e-margins">
+            }* *{
+            <div class="ibox-content text-center p-md">
+                }* *{
+                <h2>
+                    }* *{
+                    <span class="text-navy">公司一体化业务体系</span>
+                    }* *{
+                </h2>
+                }* *{
+            </div>
+            }* *{
+        </div>
+        }* *{
+    </div>
+    }* *{
+</div>
+}*
+<!-- <div class="row">
+    <div class="col-sm-12">
+        <div id="main" style="height: 300px; width: 500px"></div>
+    </div>
+</div> -->
+
+<div class="row">
+    <div class="col-lg-12">
+        <div class="ibox float-e-margins" id="_qunee">
+            <div class="ibox-content" style="overflow: hidden;">
+                <h3>${majorName}专业统计</h3>
+                <br/>
+                <div id="main" style="height: 500px; width: 450px; float: left; border: 1px solid red;"></div>
+                <div id="main1" style="height: 500px; width: 650px; float: left; border: 1px solid red; margin-left: 20px"></div>
+                <!-- <div id="main2" style="height: 300px; width: 1120px; float: left; border: 1px solid red; margin-top: 10px"></div> -->
+            </div>
+        </div>
+    </div>
+</div>
+
+
+#{set 'moreScripts'}
+<script src="@{'/public/js/echarts.js'}"></script>
+<script src="@{'/public/js/echarts-gl.min.js'}"></script>
+<script type="text/javascript">
+    var myChart = echarts.init(document.getElementById('main'));
+    $.getJSON("@{DataDicts.getModesData(majorName)}", function(data) {
+        var option = {
+            title : {
+                text: '业务数据生成方式统计',
+                x:'center'
+            },
+            tooltip : {
+                trigger: 'item',
+                formatter: "{a} <br/>{b} : {c} ({d}%)"
+            },
+            legend: {
+                orient: 'vertical',
+                left: 'left',
+                data: data.names
+            },
+            series : [{
+                    name: '访问来源',
+                    type: 'pie',
+                    radius : '58%',
+                    center: ['50%', '60%'],
+                    data: data.datas,
+                    itemStyle: {
+                        emphasis: {
+                            shadowBlur: 10,
+                            shadowOffsetX: 0,
+                            shadowColor: 'rgba(0, 0, 0, 0.5)'
+                        }
+                    }
+                }
+            ]};
+        myChart.setOption(option);
+    });
+    
+    var myChart1 = echarts.init(document.getElementById('main1'));
+    $.getJSON("@{DataDicts.getSrcSysData(majorName)}", function(data) {
+        var option = {
+            title : {
+                text: '来源系统数据统计',
+                x:'center'
+            },
+            tooltip : {
+                trigger: 'item',
+                formatter: "{a} <br/>{b} : {c} ({d}%)"
+            },
+            legend: {
+                orient: 'vertical',
+                left: 'left',
+                data: data.names
+            },
+            series : [{
+                    name: '访问来源',
+                    type: 'pie',
+                    radius : '58%',
+                    center: ['60%', '60%'],
+                    data: data.datas,
+                    itemStyle: {
+                        emphasis: {
+                            shadowBlur: 10,
+                            shadowOffsetX: 0,
+                            shadowColor: 'rgba(0, 0, 0, 0.5)'
+                        }
+                    }
+                }
+            ]};
+        myChart1.setOption(option);
+    });
+    
+</script>
+#{/set}

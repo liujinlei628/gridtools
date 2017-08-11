@@ -4,17 +4,16 @@ import java.io.File;
 import java.util.List;
 import java.util.Map;
 
-import javax.persistence.EntityManager;
-import javax.persistence.Query;
-
 import org.jeecgframework.poi.excel.entity.ImportParams;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import controllers.utils.ExcelImportUtil;
 import models.TCfgDataDict;
 import models.TCfgDict;
+import models.VCfgDataCategory;
+import models.VCfgDataFrom;
+import models.VCfgGenerateMode;
 import play.Logger;
-import play.db.jpa.JPA;
 import play.mvc.Controller;
 
 public class DataDicts extends Controller {
@@ -191,16 +190,156 @@ public class DataDicts extends Controller {
     /**
      * 跳转到业务数据展示页面
      */
-    public static void showBusData() {
-        
-        // 业务数据
-        String query=" 1=1 ";
-        query += " AND delFlag = 0 " ;
-        Logger.info(query);
-        List<TCfgDict> dictList = TCfgDict.find(query).fetch();
-        render(dictList);
+    public static void showBusData(String majorName) {
+        render(majorName);
     }
     
+    /**
+     * 生成方式图表数据
+     * @param majorName 专业
+     * @return modes
+     */
+    public @ResponseBody String getModesData(String majorName){
+        
+        // 生成方式
+        String query = " 1=1 ";
+        if(majorName !=null && !"".equals(majorName)){
+            query += " AND prof_name = '" + majorName + "'" ;
+        }
+        Logger.info(query);
+        List<VCfgGenerateMode> vModeList = VCfgGenerateMode.find(query).fetch();
+        
+        String data = "";
+        String type = "";
+        String modes = "{\"datas\":[";
+        
+        if(vModeList.size() > 0){
+            for (int i = 0; i < vModeList.size(); i++) {
+                data += "{\"value\":" + vModeList.get(i).con + ",";
+                data += "\"name\":" + "\"" + vModeList.get(i).prod_type + "\"" + "},";
+            }
+            if(data.length() > 0){
+                data = data.substring(0, data.length() - 1);
+                modes += data + "],\"names\":[";
+            }
+            for (int i = 0; i < vModeList.size(); i++) {
+                type += "\"" + vModeList.get(i).prod_type + "\",";
+            }
+            
+            if(type.length() > 0){
+                type = type.substring(0, type.length() - 1);
+            }
+        }
+        modes = modes + type + "]}";
+        
+        Logger.info(modes);
+        
+        return modes;
+    }
+    
+    /**
+     * 系统来源图表数据
+     * @param majorName 专业
+     * @return sysModes
+     */
+    public @ResponseBody String getSrcSysData(String majorName){
+        
+        // 来源系统
+        String query = " 1=1 ";
+        if(majorName !=null && !"".equals(majorName)){
+            query += " AND prof_name = '" + majorName + "'" ;
+        }
+        Logger.info(query);
+        List<VCfgDataFrom> vSysList = VCfgDataFrom.find(query).fetch();
+        
+        String sysData = "";
+        String sysType = "";
+        String sysModes = "{\"datas\":[";
+        
+        if(vSysList.size() > 0){
+            for (int i = 0; i < vSysList.size(); i++) {
+                sysData += "{\"value\":" + vSysList.get(i).con + ",";
+                sysData += "\"name\":" + "\"" + vSysList.get(i).src_sys + "\"" + "},";
+            }
+            if(sysData.length() > 0){
+                sysData = sysData.substring(0, sysData.length() - 1);
+                sysModes += sysData + "],\"names\":[";
+            }
+            for (int i = 0; i < vSysList.size(); i++) {
+                sysType += "\"" + vSysList.get(i).src_sys + "\",";
+            }
+            
+            if(sysType.length() > 0){
+                sysType = sysType.substring(0, sysType.length() - 1);
+            }
+        }
+        sysModes = sysModes + sysType + "]}";
+        
+        return sysModes;
+    }
+    
+    /**
+     * 数据分类图表数据
+     * @param majorName 专业
+     * @return sysModes
+     */
+    public @ResponseBody String getCategoryData(String majorName){
+        
+        // 来源系统
+        String query = " 1=1 ";
+        if(majorName !=null && !"".equals(majorName)){
+            query += " AND prof_name = '" + majorName + "'" ;
+        }
+        Logger.info(query);
+        List<VCfgDataCategory> vCateList = VCfgDataCategory.find(query).fetch();
+        
+        String query1 = " 1=1 ";
+        if(majorName !=null && !"".equals(majorName)){
+            query1 += " AND prof_name = '" + majorName + "'" ;
+        }
+        query1 += " GROUP BY type ";
+        Logger.info(query);
+        List<VCfgDataCategory> vCateGroup = VCfgDataCategory.find(query1).fetch();
+        
+        String datax = "";
+        String datay = "";
+        String type = "";
+        String cates = "{\"datax\":[";
+        
+        if(vCateList.size() > 0){
+            for (int i = 0; i < vCateList.size(); i++) {
+                if(vCateList.get(i).category.equals("否")){
+                    datax += "\"" + vCateList.get(i).con + "\",";
+                }
+            }
+            if(datax.length() > 0){
+                datax = datax.substring(0, datax.length() - 1);
+                cates += datax + "],\"datay\":[";
+            }
+            
+            for (int i = 0; i < vCateList.size(); i++) {
+                if(vCateList.get(i).category.equals("是")){
+                    datay += "\"" + vCateList.get(i).con + "\",";
+                }
+            }
+            
+            if(datay.length() > 0){
+                datay = datay.substring(0, datay.length() - 1);
+                cates += datay + "],\"names\":[";
+            }
+            if(vCateGroup.size() > 0){
+                for (int i = 0; i < vCateGroup.size(); i++) {
+                    type += "\"" + vCateGroup.get(i).type + "\",";
+                }
+                if(type.length() > 0){
+                    type = type.substring(0, type.length() - 1);
+                }
+            }
+        }
+        cates = cates + type + "]}";
+        Logger.info(cates);
+        return cates;
+    }
     
     /**
      * 跳转到业务数据导入页面

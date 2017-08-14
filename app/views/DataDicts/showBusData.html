@@ -31,11 +31,13 @@
     <div class="col-lg-12">
         <div class="ibox float-e-margins" id="_qunee">
             <div class="ibox-content" style="overflow: hidden;">
-                <h3>${majorName}专业统计</h3>
-                <br/>
-                <div id="main" style="height: 500px; width: 450px; float: left; border: 1px solid red;"></div>
-                <div id="main1" style="height: 500px; width: 650px; float: left; border: 1px solid red; margin-left: 20px"></div>
-                <!-- <div id="main2" style="height: 300px; width: 1120px; float: left; border: 1px solid red; margin-top: 10px"></div> -->
+                <div style="height: 50px; width: 1270px; float: left;">
+                    <h1 style="float: left;">${majorName}专业数据统计</h1>
+                    <a href="@{DataDicts.list()}"><h3 style="float: right;margin-top: 25px;">查看数据项</h3></a>
+                </div>
+                <div id="modeData" style="height: 500px; width: 600px; float: left; border: 1px solid red; margin-top: 10px;"></div>
+                <div id="sysData" style="height: 500px; width: 650px; float: left; border: 1px solid red; margin-top: 10px;margin-left: 20px;"></div>
+                <div id="mainData" style="height: 500px; width: 1270px; float: left; border: 1px solid red; margin-top: 10px;"></div>
             </div>
         </div>
     </div>
@@ -46,7 +48,7 @@
 <script src="@{'/public/js/echarts.js'}"></script>
 <script src="@{'/public/js/echarts-gl.min.js'}"></script>
 <script type="text/javascript">
-    var myChart = echarts.init(document.getElementById('main'));
+    var modeChart = echarts.init(document.getElementById('modeData'));
     $.getJSON("@{DataDicts.getModesData(majorName)}", function(data) {
         var option = {
             title : {
@@ -62,8 +64,16 @@
                 left: 'left',
                 data: data.names
             },
+            toolbox: {
+                show : true,
+                feature : {
+                    dataView : {show: true, readOnly: false},
+                    restore : {show: true},
+                    saveAsImage : {show: true}
+                }
+            },
             series : [{
-                    name: '访问来源',
+                    name: '生成方式：',
                     type: 'pie',
                     radius : '58%',
                     center: ['50%', '60%'],
@@ -77,10 +87,10 @@
                     }
                 }
             ]};
-        myChart.setOption(option);
+        modeChart.setOption(option);
     });
     
-    var myChart1 = echarts.init(document.getElementById('main1'));
+    var sysChart = echarts.init(document.getElementById('sysData'));
     $.getJSON("@{DataDicts.getSrcSysData(majorName)}", function(data) {
         var option = {
             title : {
@@ -96,8 +106,16 @@
                 left: 'left',
                 data: data.names
             },
+            toolbox: {
+                show : true,
+                feature : {
+                    dataView : {show: true, readOnly: false},
+                    restore : {show: true},
+                    saveAsImage : {show: true}
+                }
+            },
             series : [{
-                    name: '访问来源',
+                    name: '来源系统：',
                     type: 'pie',
                     radius : '58%',
                     center: ['60%', '60%'],
@@ -111,7 +129,56 @@
                     }
                 }
             ]};
-        myChart1.setOption(option);
+        sysChart.setOption(option);
+    });
+    
+    var mainChart = echarts.init(document.getElementById('mainData'));
+    $.getJSON("@{DataDicts.getCategoryData(majorName)}", function(data) {
+        
+        var option = {
+            title : {
+                text: '业务数据统计'
+            },
+            tooltip : {
+                trigger: 'axis'
+            },
+            legend: {
+                data:['否','是']
+            },
+            toolbox: {
+                show : true,
+                feature : {
+                    dataView : {show: true, readOnly: false},
+                    restore : {show: true},
+                    saveAsImage : {show: true}
+                }
+            },
+            calculable : true,
+            xAxis : [
+                {
+                    type : 'category',
+                    data : data.names
+                }
+            ],
+            yAxis : [
+                {
+                    type : 'value'
+                }
+            ],
+            series : [
+                {
+                    name:'否',
+                    type:'bar',
+                    data:data.datax
+                },
+                {
+                    name:'是',
+                    type:'bar',
+                    data:data.datay
+                }
+            ]
+        };
+        mainChart.setOption(option);
     });
     
 </script>

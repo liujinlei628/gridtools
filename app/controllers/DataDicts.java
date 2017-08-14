@@ -12,6 +12,8 @@ import models.TCfgDataDict;
 import models.TCfgDict;
 import models.VCfgDataCategory;
 import models.VCfgDataFrom;
+import models.VCfgDataMain;
+import models.VCfgDataStructure;
 import models.VCfgGenerateMode;
 import play.Logger;
 import play.mvc.Controller;
@@ -285,21 +287,41 @@ public class DataDicts extends Controller {
      */
     public @ResponseBody String getCategoryData(String majorName){
         
-        // 来源系统
-        String query = " 1=1 ";
+        // 是否上线数据
+        String cateQuery = " 1=1 ";
         if(majorName !=null && !"".equals(majorName)){
-            query += " AND prof_name = '" + majorName + "'" ;
+            cateQuery += " AND prof_name = '" + majorName + "'" ;
         }
-        Logger.info(query);
-        List<VCfgDataCategory> vCateList = VCfgDataCategory.find(query).fetch();
+        Logger.info(cateQuery);
+        List<VCfgDataCategory> vCateList = VCfgDataCategory.find(cateQuery).fetch();
         
-        String query1 = " 1=1 ";
+        cateQuery += " GROUP BY type ";
+        Logger.info(cateQuery);
+        List<VCfgDataCategory> vCateGroup = VCfgDataCategory.find(cateQuery).fetch();
+        
+        // 是否结构化数据
+        String struQuery = " 1=1 ";
         if(majorName !=null && !"".equals(majorName)){
-            query1 += " AND prof_name = '" + majorName + "'" ;
+            struQuery += " AND prof_name = '" + majorName + "'" ;
         }
-        query1 += " GROUP BY type ";
-        Logger.info(query);
-        List<VCfgDataCategory> vCateGroup = VCfgDataCategory.find(query1).fetch();
+        Logger.info(struQuery);
+        List<VCfgDataStructure> vStruList = VCfgDataStructure.find(struQuery).fetch();
+        
+        struQuery += " GROUP BY type ";
+        Logger.info(struQuery);
+        List<VCfgDataStructure> vStruGroup = VCfgDataStructure.find(struQuery).fetch();
+        
+        // 是否主数据
+        String mainQuery = " 1=1 ";
+        if(majorName !=null && !"".equals(majorName)){
+            mainQuery += " AND prof_name = '" + majorName + "'" ;
+        }
+        Logger.info(mainQuery);
+        List<VCfgDataMain> vMainList = VCfgDataMain.find(mainQuery).fetch();
+        
+        mainQuery += " GROUP BY type ";
+        Logger.info(mainQuery);
+        List<VCfgDataMain> vMainGroup = VCfgDataMain.find(mainQuery).fetch();
         
         String datax = "";
         String datay = "";
@@ -312,30 +334,86 @@ public class DataDicts extends Controller {
                     datax += "\"" + vCateList.get(i).con + "\",";
                 }
             }
-            if(datax.length() > 0){
-                datax = datax.substring(0, datax.length() - 1);
-                cates += datax + "],\"datay\":[";
+        }
+        
+        if(vStruList.size() > 0){
+            for (int i = 0; i < vStruList.size(); i++) {
+                if(vStruList.get(i).category.equals("否")){
+                    datax += "\"" + vStruList.get(i).con + "\",";
+                }
             }
-            
+        }
+        
+        if(vMainList.size() > 0){
+            for (int i = 0; i < vMainList.size(); i++) {
+                if(vMainList.get(i).category.equals("否")){
+                    datax += "\"" + vMainList.get(i).con + "\",";
+                }
+            }
+        }
+        
+        if(datax.length() > 0){
+            datax = datax.substring(0, datax.length() - 1);
+            cates += datax + "],\"datay\":[";
+        }
+        
+        if(vCateList.size() > 0){
             for (int i = 0; i < vCateList.size(); i++) {
                 if(vCateList.get(i).category.equals("是")){
                     datay += "\"" + vCateList.get(i).con + "\",";
                 }
             }
-            
-            if(datay.length() > 0){
-                datay = datay.substring(0, datay.length() - 1);
-                cates += datay + "],\"names\":[";
+        }
+        
+        if(vStruList.size() > 0){
+            for (int i = 0; i < vStruList.size(); i++) {
+                if(vStruList.get(i).category.equals("是")){
+                    datay += "\"" + vStruList.get(i).con + "\",";
+                }
             }
+        }
+        
+        if(vMainList.size() > 0){
+            for (int i = 0; i < vMainList.size(); i++) {
+                if(vMainList.get(i).category.equals("是")){
+                    datay += "\"" + vMainList.get(i).con + "\",";
+                }
+            }
+        }
+        
+        if(datay.length() > 0){
+            datay = datay.substring(0, datay.length() - 1);
+            cates += datay + "],\"names\":[";
+        }
+        
+        if(vCateGroup.size() > 0){
             if(vCateGroup.size() > 0){
                 for (int i = 0; i < vCateGroup.size(); i++) {
                     type += "\"" + vCateGroup.get(i).type + "\",";
                 }
-                if(type.length() > 0){
-                    type = type.substring(0, type.length() - 1);
+            }
+        }
+        
+        if(vStruGroup.size() > 0){
+            if(vStruGroup.size() > 0){
+                for (int i = 0; i < vStruGroup.size(); i++) {
+                    type += "\"" + vStruGroup.get(i).type + "\",";
                 }
             }
         }
+        
+        if(vMainGroup.size() > 0){
+            if(vMainGroup.size() > 0){
+                for (int i = 0; i < vMainGroup.size(); i++) {
+                    type += "\"" + vMainGroup.get(i).type + "\",";
+                }
+            }
+        }
+        
+        if(type.length() > 0){
+            type = type.substring(0, type.length() - 1);
+        }
+        
         cates = cates + type + "]}";
         Logger.info(cates);
         return cates;

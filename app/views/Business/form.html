@@ -19,9 +19,7 @@
         <script type="text/javascript">
             $(document).ready(function() {
                 
-                $("#professional").attr("disabled","true");
                 $("#business").attr("disabled","true");
-                $("#post_professional").attr("disabled","true");
                 $("#post_business").attr("disabled","true");
             });
             
@@ -133,10 +131,12 @@
                                 $("#name").val(node.name);
                                 $("#content").val(node.content);
                                 $("#description").val(node.title);
+                                $("#area").val(node.area);
                             } else {
                                 $("#post_name").val(node.name);
                                 $("#post_content").val(node.content);
                                 $("#post_description").val(node.title);
+                                $("#post_area").val(node.area);
                             }
                         }
                     });
@@ -161,18 +161,6 @@
             <fieldset>
                 
                 <div class="form-group">
-                    <label class="col-xs-2 txt-al-mar-pad" id="labelErrorCode">所属版块：<font style="color:red;"> * </font></label>
-                    <div class="col-xs-4">
-                        <select name="area" id="area" class="form-control required" onchange="queryBusName(this.value, '1')">
-                            <option value="">请选择</option>
-                            #{list items:dictList,as:'_dict'}
-                                #{if _dict.type == 'area' }
-                                    <option value="${_dict.label}" >${_dict.label}</option>
-                                #{/if}
-                            #{/list}
-                        </select>
-                    </div>
-                    
                     <label class="col-xs-2 txt-al-mar-pad" id="labelErrorCode">专业：<font style="color:red;"> * </font></label>
                     <div class="col-xs-4">
                         <select name="professional" id="professional" class="form-control required" onchange="queryMajorName(this.value, '1')" >
@@ -185,13 +173,20 @@
                         </select>
                         <input type="hidden" name="majorName" id="majorName" value="" />
                     </div>
+                    
+                    <label class="col-xs-2 txt-al-mar-pad">业务编号：</label>
+                    <div class="col-xs-4">
+                        <select name="business_id" id="business" class="form-control required" onchange="changeBusCode(this.value, '1')" ></select>
+                        <input type="hidden" name="business_hi" id="business_hi" value="" />
+                    </div>
                 </div>
                 
                 <div class="form-group">
-                    <label class="col-xs-2 txt-al-mar-pad">业务编号：</label>
+                    
+                    
+                    <label class="col-xs-2 txt-al-mar-pad" id="labelErrorCode">所属版块：<font style="color:red;"> * </font></label>
                     <div class="col-xs-10">
-                        <select name="business_id" id="business" class="form-control required" onchange="changeBusCode(this.value, '1')" ></select>
-                        <input type="hidden" name="business_hi" id="business_hi" value="" />
+                        <input class="form-control" type="text" name="area" id="area" maxlength="100" readonly="readonly" />
                     </div>
                 </div>
                 
@@ -215,18 +210,6 @@
                 </div>
                 
                 <div class="form-group">
-                    <label class="col-xs-2 txt-al-mar-pad" id="labelErrorCode">衔接版块：<font style="color:red;"> * </font></label>
-                    <div class="col-xs-4">
-                        <select name="post_area" id="post_area" class="form-control required" onchange="queryBusName(this.value, '2')">
-                            <option value="">请选择</option>
-                            #{list items:dictList,as:'_dict'}
-                                #{if _dict.type == 'area' }
-                                    <option value="${_dict.label}" >${_dict.label}</option>
-                                #{/if}
-                            #{/list}
-                        </select>
-                    </div>
-                    
                     <label class="col-xs-2 txt-al-mar-pad" id="labelErrorCode">衔接专业：<font style="color:red;"> * </font></label>
                     <div class="col-xs-4">
                         <select name="post_professional" id="post_professional" class="form-control required" onchange="queryMajorName(this.value, '2')" >
@@ -239,13 +222,18 @@
                         </select>
                         <input type="hidden" name="post_majorName" id="post_majorName" value="" />
                     </div>
+                    
+                    <label class="col-xs-2 txt-al-mar-pad">衔接业务编号：</label>
+                    <div class="col-xs-4">
+                        <select name="post_business_id" id="post_business" class="form-control required" onchange="changeBusCode(this.value, '2')" ></select>
+                        <input type="hidden" name="post_business_hi" id="post_business_hi" value="" />
+                    </div>
                 </div>
                 
                 <div class="form-group">
-                    <label class="col-xs-2 txt-al-mar-pad">衔接业务编号：</label>
+                    <label class="col-xs-2 txt-al-mar-pad" id="labelErrorCode">衔接版块：<font style="color:red;"> * </font></label>
                     <div class="col-xs-10">
-                        <select name="post_business_id" id="post_business" class="form-control required" onchange="changeBusCode(this.value, '2')" ></select>
-                        <input type="hidden" name="post_business_hi" id="post_business_hi" value="" />
+                        <input class="form-control" type="text" name="post_area" id="post_area" maxlength="100" readonly="readonly" />
                     </div>
                 </div>
                 

@@ -86,6 +86,4 @@ public class TCfgDataDict  extends Model{
     
     public String delFlag; // 删除标识
     
-    public String con; // 数据量
-    
 }

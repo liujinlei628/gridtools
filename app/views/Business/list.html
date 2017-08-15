@@ -51,14 +51,15 @@
                                 <th width="8%">所属版块</th>
                                 <th width="5%">专业</th>
                                 <th width="8%">业务编号</th>
-                                <th width="10%">业务名称</th>
-                                <th width="10%">业务内容</th>
+                                <th width="8%">业务名称</th>
+                                <th width="8%">业务内容</th>
                                 <th width="8%">衔接版块</th>
                                 <th width="8%">衔接专业</th>
-                                <th width="10%">衔接业务编号</th>
-                                <th width="10%">衔接业务名称</th>
-                                <th width="10%">衔接业务内容</th>
-                                <th width="12%">操作</th>
+                                <th width="8%">衔接业务编号</th>
+                                <th width="9%">衔接业务名称</th>
+                                <th width="9%">衔接业务内容</th>
+                                <th width="5%">关系</th>
+                                <th width="15%">操作</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -69,18 +70,20 @@
                                 <td>${_busi.professional}</td>
                                 <td>${_busi.business_id}</td>
                                 <td>${_busi.name}</td>
-                                <td>
-                                    ${_busi.content.length() > 5 ? _busi.content[0..5] + '…' : _busi.content}
+                                <td title="${_busi.content}">
+                                    ${_busi.content.length() > 4 ? _busi.content[0..4] + '…' : _busi.content}
                                 </td>
                                 <td>${_busi.post_area}</td>
                                 <td>${_busi.post_professional}</td>
                                 <td>${_busi.post_business_id}</td>
                                 <td>${_busi.post_business_name}</td>
-                                <td>
-                                    ${_busi.post_business_content.length() > 5 ? _busi.post_business_content[0..5] + '…' : _busi.post_business_content}
+                                <td  title="${_busi.post_business_content}">
+                                    ${_busi.post_business_content.length() > 4 ? _busi.post_business_content[0..4] + '…' : _busi.post_business_content}
                                 </td>
+                                <td>${_busi.relation}</td>
                                 <td>
                                     <a href="javascript:void(0);" onclick="toDetail('${_busi.id}')" >查看</a>
+                                    <a href="javascript:void(0);" onclick="toEditRelation('${_busi.id}')" >修改关系</a>
                                     #{if _busi.delFlag == '0'}
                                         <a href="javascript:void(0);" onclick="toDelete('${_busi.id}')" >删除</a>
                                     #{/if}
@@ -192,6 +195,66 @@
                     $(this).dialog("close");
                 }
           }]
+        }));
+    }
+    
+    function toEditRelation(dictId){
+        var html = "<div id='dialog-window' title='业务信息'><iframe id='myFrame' src='/Business/toEditRelation?id="+dictId+"' frameBorder='0' style='border: 0;margin-bottom:-5px;margin-top:-3px;' scrolling='no' height='100%' width='100%'></iframe></div>";
+        $(html).dialog($.extend({
+            modal: true,
+            width: 500,
+            height: 200,
+            closeOnEscape: false,
+            draggable: false,
+            resizable: false,
+            'class': 'overflow-y:hidden',
+            buttons : [{
+                html : "确定",
+                id:"addSubmitButton",
+                'class' : "btn btn-primary btn-sm",
+                click : function(btn) {
+                    var myFrameWin = document.getElementById("myFrame").contentWindow;
+                    var myForm = myFrameWin.document.getElementById("summaryForm");
+                    var _this = this;
+                    $(myForm).validate({
+                        meta: "validate",
+                        onsubmit:true,
+                        onblur:false,
+                        onkeyup :false,
+                        rules: {
+                            vendorName: {
+                                required: true,
+                                specialChart: true
+                            },
+                            errorCode: {
+                                required: true,
+                                specialChart: true
+                            },
+                            codeSeverity: {
+                                required: true,
+                                specialChart: true
+                            }
+                        },
+                        submitHandler: function(){
+                            ajaxSubmit(myForm);
+                            $(_this).dialog("close");
+                        },
+                        invalidHandler: function(){
+                            return false;
+                        }
+                    });
+                    $(myForm).submit();
+                }
+            },{
+                html : "取消",
+                'class' : "btn btn-default btn-sm",
+                click : function() {
+                    $(this).dialog("close");
+                }
+            }],
+            close: function(event, ui) {
+                $(this).dialog("destroy"); 
+            }
         }));
     }
     

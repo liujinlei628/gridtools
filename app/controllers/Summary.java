@@ -552,6 +552,18 @@ public class Summary extends CRUD {
         return msg;
     }
     
+    /**
+     * 跳转到信息查看页面
+     * @param id 
+     */
+    public static void toQueryBusInfo(String busCode) {
+        
+        if(busCode != null && !"".equals(busCode)) {
+            TCfgBusinessDesc businessDesc = TCfgBusinessDesc.find("business=?", busCode).first();
+            render(businessDesc);
+        }
+        render();
+    }
     
     /**
      * 根据节点名称查询与该节点有关系的所有节点

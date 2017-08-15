@@ -1655,4 +1655,41 @@ public class Business extends CRUD {
         }
         return msg;
     }
+    
+    /**
+     * 跳转到新增/修改页面页面
+     */
+    public static void toEditRelation(Long id) {
+        
+        // 数据字典集合
+        String query=" 1=1 ";
+        query += " AND delFlag = 0 " ;
+        Logger.info(query);
+        List<TCfgDict> dictList = TCfgDict.find(query).fetch();
+        TCfgBusiness tCfgBusiness = TCfgBusiness.findById(id);
+        render(dictList, tCfgBusiness);
+    }
+    
+    /**
+     * 修改业务关系
+     * @param id 
+     * @param relation 关系
+     */
+    public @ResponseBody String editRelation(Long id, String relation) {
+        
+        String msg = "0";
+        try {
+            TCfgBusiness tCfgBusiness = TCfgBusiness.findById(id);
+            // 保存节点信息
+            if(!"".equals(id) && !"".equals(id)) {
+                tCfgBusiness.relation = relation;
+                tCfgBusiness.delFlag = "0";
+            }
+            tCfgBusiness.save();
+            msg = "1";
+        } catch (Exception e) {
+            msg = "-1";
+        }
+        return msg;
+    }
 }

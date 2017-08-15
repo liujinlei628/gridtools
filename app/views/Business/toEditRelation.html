@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en-us">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+        <script type="text/javascript" src="@{'/public/js/jquery-3.1.1.min.js'}"></script>
+        <script type="text/javascript" src="@{'/public/js/jquery-form.min.js'}"></script>
+        <script type="text/javascript" src="@{'/public/js/jquery.validate.min.js'}"></script>
+        <script type="text/javascript" src="@{'/public/js/plugins/jquery-ui/jquery-ui.min.js'}"></script>
+        
+        <!-- Basic Styles -->
+        <link rel="stylesheet" type="text/css" media="screen" href="@{'/public/css/bootstrap.min.css'}">
+        <!-- SmartAdmin Styles : Please note (smartadmin-production.css) was created using LESS variables -->
+        <link rel="stylesheet" type="text/css" media="screen" href="@{'/public/css/smartadmin-skins.min.css'}">
+        <link rel="stylesheet" type="text/css" media="screen" href="@{'/public/css/add-app-class.css'}">
+        <link href="@{'/public/js/plugins/jquery-ui/jquery-ui.min.css'}" rel="stylesheet">
+        <link href="@{'/public/font-awesome/css/font-awesome.css'}" rel="stylesheet">
+        <link href="@{'/public/css/animate.css'}" rel="stylesheet">
+        <script type="text/javascript">
+            $(document).ready(function() {
+                
+            });
+        </script>
+    </head>
+    <body>
+        <form id="summaryForm" name="summaryForm" class="form-horizontal mar-tb-10" action="@{controllers.Business.editRelation()}" autoscroll="false" method="post" style="padding-right: 5%">
+            <fieldset>
+                <div class="form-group">
+                    <label class="col-xs-2 txt-al-mar-pad">关系：</label>
+                    <div class="col-xs-10">
+                        <select name="relation" id="relation" class="form-control required" >
+                            <option value="">请选择</option>
+                            #{list items:dictList,as:'_dict'}
+                                #{if _dict.type == 'relation'}
+                                    <option value="${_dict.label}" #{if tCfgBusiness.relation == _dict.label} selected='selected' #{/if}>${_dict.label}</option>
+                                #{/if}
+                            #{/list}
+                        </select>
+                        <input type="hidden" name="id" id="id" value="${tCfgBusiness.id}" >
+                    </div>
+                </div>
+                
+            </fieldset>
+        </form>
+    </body>
+</html>

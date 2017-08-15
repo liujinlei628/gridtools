@@ -54,15 +54,16 @@
                                 <th width="5%">专业</th>
                                 <th width="5%">序号1</th>
                                 <th width="5%">序号2</th>
-                                <th width="10%">业务事项</th>
-                                <th width="10%">数据项</th>
+                                <th width="8%">业务事项</th>
+                                <th width="6%">业务编号</th>
+                                <th width="8%">数据项</th>
                                 <th width="5%">是否线上数据</th>
                                 <th width="8%">是否结构化数据</th>
                                 <th width="5%">传输方式</th>
                                 <th width="8%">来源系统</th>
                                 <th width="7%">接收系统</th>
                                 <th width="7%">是否可做主数据</th>
-                                <th width="10%">系统名称</th>
+                                <th width="8%">系统名称</th>
                                 <th width="10%">操作</th>
                             </tr>
                         </thead>
@@ -74,6 +75,9 @@
                                 <td>${_data.data_mainid}</td>
                                 <td>${_data.data_subid}</td>
                                 <td>${_data.busi_des}</td>
+                                <td>
+                                    <a href="javascript:void(0);" onclick="toQueryBusInfo('${_data.bus_code}')">${_data.bus_code}</a>
+                                </td>
                                 <td>${_data.data_item}</td>
                                 <td>${_data.if_online}</td>
                                 <td>${_data.if_struct}</td>
@@ -114,6 +118,29 @@
 
     function toDetail(dataId){
         var html = "<div id='dialog-window' title='业务信息'><iframe id='myFrame' src='/DataDicts/detail?id="+dataId+"' frameBorder='0' style='border: 0;margin-bottom:-5px;margin-top:-3px;' scrolling='auto' height='100%' width='100%'></iframe></div>";
+        $(html).dialog($.extend({
+            modal: true,
+            width: 800,
+            height: 550,
+            closeOnEscape: false,
+            draggable: false,
+            resizable: false,
+            'class': 'overflow-y:hidden',
+            close: function(event, ui) {
+              $(this).dialog("destroy"); 
+            },
+            buttons : [{
+                html : "关闭",
+                'class' : "btn btn-default btn-sm",
+                click : function() {
+                    $(this).dialog("close");
+                }
+          }]
+        }));
+    }
+    
+    function toQueryBusInfo(busCode){
+        var html = "<div id='dialog-window' title='业务信息'><iframe id='myFrame' src='/Summary/toQueryBusInfo?busCode="+busCode+"' frameBorder='0' style='border: 0;margin-bottom:-5px;margin-top:-3px;' scrolling='auto' height='100%' width='100%'></iframe></div>";
         $(html).dialog($.extend({
             modal: true,
             width: 800,

@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import controllers.utils.ExcelImportUtil;
 import models.TCfgDataDict;
 import models.TCfgDict;
+import models.TCfgTemp;
 import models.VCfgDataCategory;
 import models.VCfgDataFrom;
 import models.VCfgDataMain;
@@ -194,6 +195,76 @@ public class DataDicts extends Controller {
      */
     public static void showBusData(String majorName) {
         render(majorName);
+    }
+    
+    /**
+     * 跳转到业务数据展示页面2
+     */
+    public static void showBusData2() {
+        render();
+    }
+    
+    /**
+     * 生成方式图表数据
+     * @param majorName 专业
+     * @return modes
+     */
+    public @ResponseBody String getBusData2(){
+        
+        // 生成方式
+        String query = " 1=1 ";
+        Logger.info(query);
+        // 数据集合
+        List<TCfgTemp> vTempList = TCfgTemp.find(query).fetch();
+        // 类型集合
+        query += " GROUP BY source ";
+        List<TCfgTemp> vTempGroup = TCfgTemp.find(query).fetch();
+        
+        String node = "";
+        String link = "";
+        String type = "";
+        String temps = "{\"nodes\":[";
+        
+        if(vTempGroup.size() > 0){
+            for (int i = 0; i < vTempGroup.size(); i++) {
+                node += "{\"name\":" + "\"" + vTempGroup.get(i).source + "\",";
+                node += "\"label\":" + "\"" + vTempGroup.get(i).source + ":" + vTempGroup.get(i).con + "\"" +  "},";
+            }
+            if(node.length() > 0){
+                node = node.substring(0, node.length() - 1);
+                temps += node + "],\"names\":[";
+            }
+            for (int i = 0; i < vTempGroup.size(); i++) {
+                type += "\"" + vTempGroup.get(i).source + "\",";
+            }
+        }
+        
+        if(type.length() > 0){
+            type = type.substring(0, type.length() - 1);
+            temps += type + "],\"links\":[";
+        }
+        
+        if(vTempList.size() > 0){
+            for (int i = 0; i < vTempList.size(); i++) {
+                link += "{\"source\":" + "\"" + vTempList.get(i).source + "\"" + ","; 
+                link += "\"target\":" + "\"" + vTempList.get(i).target + "\"" + "," + "\"weight\": 0.9, \"name\": \"属于\"" + "},"; 
+            }
+            
+            for (int i = 0; i < vTempList.size(); i++) {
+                link += "{\"target\":" + "\"" + vTempList.get(i).target + "\"" + ","; 
+                link += "\"source\":" + "\"" + vTempList.get(i).source + "\"" + "," + "\"weight\": 1" + "},"; 
+            }
+        }
+        
+        if(link.length() > 0){
+            link = link.substring(0, link.length() - 1);
+        }
+        
+        temps = temps + link + "]}";
+        
+        Logger.info(temps);
+        
+        return temps;
     }
     
     /**

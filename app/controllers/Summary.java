@@ -39,7 +39,14 @@ public class Summary extends CRUD {
         Logger.info(query);
         // 根据业务名称查询
         List<TCfgBusinessDesc> busNodeList = TCfgBusinessDesc.find(query).fetch();
-        render(busNodeList);
+        
+        // 数据字典集合
+        String queryDict=" 1=1 ";
+        queryDict += " AND delFlag = 0 " ;
+        Logger.info(queryDict);
+        List<TCfgDict> dictList = TCfgDict.find(queryDict).fetch();
+        
+        render(busNodeList, dictList);
     }
     
     /**
@@ -50,7 +57,7 @@ public class Summary extends CRUD {
         
         String query=" 1=1 ";
         if(areaName !=null && !"".equals(areaName)){
-            query += " AND area ='" + areaName + "'" ;
+            query += " AND major ='" + areaName + "'" ;
         }
         if(busName !=null && !"".equals(busName)){
             query += " AND name like '%" + busName + "%'" ;

@@ -52,6 +52,7 @@ business.fenxi.analysissummary=分析汇总业务及数据
 
 # 系统管理子菜单
 business.sysguanl.jurmanage=权限管理
+business.sysguanl.usermanage=用户管理
 
 # 登陆信息
 secure.username=Login Name:

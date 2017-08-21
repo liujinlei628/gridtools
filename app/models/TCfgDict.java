@@ -44,4 +44,5 @@ public class TCfgDict extends Model {
         return this.description + "-" + this.type + "-" + this.label + "-" + this.value;
     }
 
+    public Integer con;
 }

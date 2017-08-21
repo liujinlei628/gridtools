@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="en-us">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+        <script type="text/javascript" src="@{'/public/js/jquery-3.1.1.min.js'}"></script>
+        <script type="text/javascript" src="@{'/public/js/jquery-form.min.js'}"></script>
+        <script type="text/javascript" src="@{'/public/js/jquery.validate.min.js'}"></script>
+        <script type="text/javascript" src="@{'/public/js/plugins/jquery-ui/jquery-ui.min.js'}"></script>
+        
+        <!-- Basic Styles -->
+        <link rel="stylesheet" type="text/css" media="screen" href="@{'/public/css/bootstrap.min.css'}">
+        <!-- SmartAdmin Styles : Please note (smartadmin-production.css) was created using LESS variables -->
+        <link rel="stylesheet" type="text/css" media="screen" href="@{'/public/css/smartadmin-skins.min.css'}">
+        <link rel="stylesheet" type="text/css" media="screen" href="@{'/public/css/add-app-class.css'}">
+        <link href="@{'/public/js/plugins/jquery-ui/jquery-ui.min.css'}" rel="stylesheet">
+        <link href="@{'/public/font-awesome/css/font-awesome.css'}" rel="stylesheet">
+        <link href="@{'/public/css/animate.css'}" rel="stylesheet">
+    </head>
+    <style type="text/css">
+    .form-group {
+        margin-top: 10px;
+    }
+    </style>
+<body>
+    <div>
+    <form id="summaryForm" name="summaryForm" class="form-horizontal mar-tb-10" action="" autoscroll="false" method="post" style="padding-right: 5%">
+       <fieldset>
+           
+           <div class="form-group">
+               <label class="col-xs-2 txt-al-mar-pad">专业：</label>
+               <div class="col-xs-10">
+                   <input class="form-control required" type="text" name="prof_name" readonly="readonly" value="${tCfgDataDict.prof_name}" id="prof_name" maxlength="100">
+               </div>
+           </div>
+           
+           <div class="form-group">
+               <label class="col-xs-2 txt-al-mar-pad">序号1：</label>
+               <div class="col-xs-10">
+                   <input class="form-control required" type="text" name="data_mainid" readonly="readonly" value="${tCfgDataDict.data_mainid}" id="data_mainid" maxlength="100">
+               </div>
+           </div>
+           
+           <div class="form-group">
+               <label class="col-xs-2 txt-al-mar-pad">序号2：</label>
+               <div class="col-xs-10">
+                   <input class="form-control required" type="text" name="data_subid" readonly="readonly" value="${tCfgDataDict.data_subid}" id="data_subid" maxlength="100">
+               </div>
+           </div>
+           
+           <div class="form-group">
+               <label class="col-xs-2 txt-al-mar-pad">业务事项：</label>
+               <div class="col-xs-10">
+                   <input class="form-control required" type="text" name="busi_des" readonly="readonly" value="${tCfgDataDict.busi_des}" id="busi_des" maxlength="100">
+               </div>
+           </div>
+           
+           <div class="form-group">
+               <label class="col-xs-2 txt-al-mar-pad">数据项：</label>
+               <div class="col-xs-10">
+                   <input class="form-control required" type="text" name="data_item" readonly="readonly" value="${tCfgDataDict.data_item}" id="data_item" maxlength="100">
+               </div>
+           </div>
+           
+           <div class="form-group">
+               <label class="col-xs-2 txt-al-mar-pad">是否线上数据：</label>
+               <div class="col-xs-10">
+                   <input class="form-control required" type="text" name="if_online" readonly="readonly" value="${tCfgDataDict.if_online}" id="if_online" maxlength="100">
+               </div>
+           </div>
+           
+           <div class="form-group">
+               <label class="col-xs-2 txt-al-mar-pad">是否结构化数据：</label>
+               <div class="col-xs-10">
+                   <input class="form-control required" type="text" name="if_struct" readonly="readonly" value="${tCfgDataDict.if_struct}" id="if_struct" maxlength="100">
+               </div>
+           </div>
+           
+           <div class="form-group">
+               <label class="col-xs-2 txt-al-mar-pad">传输方式：</label>
+               <div class="col-xs-10">
+                   <input class="form-control required" type="text" name="trans_type" readonly="readonly" value="${tCfgDataDict.trans_type}" id="trans_type" maxlength="100">
+               </div>
+           </div>
+           
+           <div class="form-group">
+               <label class="col-xs-2 txt-al-mar-pad">来源系统：</label>
+               <div class="col-xs-10">
+                   <input class="form-control required" type="text" name="src_sys" readonly="readonly" value="${tCfgDataDict.src_sys}" id="src_sys" maxlength="100">
+               </div>
+           </div>
+           
+           <div class="form-group">
+               <label class="col-xs-2 txt-al-mar-pad">接收系统：</label>
+               <div class="col-xs-10">
+                   <input class="form-control required" type="text" name="rec_sys" readonly="readonly" value="${tCfgDataDict.rec_sys}" id="rec_sys" maxlength="100">
+               </div>
+           </div>
+           
+           <div class="form-group">
+               <label class="col-xs-2 txt-al-mar-pad">是否结构化数据：</label>
+               <div class="col-xs-10">
+                   <input class="form-control required" type="text" name="if_maindata" readonly="readonly" value="${tCfgDataDict.if_maindata}" id="if_maindata" maxlength="100">
+               </div>
+           </div>
+           
+           <div class="form-group">
+               <label class="col-xs-2 txt-al-mar-pad">是否可做主数据：</label>
+               <div class="col-xs-10">
+                   <input class="form-control required" type="text" name="title" readonly="readonly" value="${tCfgDataDict.if_struct}" id="if_struct" maxlength="100">
+               </div>
+           </div>
+           
+           <div class="form-group">
+               <label class="col-xs-2 txt-al-mar-pad">系统名称：</label>
+               <div class="col-xs-10">
+                   <input class="form-control required" type="text" name="sys_name" readonly="readonly" value="${tCfgDataDict.sys_name}" id="sys_name" maxlength="100">
+               </div>
+           </div>
+           
+           <div class="form-group">
+               <label class="col-xs-2 txt-al-mar-pad">系统部署方式：</label>
+               <div class="col-xs-10">
+                   <input class="form-control required" type="text" name="deploy_type" readonly="readonly" value="${tCfgDataDict.deploy_type}" id="deploy_type" maxlength="100">
+               </div>
+           </div>
+           
+           <div class="form-group">
+               <label class="col-xs-2 txt-al-mar-pad">数据输入菜单：</label>
+               <div class="col-xs-10">
+                   <input class="form-control required" type="text" name="input_menu" readonly="readonly" value="${tCfgDataDict.input_menu}" id="input_menu" maxlength="100">
+               </div>
+           </div>
+           
+           <div class="form-group">
+               <label class="col-xs-2 txt-al-mar-pad">数据库表名：</label>
+               <div class="col-xs-10">
+                   <input class="form-control required" type="text" name="table_name" readonly="readonly" value="${tCfgDataDict.table_name}" id="table_name" maxlength="100">
+               </div>
+           </div>
+           
+           <div class="form-group">
+               <label class="col-xs-2 txt-al-mar-pad">表中文名：</label>
+               <div class="col-xs-10">
+                   <input class="form-control required" type="text" name="table_zhname" readonly="readonly" value="${tCfgDataDict.table_zhname}" id="table_zhname" maxlength="100">
+               </div>
+           </div>
+           
+           <div class="form-group">
+               <label class="col-xs-2 txt-al-mar-pad">数据库字段名：</label>
+               <div class="col-xs-10">
+                   <input class="form-control required" type="text" name="col_name" readonly="readonly" value="${tCfgDataDict.col_name}" id="col_name" maxlength="100">
+               </div>
+           </div>
+           
+           <div class="form-group">
+               <label class="col-xs-2 txt-al-mar-pad">字段中文名：</label>
+               <div class="col-xs-10">
+                   <input class="form-control required" type="text" name="col_zhname" readonly="readonly" value="${tCfgDataDict.col_zhname}" id="col_zhname" maxlength="100">
+               </div>
+           </div>
+           
+           <div class="form-group">
+               <label class="col-xs-2 txt-al-mar-pad">是否一手数据1：</label>
+               <div class="col-xs-10">
+                   <input class="form-control required" type="text" name="if_onehand1" readonly="readonly" value="${tCfgDataDict.if_onehand1}" id="if_onehand1" maxlength="100">
+               </div>
+           </div>
+           
+           <div class="form-group">
+               <label class="col-xs-2 txt-al-mar-pad">是否一手数据2：</label>
+               <div class="col-xs-10">
+                   <input class="form-control required" type="text" name="if_onehand2" readonly="readonly" value="${tCfgDataDict.if_onehand2}" id="if_onehand2" maxlength="100">
+               </div>
+           </div>
+           
+           <div class="form-group">
+               <label class="col-xs-2 txt-al-mar-pad">生成方式：</label>
+               <div class="col-xs-10">
+                   <input class="form-control required" type="text" name="prod_type" readonly="readonly" value="${tCfgDataDict.prod_type}" id="prod_type" maxlength="100">
+               </div>
+           </div>
+           
+           <div class="form-group">
+               <label class="col-xs-2 txt-al-mar-pad">线下数据表名：</label>
+               <div class="col-xs-10">
+                   <input class="form-control required" type="text" name="offline_table" readonly="readonly" value="${tCfgDataDict.offline_table}" id="offline_table" maxlength="100">
+               </div>
+           </div>
+           
+           <div class="form-group">
+               <label class="col-xs-2 txt-al-mar-pad">数据标准：</label>
+               <div class="col-xs-10">
+                   <input class="form-control required" type="text" name="standard_type" readonly="readonly" value="${tCfgDataDict.standard_type}" id="standard_type" maxlength="100">
+               </div>
+           </div>
+           
+           <div class="form-group">
+               <label class="col-xs-2 txt-al-mar-pad">是否共享数据：</label>
+               <div class="col-xs-10">
+                   <input class="form-control required" type="text" name="if_shared" readonly="readonly" value="${tCfgDataDict.if_shared}" id="if_shared" maxlength="100">
+               </div>
+           </div>
+           
+           <div class="form-group">
+               <label class="col-xs-2 txt-al-mar-pad">是否共享数据修改：</label>
+               <div class="col-xs-10">
+                   <input class="form-control required" type="text" name="if_shared_modify" readonly="readonly" value="${tCfgDataDict.if_shared_modify}" id="if_shared_modify" maxlength="100">
+               </div>
+           </div>
+           
+           <div class="form-group">
+               <label class="col-xs-2 txt-al-mar-pad">数据录入角色：</label>
+               <div class="col-xs-10">
+                   <input class="form-control required" type="text" name="input_oper" readonly="readonly" value="${tCfgDataDict.input_oper}" id="input_oper" maxlength="100">
+               </div>
+           </div>
+           
+           <div class="form-group">
+               <label class="col-xs-2 txt-al-mar-pad">数据录入频率：</label>
+               <div class="col-xs-10">
+                   <input class="form-control required" type="text" name="input_frequency" readonly="readonly" value="${tCfgDataDict.input_frequency}" id="input_frequency" maxlength="100">
+               </div>
+           </div>
+           
+           <div class="form-group">
+               <label class="col-xs-2 txt-al-mar-pad">数据维护角色：</label>
+               <div class="col-xs-10">
+                   <input class="form-control required" type="text" name="maintain_oper" readonly="readonly" value="${tCfgDataDict.maintain_oper}" id="maintain_oper" maxlength="100">
+               </div>
+           </div>
+           
+           <div class="form-group">
+               <label class="col-xs-2 txt-al-mar-pad">数据维护频率：</label>
+               <div class="col-xs-10">
+                   <input class="form-control required" type="text" name="maintain_freq" readonly="readonly" value="${tCfgDataDict.maintain_freq}" id="maintain_freq" maxlength="100">
+               </div>
+           </div>
+           
+           <div class="form-group">
+               <label class="col-xs-2 txt-al-mar-pad">是否完整：</label>
+               <div class="col-xs-10">
+                   <input class="form-control required" type="text" name="if_complete" readonly="readonly" value="${tCfgDataDict.if_complete}" id="if_complete" maxlength="100">
+               </div>
+           </div>
+           
+           <div class="form-group">
+               <label class="col-xs-2 txt-al-mar-pad">是否重复数据：</label>
+               <div class="col-xs-10">
+                   <input class="form-control required" type="text" name="if_dup" readonly="readonly" value="${tCfgDataDict.if_dup}" id="if_dup" maxlength="100">
+               </div>
+           </div>
+           
+           <div class="form-group">
+               <label class="col-xs-2 txt-al-mar-pad">存在系统：</label>
+               <div class="col-xs-10">
+                   <input class="form-control required" type="text" name="exist_sys" readonly="readonly" value="${tCfgDataDict.exist_sys}" id="exist_sys" maxlength="100">
+               </div>
+           </div>
+           
+           <div class="form-group">
+               <label class="col-xs-2 txt-al-mar-pad">数据量：</label>
+               <div class="col-xs-10">
+                   <input class="form-control required" type="text" name="data_quantity" readonly="readonly" value="${tCfgDataDict.data_quantity}" id="data_quantity" maxlength="100">
+               </div>
+           </div>
+           
+       </fieldset>
+       </form>
+    </div>
+</body>
+</html>
+#{set 'moreScripts'}
+
+#{/set}

@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en-us">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+        <script type="text/javascript" src="@{'/public/js/jquery-3.1.1.min.js'}"></script>
+        <script type="text/javascript" src="@{'/public/js/jquery-form.min.js'}"></script>
+        <script type="text/javascript" src="@{'/public/js/jquery.validate.min.js'}"></script>
+        <script type="text/javascript" src="@{'/public/js/plugins/jquery-ui/jquery-ui.min.js'}"></script>
+        
+        <!-- Basic Styles -->
+        <link rel="stylesheet" type="text/css" media="screen" href="@{'/public/css/bootstrap.min.css'}">
+        <!-- SmartAdmin Styles : Please note (smartadmin-production.css) was created using LESS variables -->
+        <link rel="stylesheet" type="text/css" media="screen" href="@{'/public/css/smartadmin-skins.min.css'}">
+        <link rel="stylesheet" type="text/css" media="screen" href="@{'/public/css/add-app-class.css'}">
+        <link href="@{'/public/js/plugins/jquery-ui/jquery-ui.min.css'}" rel="stylesheet">
+        <link href="@{'/public/font-awesome/css/font-awesome.css'}" rel="stylesheet">
+        <link href="@{'/public/css/animate.css'}" rel="stylesheet">
+        <script type="text/javascript">
+            $(document).ready(function() {
+                
+            });
+        </script>
+    </head>
+    <body>
+        <form id="summaryForm" name="summaryForm" class="form-horizontal mar-tb-10" action="@{controllers.Dicts.save()}" autoscroll="false" method="post" style="padding-right: 5%">
+            <fieldset>
+                <input type="hidden" name="id" id="id" value="${tCfgDict.id}" />
+                <div class="form-group">
+                    <label class="col-xs-2 txt-al-mar-pad">键值：<font style="color:red;"> * </font></label>
+                    <div class="col-xs-10">
+                        <input class="form-control required" type="text" name="value" id="value" value="${tCfgDict.value}" maxlength="50" />
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label class="col-xs-2 txt-al-mar-pad">标签：<font style="color:red;"> * </font></label>
+                    <div class="col-xs-10">
+                        <input class="form-control required" type="text" name="label" id="label" value="${tCfgDict.label}" maxlength="50" />
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label class="col-xs-2 txt-al-mar-pad">类型：<font style="color:red;"> * </font></label>
+                    <div class="col-xs-10">
+                        <input class="form-control required" type="text" name="type" id="type" value="${tCfgDict.type}" maxlength="50" />
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label class="col-xs-2 txt-al-mar-pad">描述：<font style="color:red;"> * </font></label>
+                    <div class="col-xs-10">
+                        <input class="form-control required" type="text" name="description" id="description" value="${tCfgDict.description}" maxlength="50" />
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label class="col-xs-2 txt-al-mar-pad">排序：<font style="color:red;"> * </font></label>
+                    <div class="col-xs-10">
+                        <input class="form-control required" type="text" name="sort" id="sort" value="${tCfgDict.sort}" maxlength="50" />
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label class="col-xs-2 txt-al-mar-pad">备注：</label>
+                    <div class="col-xs-10">
+                        <textarea rows="3" class="form-control" cols="50" name="remarks" id="remarks" >${tCfgDict.remarks}</textarea>
+                    </div>
+                </div>
+            </fieldset>
+        </form>
+    </body>
+</html>

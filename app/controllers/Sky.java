@@ -134,7 +134,7 @@ public class Sky extends Controller {
 			node = new TempNode();
 			node.name = _busi.business_id;
 			node.displayname= node.name+"\n"+_busi.name +"\n"+_busi.description;
-			node.category = _busi.professional;
+			node.category = _busi.area;
 			if(!nodeSet.contains(node.name)) {
 				nodeList.add(node);
 				nodeSet.add(node.name);
@@ -145,7 +145,7 @@ public class Sky extends Controller {
 			}
 
 			category = new TempCategory();
-			category.name = _busi.professional;
+			category.name = _busi.area;
 			if(!categorySet.contains(category.name)) {
 				categoryList.add(category);
 				categorySet.add(category.name);
@@ -161,7 +161,7 @@ public class Sky extends Controller {
 			}
 
 			category = new TempCategory();
-			category.name = _busi.post_professional;
+			category.name = _busi.post_area;
 			if(!categorySet.contains(category.name)) {
 				categoryList.add(category);
 				categorySet.add(category.name);
@@ -200,6 +200,10 @@ public class Sky extends Controller {
 			_output.add("categories", gson.toJsonTree(categoryList));
 		}
 
+		System.out.println(gson.toJsonTree(nodeList));
+        System.out.println(gson.toJsonTree(linkList));
+        System.out.println(gson.toJsonTree(categoryList));
+		
 		renderText(_output);
 	}
 
@@ -212,7 +216,7 @@ public class Sky extends Controller {
 			node = new TempNode();
 			node.name = _busi.post_business_id;
 			node.displayname= node.name+"\n"+_busi.post_business_name +"\n"+_busi.post_business_description;
-			node.category = _busi.post_professional;
+			node.category = _busi.post_area;
 
 			if(!nodeSet.contains(node.name)) {
 				nodeList.add(node);
@@ -224,7 +228,7 @@ public class Sky extends Controller {
 			}
 
 			category = new TempCategory();
-			category.name = _busi.post_professional;
+			category.name = _busi.post_area;
 			if(!categorySet.contains(category.name)) {
 				categoryList.add(category);
 				categorySet.add(category.name);

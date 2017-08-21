@@ -369,21 +369,21 @@ public class Business extends CRUD {
         List<TempNode> nodeListZy = new ArrayList<TempNode>();
         List<TempNode> nodeListFz = new ArrayList<TempNode>();
         for (TempNode temNode : nodeList) {
-            if("电网业务".equals(temNode.category)){
+            if("客户服务".equals(temNode.category)){
                 nodeListDw.add(temNode);
             }
-            if("资源保障".equals(temNode.category)){
+            if("电网业务".equals(temNode.category)){
                 nodeListZy.add(temNode);
             }
-            if("辅助保障".equals(temNode.category)){
+            if("支撑保障".equals(temNode.category)){
                 nodeListFz.add(temNode);
             }
         }
         
-        /* getCoordinate(nodeListDw, 0, 800, 0, 0);
+        /*getCoordinate(nodeListDw, 0, 800, 0, 0);
         getCoordinate(nodeListZy, 1000, 1600, 0, 0);
-        getCoordinate(nodeListFz, 1800, 2800, 0, 0);*/
-        /*getCoordinate2(nodeListDw, 0, 800, 0, 0);*/
+        getCoordinate(nodeListFz, 1800, 2800, 0, 0);
+        getCoordinate2(nodeListDw, 0, 800, 0, 0);*/
         getCoordinateIndex(nodeListDw, 0, 800, 0, 0);
         getCoordinateLeft(nodeListZy, 1000, 1800, 0, 0);
         getCoordinateRight(nodeListFz, 1000, 1800, 0, 0);
@@ -877,9 +877,9 @@ public class Business extends CRUD {
                 linkList.add(link);
                 linkSet.add(link.source+"-"+link.target);
             }
-
+            
             i++;
-
+            
             if(!_busi.relation.equalsIgnoreCase("引用")) {
                 findNext(leaderSet, nodeSet, linkSet, categorySet, nodeList, linkList, categoryList, _busi.post_business_id, keyword, node.x, node.y, _x_d, _y_d, xx);
             }
@@ -900,13 +900,16 @@ public class Business extends CRUD {
             }
         }
 
-
         if(_r) {
             _output.add("nodes", gson.toJsonTree(nodeList));
             _output.add("links", gson.toJsonTree(linkList));
             _output.add("categories", gson.toJsonTree(categoryList));
             _output.addProperty("xx",4000);
         }
+        
+        Logger.info("nodes:" + gson.toJsonTree(nodeList));
+        Logger.info("links:" + gson.toJsonTree(linkList));
+        Logger.info("categories:" + gson.toJsonTree(categoryList));
 
         renderText(_output);
     }

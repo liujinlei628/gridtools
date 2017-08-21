@@ -25,7 +25,9 @@
 <script type="text/javascript">
     var myChart = echarts.init(document.getElementById('main'));
     $.getJSON("@{controllers.Sky.search("")}", function(data) {
+        
         option = {
+            backgroundColor: '#404a59',
             title: {
                 text: "公司业务一体化体系",
                 top: "top",
@@ -38,14 +40,9 @@
                 }
             },
             legend: {
-                x: "bottom",
-                bottom:"auto",
-                data: data.categories.map(function (a) {
-                    return a.name;
-                }),
-                tooltip: {
-                    show: true
-                },
+                left:"auto",
+                top: 20,
+                data: data.categories
             },
             toolbox: {
                 show: true,
@@ -75,16 +72,15 @@
             series: [{
                 type: 'graph',
                 layout: 'force',
-
-                force: {
-                    //initLayout:'circular'
-                    edgeLength: 50,
-                    repulsion: 50,
-                    gravity: 0.2
-                },
-                data: data.nodes,
-                links: data.links,
-                categories: data.categories,
+                // 设置节点样式
+                symbol: 'roundRect',
+                // 设置节点大小
+                symbolSize: [15, 15],
+                // color:['yellow' , 'white', 'red'],
+                /* symbolSize: function(value, params) {
+                    //return [params.data.displayname.length * 10, 35];
+                    return [50, 35];
+                }, */
                 focusNodeAdjacency: true,
                 roam: true,
                 label: {
@@ -100,10 +96,25 @@
                         }
                     }
                 },
+                force: {
+                    //initLayout:'circular'
+                    edgeLength: 50,
+                    repulsion: 50,
+                    gravity: 0.3
+                },
+                data: data.nodes,
+                links: data.links,
+                categories: data.categories,
                 lineStyle: {
                     normal: {
-                        //color: 'target',
-                        curveness: 0
+                    	color: 'yellow',
+                        curveness: 0,
+                        width: 2 
+                    },
+                    emphasis: {
+                        color: 'yellow',
+                        curveness: 0,
+                        width: 2 
                     }
                 }
             }]

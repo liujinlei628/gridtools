@@ -75,12 +75,11 @@
                 // 设置节点样式
                 symbol: 'roundRect',
                 // 设置节点大小
-                symbolSize: [15, 15],
-                // color:['yellow' , 'white', 'red'],
+                symbolSize: [40, 20],
+                color:['#8a718a' , '#419ea3', '#549e8b'],
                 /* symbolSize: function(value, params) {
-                    //return [params.data.displayname.length * 10, 35];
-                    return [50, 35];
-                }, */
+                    return [params.data.displayname.length * 8, 50];
+                }, */ 
                 focusNodeAdjacency: true,
                 roam: true,
                 label: {
@@ -92,7 +91,7 @@
                         textStyle: {
                             color: '#333',
                             fontFamily: '微软雅黑',
-                            fontSize: 10
+                            fontSize: 8
                         }
                     }
                 },
@@ -100,7 +99,7 @@
                     //initLayout:'circular'
                     edgeLength: 50,
                     repulsion: 50,
-                    gravity: 0.3
+                    gravity: 0.05
                 },
                 data: data.nodes,
                 links: data.links,
@@ -109,7 +108,7 @@
                     normal: {
                     	color: 'yellow',
                         curveness: 0,
-                        width: 2 
+                        width: 1
                     }
                 }
             }]

@@ -154,7 +154,7 @@ public class Sky extends Controller {
 			node = new TempNode();
 			node.name = _busi.post_business_id;
 			node.displayname= node.name+"\n"+_busi.post_business_name +"\n"+_busi.post_business_description;
-			node.category = _busi.post_professional;
+			node.category = _busi.post_area;
 			if(!nodeSet.contains(node.name)) {
 				nodeList.add(node);
 				nodeSet.add(node.name);
@@ -200,10 +200,6 @@ public class Sky extends Controller {
 			_output.add("categories", gson.toJsonTree(categoryList));
 		}
 
-		System.out.println(gson.toJsonTree(nodeList));
-        System.out.println(gson.toJsonTree(linkList));
-        System.out.println(gson.toJsonTree(categoryList));
-		
 		renderText(_output);
 	}
 

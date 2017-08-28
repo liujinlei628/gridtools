@@ -31,7 +31,10 @@
             title: {
                 text: "公司业务一体化体系",
                 top: "top",
-                left: "center"
+                left: "center",
+                textStyle: {
+                    color: 'white'
+                }
             },
             tooltip: {
                 show: true,
@@ -42,7 +45,10 @@
             legend: {
                 left:"auto",
                 top: 20,
-                data: data.categories
+                data: data.categories,
+                textStyle: {
+                    color: 'white'
+                }
             },
             toolbox: {
                 show: true,
@@ -73,10 +79,11 @@
                 type: 'graph',
                 layout: 'force',
                 // 设置节点样式
-                symbol: 'roundRect',
+                // symbol: 'roundRect',
+                // 设置节点颜色
+                color:['#20b358' , '#335bc0', '#e54c2e'],
                 // 设置节点大小
-                symbolSize: [40, 20],
-                color:['#8a718a' , '#419ea3', '#549e8b'],
+                // symbolSize: [15, 15],
                 /* symbolSize: function(value, params) {
                     return [params.data.displayname.length * 8, 50];
                 }, */ 
@@ -99,7 +106,7 @@
                     //initLayout:'circular'
                     edgeLength: 50,
                     repulsion: 50,
-                    gravity: 0.05
+                    gravity: 0.1
                 },
                 data: data.nodes,
                 links: data.links,

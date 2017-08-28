@@ -2,10 +2,9 @@
 #{set title:'index.html' /}
 
 <ul class="nav nav-tabs">
-    <li class="active"><a href="@{controllers.Summary.list()}">业务节点维护</a></li>
-    <li><a href="@{controllers.Business.list()}">业务关系维护</a></li>
-    <li><a href="@{Business.toUpload()}">串接关系导入</a></li>
-    <li><a href="@{controllers.Dicts.list()}">基础数据维护</a></li>
+    <li><a href="@{controllers.DataDicts.dataArchitecture()}">数据架构</a></li>
+    <li><a href="#">数据流向</a></li>
+    <li class="active"><a href="@{controllers.Businessobjs.list()}">数据生命周期</a></li>
 </ul>
 
 <div class="row">
@@ -13,15 +12,9 @@
         <div class="ibox float-e-margins" id="_qunee">
             <div class="ibox-content" style="overflow: hidden;padding-bottom: 0;">
                 <div class="search-form">
-                    <!-- <form action="@{controllers.Summary.list()}" method="get">
-                        <div class="input-group">
-                            <input type="text" placeholder="${busName}" name="busName" id="busName" value="${busName}" class="form-control input-lg">
-                            <div class="input-group-btn">
-                                <button class="btn btn-lg btn-primary" type="submit">搜索</button>
-                            </div>
-                        </div>
-                    </form> -->
                     <form action="" id="searchForm" class="form-horizontal">
+                        <input type="hidden" name="startPosition" id="startPosition" value="${startPosition}" >
+                        <input type="hidden" name="totalReport" id="totalReport" value="${totalReport}" >
                         <div class="form-group">
                             <label class="txt-al-mar-pad">专业：</label>
                             <div class="col-search-input">
@@ -49,8 +42,6 @@
                             <div class="input-group-btn">
                                 <button class="btn btn btn-primary" type="submit">搜索</button>
                                 <button class="btn btn btn-primary" style="margin-left: 10px;" type="button" onclick="cleanForm()">清空</button>
-                                <button class="btn btn btn-primary" style="margin-left: 10px;" type="button" onclick="addNodeInfo()">新增业务内容描述</button>
-                                <button class="btn btn btn-primary" style="margin-left: 10px;" type="button" onclick="addOneLevel()">新增业务</button>
                             </div>
                         </div>
                     </form>
@@ -73,8 +64,8 @@
                                 <th width="10%">业务编号</th>
                                 <th width="15%">业务名称</th>
                                 <th width="20%">业务内容</th>
-                                <th width="20%">业务内容描述</th>
-                                <th width="10%">操作</th>
+                                <th width="25%">业务内容描述</th>
+                                <th width="5%">操作</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -95,19 +86,14 @@
                                 </td>
                                 <td>
                                     #{if _busi.title != null}
-                                        ${_busi.title.length() > 9 ? _busi.title[0..9] + '…' : _busi.title}
+                                        <a href="javascript:void(0);" onclick="toBusObj('${_busi.title}')" >${_busi.title.length() > 9 ? _busi.title[0..9] + '…' : _busi.title}</a>
                                     #{/if}
                                     #{else}
-                                        ${_busi.title}
+                                        <a href="javascript:void(0);" onclick="toBusObj('${_busi.title}')" >${_busi.title}</a>
                                     #{/else}
                                 </td>
                                 <td>
                                     <a href="javascript:void(0);" onclick="queryNodeInfoById('${_busi.id}')" >查看</a>
-                                    <!-- <a href="javascript:void(0);" onclick="#" >修改</a> -->
-                                    #{if _busi.delFlag == '0'}
-                                        <a href="javascript:void(0);" onclick="toEditById('${_busi.id}')" >修改</a>
-                                        <a href="javascript:void(0);" onclick="deleteById('${_busi.id}')" >删除</a>
-                                    #{/if}
                                 </td>
                             </tr>
                             #{/list}
@@ -115,32 +101,24 @@
                     </table>
                 </div>
                 <div class="page-box">
-                    <button class="next-page-btn page-box-row"><a class="next-page-btn-a" href="@{Summary.previousPage(0)}">首页</a></button>
-                    <button class="next-page-btn page-box-row"><a class="next-page-btn-a" href="@{Summary.previousPage(startPosition)}">上一页</a></button>
-                    <div class="page-box-row">
-                        <!-- <li class="page-item current-page-li ">当前第&nbsp;${startPosition}&nbsp;页，一共&nbsp;${totalReport/10}&nbsp;页</li>
-                        <li class="page-item current-page-li"><a href="@{Summary.list(this.text)}">跳转到第<input type="text" >页</a></li> -->
-                    </div>
-                    <button class="next-page-btn page-box-row"><a class="next-page-btn-a" href="@{Summary.nextPage(startPosition)}">下一页</a></button>
-                    <button class="next-page-btn page-box-row"><a class="next-page-btn-a" href="@{Summary.nextPage(totalReport/20)}">尾页</a></button>
-                    <!-- <div class="page-box-row">  
-                        <span class="triangle"></span>  
-                        <ul class="page-ul">  
-                            %{  
-                                for(int i=0; i< totalReport/20 ; i++){
-                            }%  
-                                <li class="page-item current-page-li"><a href="@{Summary.list(i)}">第 ${i+1} 页</a></li>  
-                            %{  
-                                }  
-                            }%  
-                        </ul>
-                        <a href="" class="current-page-a">尾页</a>
-                    </div> -->
+                    <button class="next-page-btn page-box-row">
+                        <a class="next-page-btn-a" href="javascript:void(0);" onclick="previousPage('0')" >首页</a>
+                    </button>
+                    <button class="next-page-btn page-box-row">
+                        <a class="next-page-btn-a" href="javascript:void(0);" onclick="previousPage('${startPosition}')" >上一页</a>
+                    </button>
+                    <button class="next-page-btn page-box-row">
+                        <a class="next-page-btn-a" href="javascript:void(0);" onclick="nextPage('${startPosition}')" >下一页</a>
+                    </button>
+                    <button class="next-page-btn page-box-row">
+                        <a class="next-page-btn-a" href="javascript:void(0);" onclick="nextPage('${totalReport/10}')" >尾页</a>
+                    </button>
                 </div>
             </div>
         </div>
     </div>
 </div>
+
 #{set 'moreScripts'}
 <script type="text/javascript" src="@{'/public/js/echarts.min.js'}"></script>
 <script type="text/javascript" src="@{'/public/js/jquery-form.min.js'}"></script>
@@ -545,12 +523,30 @@
         });
     }
     
+    function previousPage(startPosition){
+        
+        $("#startPosition").val(startPosition);
+        $("#searchForm").attr("action", "@{controllers.BusinessObjs.previousPage()}");
+        $("#searchForm").submit();
+    }
+    
+    function nextPage(startPosition){
+        
+        $("#startPosition").val(startPosition);
+        $("#searchForm").attr("action", "@{controllers.BusinessObjs.nextPage()}");
+        $("#searchForm").submit();
+    }
+    
+    function toBusObj(busContent){
+        window.location.href="/Businessobjs/toBusObj?busContent=" + busContent;
+    }
+    
 </script>
 
 <script type="text/javascript">
 
 $(function(){
-     showHighLight(1, 1, 4);
+    showHighLight(2, 2, 5);
 });
 
 </script>

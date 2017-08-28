@@ -101,11 +101,15 @@ public class Summary extends CRUD {
      * 跳转到信息查看页面
      * @param id 
      */
-    public static void list(int startPosition, String business, String name, String content) {
+    public static void list(int startPosition, String major, String business, String name, String content) {
         // 总数
         int totalReport = TCfgBusinessDesc.findAll().size();
         
         String query=" 1=1 ";
+        if(major !=null && !"".equals(major)){
+            query += " AND major ='" + major + "'" ;
+        }
+        
         if(business !=null && !"".equals(business)){
             query += " AND business ='" + business + "'" ;
         }
@@ -122,8 +126,14 @@ public class Summary extends CRUD {
         Logger.info(query);
         
         List<TCfgBusinessDesc> list =TCfgBusinessDesc.find(query).from(startPosition*10).fetch(10);
-
-        render(startPosition, totalReport, list, business, name, content);
+        
+        // 数据字典集合
+        String queryDict=" 1=1 ";
+        queryDict += " AND delFlag = 0 " ;
+        Logger.info(queryDict);
+        List<TCfgDict> dictList = TCfgDict.find(queryDict).fetch();
+        
+        render(startPosition, totalReport, list, dictList, major, business, name, content);
         
     }
     
@@ -135,14 +145,14 @@ public class Summary extends CRUD {
      * @param content 内容
      */
     @SuppressWarnings("unused")
-    public static void previousPage(int startPosition, String business, String name, String content) {  
+    public static void previousPage(int startPosition, String major, String business, String name, String content) {  
         int totalUpload = TCfgBusinessDesc.findAll().size()/10;  
         if(startPosition == 0) {  
             startPosition = startPosition;
         } else {  
             startPosition = startPosition - 1;
         }  
-        list(startPosition, business, name, content);
+        list(startPosition, major, business, name, content);
     }  
 
     /**
@@ -152,14 +162,14 @@ public class Summary extends CRUD {
      * @param name 名称
      * @param content 内容
      */
-    public static void nextPage(int startPosition, String business, String name, String content) {  
+    public static void nextPage(int startPosition, String major, String business, String name, String content) {  
         int totalUpload = TCfgBusinessDesc.findAll().size();  
         if(startPosition >= totalUpload/10) {
             startPosition = startPosition;
         } else {  
             startPosition = startPosition + 1;
         }  
-        list(startPosition, business, name, content);
+        list(startPosition, major, business, name, content);
     }
     
     /**

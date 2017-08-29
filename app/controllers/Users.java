@@ -89,44 +89,74 @@ public class Users extends Controller {
      */
     public static void form(Long id) {
         
-        TCfgUser tCfgUser = null;
+        // 数据字典集合
+        String queryDict=" 1=1 ";
+        queryDict += " AND delFlag = 0 " ;
+        Logger.info(queryDict);
+        List<TCfgDict> dictList = TCfgDict.find(queryDict).fetch();
+        
+        TCfgUser tCfgUser = new TCfgUser("", "", "");
         // 修改
         if(id != null && !"".equals(id)){
             // 数据字典
             tCfgUser = TCfgUser.findById(id);
-            render(tCfgUser);
+            render(tCfgUser, dictList);
         } 
-        render(tCfgUser);
+        render(tCfgUser, dictList);
     }
     
     /**
-     * 保存节点信息与关系
-     * @param name 业务名称
-     * @param content 业务内容
-     * @param title 业务事项
-     * @param major 专业
-     * @param area 所属板块
-     * @param description 业务内容描述
+     * 跳转到新增/修改页面页面
      */
-    public @ResponseBody String save(Long id, String value, String label, String type, String description, String sort, String remarks) {
+    public static void toEditUserInfo(Long id) {
+        
+        // 数据字典集合
+        String queryDict=" 1=1 ";
+        queryDict += " AND delFlag = 0 " ;
+        Logger.info(queryDict);
+        List<TCfgDict> dictList = TCfgDict.find(queryDict).fetch();
+        
+        TCfgUser tCfgUser = new TCfgUser("", "", "");
+        // 修改
+        if(id != null && !"".equals(id)){
+            // 数据字典
+            tCfgUser = TCfgUser.findById(id);
+            render(tCfgUser, dictList);
+        } 
+        render(tCfgUser, dictList);
+    }
+    
+    /**
+     * 保存用户信息
+     * @param loginName 登陆名
+     * @param password 密码
+     * @param fullname 用户名
+     * @param isAdmin 是否管理员
+     * @param remarks 备注
+     */
+    public @ResponseBody String save(Long id, String loginName, String password, String fullname, String isAdmin, String remarks) {
         
         String msg = "0";
         try {
-            TCfgDict tCfgDict = new TCfgDict();
+            TCfgUser tCfgUser = new TCfgUser(loginName, password, fullname);
             if(id != null && !"".equals(id)){
-                tCfgDict = TCfgDict.findById(id);
+                tCfgUser = TCfgUser.findById(id);
             }
+            
             // 保存节点信息
-            if(!"".equals(type) && !"".equals(type)) {
-                tCfgDict.value = value;
-                tCfgDict.label = label;
-                tCfgDict.type = type;
-                tCfgDict.description = description;
-                tCfgDict.sort = sort;
-                tCfgDict.remarks = remarks;
-                tCfgDict.delFlag = "0";
+            if(!"".equals(loginName) && !"".equals(loginName)) {
+                tCfgUser.loginName = loginName;
+                tCfgUser.password = password;
+                tCfgUser.fullname = fullname;
+                if("true".equals(isAdmin)){
+                    tCfgUser.isAdmin = true;
+                } else {
+                    tCfgUser.isAdmin = false;
+                }
+                tCfgUser.remarks = remarks;
+                tCfgUser.delFlag = "0";
             }
-            tCfgDict.save();
+            tCfgUser.save();
             msg = "1";
         } catch (Exception e) {
             msg = "-1";

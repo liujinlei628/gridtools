@@ -278,7 +278,20 @@ public class BusinessObjs extends CRUD {
         tCfgDataLife.delFlag = "0";
         tCfgDataLife.save();
         
-        render(busAttrName, busAttrCode, tCfgDataLife, strList);
+        List<TCfgBusinessObj> startObjList = TCfgBusinessObj.find("bus_content=?", start_node).fetch();
+        List<TCfgBusinessObj> endObjList = TCfgBusinessObj.find("bus_content=?", end_node).fetch();
+        List<TCfgBusinessObj> appObjList = new ArrayList<TCfgBusinessObj>();
+        
+        for(String busContent : strList){
+            List<TCfgBusinessObj> objList = TCfgBusinessObj.find("bus_content=?", busContent).fetch();
+            if(objList.size() > 0){
+                for(TCfgBusinessObj obj : objList){
+                    appObjList.add(obj);
+                }
+            }
+        }
+        
+        render(busAttrName, busAttrCode, tCfgDataLife, strList, startObjList, endObjList, appObjList);
     }
     
     

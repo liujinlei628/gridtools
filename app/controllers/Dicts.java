@@ -10,17 +10,17 @@ import play.mvc.Before;
 import play.mvc.Controller;
 import play.mvc.With;
 
-/*@Check("admin")
-@With(Secure.class)*/
+@Check("admin")
+@With(Secure.class)
 public class Dicts extends Controller {
     
-    /*@Before
+    @Before
     public static void setConnectedUser() {
         if(Security.isConnected()) {
             TCfgUser user = TCfgUser.find("byLoginName", Security.connected()).first();
             renderArgs.put("user", user.fullname);
         }
-    }*/
+    }
     
     /**
      * 跳转到基础数据列表页面

@@ -62,9 +62,9 @@
                                 <td>${_busi.loginName}</td>
                                 <td>${_busi.fullname}</td>
                                 <td>${_busi.isAdmin}</td>
-                                <td></td>
+                                <td>${_busi.remarks}</td>
                                 <td>
-                                    <!-- <a href="javascript:void(0);" onclick="toEditDictInfo('${_busi.id}')" >修改</a> -->
+                                    <a href="javascript:void(0);" onclick="toEditUserInfo('${_busi.id}')" >修改</a>
                                     <a href="javascript:void(0);" onclick="deleteById('${_busi.id}')" >删除</a>
                                 </td>
                             </tr>
@@ -99,7 +99,7 @@
         $(html).dialog($.extend({
             modal: true,
             width: 800,
-            height: 550,
+            height: 450,
             closeOnEscape: false,
             draggable: false,
             resizable: false,
@@ -154,8 +154,8 @@
         }));
     }
     
-    function toEditDictInfo(dictId){
-        var html = "<div id='dialog-window' title='业务信息'><iframe id='myFrame' src='/Dicts/form?id="+dictId+"' frameBorder='0' style='border: 0;margin-bottom:-5px;margin-top:-3px;' scrolling='no' height='100%' width='100%'></iframe></div>";
+    function toEditUserInfo(userId){
+        var html = "<div id='dialog-window' title='用户信息'><iframe id='myFrame' src='/Users/toEditUserInfo?id="+userId+"' frameBorder='0' style='border: 0;margin-bottom:-5px;margin-top:-3px;' scrolling='no' height='100%' width='100%'></iframe></div>";
         $(html).dialog($.extend({
             modal: true,
             width: 800,

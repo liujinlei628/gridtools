@@ -55,7 +55,7 @@
                             <option value="">请选择</option>
                             #{list items:dictList,as:'_dict'}
                                 #{if _dict.type == 'is_admin' }
-                                    <option value="${_dict.label}" >${_dict.label}</option>
+                                    <option value="${_dict.label}" #{if _dict.label == tCfgUser.isAdmin}selected="selected"#{/if}>${_dict.label}</option>
                                 #{/if}
                             #{/list}
                         </select>

@@ -20,4 +20,6 @@ public class TempBusObj  extends Model{
     
     public List<TCfgLogicalEntity> tCfgLogicalEntitieList; // 业务逻辑实体
     
+    public List<TCfgPhysicalEntity> tCfgPhysicalEntitieList; // 业务物理实体
+    
 }

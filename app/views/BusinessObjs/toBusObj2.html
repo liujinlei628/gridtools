@@ -87,7 +87,7 @@
                                                 <th width="20%">数据库表名</th>
                                                 <th width="25%">数据项名称</th>
                                             </tr>
-                                            #{list items:tCfgPhysicalEntitieList,as:'_phyicList'}
+                                            #{list items:_objVo.tCfgPhysicalEntitieList,as:'_phyicList'}
                                             <tr class="phyicalInfoTr">
                                                 <td>${_phyicList_index}</td>
                                                 <td>${_phyicList.bus_sys_src}</td>

@@ -132,17 +132,35 @@ public class BusinessObjs extends CRUD {
         // 给VO对象赋值
         if(list.size() > 0){
             for(int i = 0 ; i < list.size() ; i ++){
+                // 定义业务对象VO
                 TempBusObj tempBusObj = new TempBusObj();
+                // 存入VO对象
                 tempBusObj.tCfgBusinessObj = list.get(i);
+                // 获取当前业务对象下的所有逻辑实体对象
                 List<TCfgLogicalEntity> tempLogicaEntityList = new ArrayList<TCfgLogicalEntity>();
                 if(tempBusObj.tCfgBusinessObj.bus_obj_code != null){
                     tempLogicaEntityList = TCfgLogicalEntity.find("bus_obj_code=?", tempBusObj.tCfgBusinessObj.bus_obj_code).fetch();
                 }
+                // 存入VO对象
                 tempBusObj.tCfgLogicalEntitieList = tempLogicaEntityList;
+                // 获取每一个逻辑实体下的物理实体对象
+                List<TCfgPhysicalEntity> tCfgPhysicalEntitieList = new ArrayList<TCfgPhysicalEntity>();
+                for(int j = 0 ; j < tempLogicaEntityList.size(); j ++){
+                    TCfgLogicalEntity logicalEntity = tempLogicaEntityList.get(j);
+                    if(!"".equals(logicalEntity.bus_attr_code) && logicalEntity.bus_attr_code != null){
+                        List<TCfgPhysicalEntity> tCfgPhysicalEntities = TCfgPhysicalEntity.find("bus_attr_code=?", logicalEntity.bus_attr_code).fetch();
+                        if(tCfgPhysicalEntities.size() > 0){
+                            for(TCfgPhysicalEntity physicalEntity : tCfgPhysicalEntities){
+                                tCfgPhysicalEntitieList.add(physicalEntity);
+                            }
+                        }
+                    }
+                }
+                tempBusObj.tCfgPhysicalEntitieList = tCfgPhysicalEntitieList;
                 tempBusObjList.add(tempBusObj);
             }
         }
-        // 获取全部的物理对象集合
+        /* // 获取全部的物理对象集合
         List<TCfgPhysicalEntity> tCfgPhysicalEntitieList = new ArrayList<TCfgPhysicalEntity>();;
         // convert(list, tempBusObjList);
         if(tempBusObjList.size() > 0){
@@ -159,8 +177,8 @@ public class BusinessObjs extends CRUD {
                     }
                 }
             }
-        }
-        render(busContent, list, tempBusObjList, tCfgPhysicalEntitieList);
+        }*/
+        render(busContent, list, tempBusObjList);
     }
     
     /**
@@ -182,18 +200,37 @@ public class BusinessObjs extends CRUD {
         // 给VO对象赋值
         if(list.size() > 0){
             for(int i = 0 ; i < list.size() ; i ++){
+                // 定义业务对象VO
                 TempBusObj tempBusObj = new TempBusObj();
+                // 存入VO对象
                 tempBusObj.tCfgBusinessObj = list.get(i);
+                // 获取当前业务对象下的所有逻辑实体对象
                 List<TCfgLogicalEntity> tempLogicaEntityList = new ArrayList<TCfgLogicalEntity>();
                 if(tempBusObj.tCfgBusinessObj.bus_obj_code != null){
                     tempLogicaEntityList = TCfgLogicalEntity.find("bus_obj_code=?", tempBusObj.tCfgBusinessObj.bus_obj_code).fetch();
                 }
+                // 存入VO对象
                 tempBusObj.tCfgLogicalEntitieList = tempLogicaEntityList;
+                // 获取每一个逻辑实体下的物理实体对象
+                List<TCfgPhysicalEntity> tCfgPhysicalEntitieList = new ArrayList<TCfgPhysicalEntity>();
+                for(int j = 0 ; j < tempLogicaEntityList.size(); j ++){
+                    TCfgLogicalEntity logicalEntity = tempLogicaEntityList.get(j);
+                    if(!"".equals(logicalEntity.bus_attr_code) && logicalEntity.bus_attr_code != null){
+                        List<TCfgPhysicalEntity> tCfgPhysicalEntities = TCfgPhysicalEntity.find("bus_attr_code=?", logicalEntity.bus_attr_code).fetch();
+                        if(tCfgPhysicalEntities.size() > 0){
+                            for(TCfgPhysicalEntity physicalEntity : tCfgPhysicalEntities){
+                                tCfgPhysicalEntitieList.add(physicalEntity);
+                            }
+                        }
+                    }
+                }
+                tempBusObj.tCfgPhysicalEntitieList = tCfgPhysicalEntitieList;
                 tempBusObjList.add(tempBusObj);
             }
         }
-        // 获取全部的物理对象集合
-        List<TCfgPhysicalEntity> tCfgPhysicalEntitieList = new ArrayList<TCfgPhysicalEntity>();;
+        
+        /*// 获取全部的物理对象集合
+        List<TCfgPhysicalEntity> tCfgPhysicalEntitieList = new ArrayList<TCfgPhysicalEntity>();
         // convert(list, tempBusObjList);
         if(tempBusObjList.size() > 0){
             for(int i = 0 ; i < tempBusObjList.size() ; i ++){
@@ -209,8 +246,8 @@ public class BusinessObjs extends CRUD {
                     }
                 }
             }
-        }
-        render(busContent, list, tempBusObjList, tCfgPhysicalEntitieList);
+        }*/
+        render(busContent, list, tempBusObjList);
     }
     
     /**

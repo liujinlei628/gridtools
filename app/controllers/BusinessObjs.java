@@ -164,6 +164,56 @@ public class BusinessObjs extends CRUD {
     }
     
     /**
+     * 跳转到业务对象页面<br/>
+     * 根据业务内容描述查询该业务内容描述下的业务对象实体
+     * @param busContent 业务内容描述
+     */
+    public static void toBusObj2(String busContent) {
+        
+        String query=" 1=1 ";
+        if(busContent !=null && !"".equals(busContent)){
+            query += " AND bus_content ='" + busContent + "'" ;
+        }
+        query += " ORDER BY ID" ;
+        Logger.info(query);
+        // 获取业务对象集合
+        List<TCfgBusinessObj> list =TCfgBusinessObj.find(query).fetch();
+        List<TempBusObj> tempBusObjList = new ArrayList<TempBusObj>();
+        // 给VO对象赋值
+        if(list.size() > 0){
+            for(int i = 0 ; i < list.size() ; i ++){
+                TempBusObj tempBusObj = new TempBusObj();
+                tempBusObj.tCfgBusinessObj = list.get(i);
+                List<TCfgLogicalEntity> tempLogicaEntityList = new ArrayList<TCfgLogicalEntity>();
+                if(tempBusObj.tCfgBusinessObj.bus_obj_code != null){
+                    tempLogicaEntityList = TCfgLogicalEntity.find("bus_obj_code=?", tempBusObj.tCfgBusinessObj.bus_obj_code).fetch();
+                }
+                tempBusObj.tCfgLogicalEntitieList = tempLogicaEntityList;
+                tempBusObjList.add(tempBusObj);
+            }
+        }
+        // 获取全部的物理对象集合
+        List<TCfgPhysicalEntity> tCfgPhysicalEntitieList = new ArrayList<TCfgPhysicalEntity>();;
+        // convert(list, tempBusObjList);
+        if(tempBusObjList.size() > 0){
+            for(int i = 0 ; i < tempBusObjList.size() ; i ++){
+                for(int j = 0 ; j < tempBusObjList.get(i).tCfgLogicalEntitieList.size(); j ++){
+                    TCfgLogicalEntity logicalEntity = tempBusObjList.get(i).tCfgLogicalEntitieList.get(j);
+                    if(!"".equals(logicalEntity.bus_attr_code) && logicalEntity.bus_attr_code != null){
+                        List<TCfgPhysicalEntity> tCfgPhysicalEntities = TCfgPhysicalEntity.find("bus_attr_code=?", logicalEntity.bus_attr_code).fetch();
+                        if(tCfgPhysicalEntities.size() > 0){
+                            for(TCfgPhysicalEntity physicalEntity : tCfgPhysicalEntities){
+                                tCfgPhysicalEntitieList.add(physicalEntity);
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        render(busContent, list, tempBusObjList, tCfgPhysicalEntitieList);
+    }
+    
+    /**
      * 根据业务属性编号查询该业务属性下的所有的物理实体
      * @param busAttrCode 业务属性编号
      * @return List<TCfgPhysicalEntity>

@@ -1,0 +1,202 @@
+#{extends 'main.html' /}
+#{set title:'index.html' /}
+
+<div class="row">
+    <div class="col-lg-12">
+        <div class="ibox float-e-margins" id="_qunee">
+            <div class="ibox-content" style="overflow: hidden;padding-bottom: 0;">
+                <h3>${busContent}</h3>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-lg-12">
+        <div class="ibox float-e-margins" id="_qunee">
+            <div class="ibox-content" style="overflow: hidden;">
+                <div id="crudListTable">
+                    <table width="100%" class="table table-striped table-bordered table-hover tab tr th ">
+                        <thead>
+                            <tr>
+                                <th width="100%" colspan="2">业务对象</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            #{list items:tempBusObjList,as:'_objVo'}
+                            <tr>
+                                <td colspan="2"><a href="javascript:void(0);" onclick="showObjInfo(this)" >${_objVo.tCfgBusinessObj.bus_obj_name}</a></td>
+                            </tr>
+                            <tr class="_obj" style="display: none;">
+                                <td width="50%">
+                                    <div>
+                                        <div>
+                                            <table width="100%" id="ywAttrTab" class="table table-striped table-bordered table-hover tab tr th ">
+                                                <tr>
+                                                    <th width="10%">序号</th>
+                                                    <th width="75%">业务属性名称</th>
+                                                    <th width="15%">查看</th>
+                                                </tr>
+                                                #{list items:_objVo.tCfgLogicalEntitieList,as:'_logicList'} #{if _logicList.bus_attr_type == '0'}
+                                                <tr>
+                                                    <td>${_logicList_index}</td>
+                                                    <td>
+                                                        <a href="javascript:void(0);"
+                                                            onclick="toBusDataLife('${_logicList.bus_attr_name}', '${_logicList.bus_attr_code}')">${_logicList.bus_attr_name}</a>
+                                                        <!-- ${_logicList.bus_attr_name} -->
+                                                    </td>
+                                                    <td>
+                                                        <a href="javascript:void(0);" onclick="queryPhyEnByBusAttr('${_logicList.bus_attr_code}', this)">
+                                                            <img width="20px" height="20px" src="@{'/public/images/left_.jpg'}">
+                                                        </a>
+                                                    </td>
+                                                </tr>
+                                                #{/if} #{/list}
+                                            </table>
+                                        </div>
+                                        <div>
+                                            <table width="100%" id="czAttrTab" class="table table-striped table-bordered table-hover tab tr th ">
+                                                <tr>
+                                                    <th width="10%">序号</th>
+                                                    <th width="75%">操作属性名称</th>
+                                                    <th width="15%">查看</th>
+                                                </tr>
+                                                #{list items:_objVo.tCfgLogicalEntitieList,as:'_logicList'} #{if _logicList.bus_attr_type == '1'}
+                                                <tr>
+                                                    <td>${_logicList_index}</td>
+                                                    <td>
+                                                        <a href="#">${_logicList.bus_attr_name}</a>
+                                                    </td>
+                                                    <td>
+                                                        <a href="javascript:void(0);" onclick="queryPhyEnByBusAttr('${_logicList.bus_attr_code}', this)">
+                                                            <img width="20px" height="20px" src="@{'/public/images/left_.jpg'}">
+                                                        </a>
+                                                    </td>
+                                                </tr>
+                                                #{/if} #{/list}
+                                            </table>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td width="50%">
+                                    <div>
+                                        <table width="100%" id="physicalEntityTab" class="table table-striped table-bordered table-hover tab tr th ">
+                                            <tr id="phyicalTr">
+                                                <th width="10%">序号</th>
+                                                <th width="10%">来源系统</th>
+                                                <th width="20%">数据库表名</th>
+                                                <th width="25%">数据项名称</th>
+                                            </tr>
+                                            #{list items:tCfgPhysicalEntitieList,as:'_phyicList'}
+                                            <tr class="phyicalInfoTr">
+                                                <td>${_phyicList_index}</td>
+                                                <td>${_phyicList.bus_sys_src}</td>
+                                                <td>${_phyicList.bus_table_name_en}</td>
+                                                <td>${_phyicList.bus_colnum_name}</td>
+                                            </tr>
+                                            #{/list}
+                                        </table>
+                                    </div>
+                                </td>
+                            </tr>
+                            #{/list}
+                        </tbody>
+                    </table>
+                </div>
+                <div class="page-box">
+                    <button class="next-page-btn page-box-row">
+                        <a class="next-page-btn-a" href="javascript:void(window.history.go(-1));">返回</a>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+#{set 'moreScripts'}
+<script type="text/javascript" src="@{'/public/js/echarts.min.js'}"></script>
+<script type="text/javascript" src="@{'/public/js/jquery-form.min.js'}"></script>
+<script type="text/javascript" src="@{'/public/js/jquery.validate.min.js'}"></script>
+<script type="text/javascript" src="@{'/public/js/plugins/jquery-ui/jquery-ui.min.js'}"></script>
+<link href="@{'/public/js/plugins/jquery-ui/jquery-ui.min.css'}" rel="stylesheet">
+<script type="text/javascript">
+    
+    function queryPhyEnByBusAttr(busAttrCode, obj){
+        
+        $(".text_color").each(function(){
+            $(this).removeClass("text_color");
+        });
+        
+        $(obj).parent().prev().addClass("text_color");
+        
+        if(busAttrCode != null && busAttrCode != ''){
+            $.ajax({
+                url:"/BusinessObjs/queryPhyEnByBusAttr",
+                type:"post",
+                data:{
+                    "busAttrCode":busAttrCode
+                },
+                success:function(data){
+                    var list = JSON.parse(data).list;
+                    var html = "";
+                    $(".phyicalInfoTr").each(function(){
+                        $(this).remove();
+                    });
+                    html +="<tr class='phyicalInfoTr' >";
+                    for(var i = 0 ; i < list.length ; i ++){
+                        var str = "<td>" + (i+1) + "</td>" + 
+                            "<td>" + list[i].bus_sys_src + "</td>" + 
+                            "<td>" + list[i].bus_table_name_en + "</td>" + 
+                            "<td>" + list[i].bus_colnum_name + "</td>";
+                        html += str;
+                    }
+                    html += "</tr>";
+                    $("#phyicalTr").after(html);
+                }
+            });
+        }
+    }
+    
+    function toBusDataLife(busAttrName, busAttrCode){
+        window.location.href = "/Businessobjs/toBusDataLife?busAttrName=" + busAttrName + "&busAttrCode=" + busAttrCode;
+    }
+    
+    function showObjInfo(obj){
+        
+        /* $("._obj").each(function(i){
+            $(this).hide();
+        }); */
+        
+        $(obj).parent().parent().next().fadeToggle(1500);
+    }
+    
+</script>
+
+<script type="text/javascript">
+
+$(function(){
+    showHighLight(2, 2, 5);
+});
+
+</script>
+
+<style type="text/css">
+
+.text_color {
+    color:"#F30";
+    font-weight: 600;
+}
+
+
+table tr th {
+    text-align: center;
+}
+
+
+.page-box{
+    text-align: right;
+}
+
+</style>
+
+#{/set}

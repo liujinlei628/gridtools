@@ -156,28 +156,12 @@ public class BusinessObjs extends CRUD {
                         }
                     }
                 }
+                // 存入VO对象
                 tempBusObj.tCfgPhysicalEntitieList = tCfgPhysicalEntitieList;
+                // VO集合
                 tempBusObjList.add(tempBusObj);
             }
         }
-        /* // 获取全部的物理对象集合
-        List<TCfgPhysicalEntity> tCfgPhysicalEntitieList = new ArrayList<TCfgPhysicalEntity>();;
-        // convert(list, tempBusObjList);
-        if(tempBusObjList.size() > 0){
-            for(int i = 0 ; i < tempBusObjList.size() ; i ++){
-                for(int j = 0 ; j < tempBusObjList.get(i).tCfgLogicalEntitieList.size(); j ++){
-                    TCfgLogicalEntity logicalEntity = tempBusObjList.get(i).tCfgLogicalEntitieList.get(j);
-                    if(!"".equals(logicalEntity.bus_attr_code) && logicalEntity.bus_attr_code != null){
-                        List<TCfgPhysicalEntity> tCfgPhysicalEntities = TCfgPhysicalEntity.find("bus_attr_code=?", logicalEntity.bus_attr_code).fetch();
-                        if(tCfgPhysicalEntities.size() > 0){
-                            for(TCfgPhysicalEntity physicalEntity : tCfgPhysicalEntities){
-                                tCfgPhysicalEntitieList.add(physicalEntity);
-                            }
-                        }
-                    }
-                }
-            }
-        }*/
         render(busContent, list, tempBusObjList);
     }
     
@@ -224,29 +208,13 @@ public class BusinessObjs extends CRUD {
                         }
                     }
                 }
+                // 存入VO对象
                 tempBusObj.tCfgPhysicalEntitieList = tCfgPhysicalEntitieList;
+                // VO集合
                 tempBusObjList.add(tempBusObj);
             }
         }
         
-        /*// 获取全部的物理对象集合
-        List<TCfgPhysicalEntity> tCfgPhysicalEntitieList = new ArrayList<TCfgPhysicalEntity>();
-        // convert(list, tempBusObjList);
-        if(tempBusObjList.size() > 0){
-            for(int i = 0 ; i < tempBusObjList.size() ; i ++){
-                for(int j = 0 ; j < tempBusObjList.get(i).tCfgLogicalEntitieList.size(); j ++){
-                    TCfgLogicalEntity logicalEntity = tempBusObjList.get(i).tCfgLogicalEntitieList.get(j);
-                    if(!"".equals(logicalEntity.bus_attr_code) && logicalEntity.bus_attr_code != null){
-                        List<TCfgPhysicalEntity> tCfgPhysicalEntities = TCfgPhysicalEntity.find("bus_attr_code=?", logicalEntity.bus_attr_code).fetch();
-                        if(tCfgPhysicalEntities.size() > 0){
-                            for(TCfgPhysicalEntity physicalEntity : tCfgPhysicalEntities){
-                                tCfgPhysicalEntitieList.add(physicalEntity);
-                            }
-                        }
-                    }
-                }
-            }
-        }*/
         render(busContent, list, tempBusObjList);
     }
     
@@ -325,7 +293,7 @@ public class BusinessObjs extends CRUD {
                 vo.delete();
             }
         }
-        
+        // 根据业务属性名称查询业务属性集合
         String query=" 1=1 ";
         if(busAttrName !=null && !"".equals(busAttrName)){
             query += " AND bus_attr_name ='" + busAttrName + "'" ;
@@ -356,7 +324,7 @@ public class BusinessObjs extends CRUD {
                 strList.add(str);
             }
         }
-        
+        // 保存生命周期数据
         TCfgDataLife tCfgDataLife = new TCfgDataLife();
         tCfgDataLife.bus_attr_code = busAttrCode;
         tCfgDataLife.start_node = start_node;

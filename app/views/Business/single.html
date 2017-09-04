@@ -168,7 +168,7 @@
     var nodeMap = new Map();
     var colorMap = new Map(); //所有节点的颜色
     var selectedMap = new Map();//过滤功能中选中的颜色节点
-    function createText(label, x, y,color) {
+    function createText(label, x, y,color, busObjName) {
         var node = graph.createText(label, x, y);
         // 层次间布局方向为向右布局
         node.parentChildrenDirection = Q.Consts.DIRECTION_RIGHT;
@@ -176,6 +176,29 @@
         node.setStyle(Q.Styles.LABEL_PADDING, 15);
         node.setStyle(Q.Styles.LABEL_COLOR, '#FFF');
         node.setStyle(Q.Styles.LABEL_BACKGROUND_COLOR,color);
+        
+        var label = new Q.LabelUI();
+        label.position = Q.Position.CENTER_TOP;
+        label.anchorPosition = Q.Position.CENTER_BOTTOM;
+        label.border = 1;
+        label.padding = new Q.Insets(2, 5);
+        label.showPointer = true;
+        label.offsetY = -10;
+        label.backgroundColor = "";
+        label.fontSize = 16;
+        label.fontStyle = "italic 100";
+        node.addUI(label, [{
+                            property : "label",
+                            propertyType : Q.Consts.PROPERTY_TYPE_CLIENT,
+                            bindingProperty : "data"
+                        }, {
+                            property : "label.color",
+                            propertyType : Q.Consts.PROPERTY_TYPE_CLIENT,
+                            bindingProperty : "color"
+                        }]);
+        node.set("label", busObjName);
+        node.set("label.color", "");
+        
         return node;
     }
 
@@ -295,7 +318,7 @@
                     }
                 }
                 if (isCreate(saveList,node)) {
-                    var n = createText(node.displayname, node.x, node.y,colorMap.get(_nodeId));
+                    var n = createText(node.displayname, node.x, node.y,colorMap.get(_nodeId), node.busObjName);
                     nodeMap.set(node.name, n);
                 }
             }

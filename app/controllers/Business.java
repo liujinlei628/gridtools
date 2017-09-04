@@ -28,6 +28,7 @@ import com.google.gson.JsonObject;
 
 import models.TCfgBusiness;
 import models.TCfgBusinessDesc;
+import models.TCfgBusinessObj;
 import models.TCfgBusinessProcess;
 import models.TCfgDict;
 import models.TempCategory;
@@ -816,6 +817,19 @@ public class Business extends CRUD {
             node.target = _busi.post_business_id;
             node.x=_x_min + (i*_x_d);
             node.y=_y_min + (i*_y_d);
+            
+            // 获取业务对象集合
+            List<TCfgBusinessObj> list =TCfgBusinessObj.find("bus_content=?", _busi.content).fetch();
+            
+            String tempObjs = "";
+            for(TCfgBusinessObj vo : list){
+                tempObjs += vo.bus_obj_name + ",";
+            }
+            if(tempObjs.length() > 0){
+                tempObjs = tempObjs.substring(0, tempObjs.length() -1);
+            }
+            node.busObjName = tempObjs;
+            
             if(!nodeSet.contains(node.name)) {
                 nodeList.add(node);
                 nodeSet.add(node.name);
@@ -846,6 +860,17 @@ public class Business extends CRUD {
                         nodeList.add(node);
                         nodeSet.add(node.name);
                     }
+                    // 获取业务对象集合
+                    List<TCfgBusinessObj> objlist =TCfgBusinessObj.find("bus_content=?", _busi.post_business_content).fetch();
+                    
+                    String posttempObjs = "";
+                    for(TCfgBusinessObj vo : objlist){
+                        posttempObjs += vo.bus_obj_name + ",";
+                    }
+                    if(posttempObjs.length() > 0){
+                        posttempObjs = posttempObjs.substring(0, posttempObjs.length() -1);
+                    }
+                    node.busObjName = posttempObjs;
                 }
             }else{
                 node = new TempNode();
@@ -860,6 +885,17 @@ public class Business extends CRUD {
                     nodeList.add(node);
                     nodeSet.add(node.name);
                 }
+                // 获取业务对象集合
+                List<TCfgBusinessObj> objlist =TCfgBusinessObj.find("bus_content=?", _busi.post_business_content).fetch();
+                
+                String posttempObjs = "";
+                for(TCfgBusinessObj vo : objlist){
+                    posttempObjs += vo.bus_obj_name + ",";
+                }
+                if(posttempObjs.length() > 0){
+                    posttempObjs = posttempObjs.substring(0, posttempObjs.length() -1);
+                }
+                node.busObjName = posttempObjs;
             }
             
             category = new TempCategory();
@@ -959,6 +995,18 @@ public class Business extends CRUD {
 //                    }else {
         //
 //                    }
+                    
+                    // 获取业务对象集合
+                    List<TCfgBusinessObj> objlist =TCfgBusinessObj.find("bus_content=?", _busi.post_business_content).fetch();
+                    
+                    String posttempObjs = "";
+                    for(TCfgBusinessObj vo : objlist){
+                        posttempObjs += vo.bus_obj_name + ",";
+                    }
+                    if(posttempObjs.length() > 0){
+                        posttempObjs = posttempObjs.substring(0, posttempObjs.length() -1);
+                    }
+                    node.busObjName = posttempObjs;
 
                     if(!nodeSet.contains(node.name)) {
                         nodeList.add(node);
@@ -1043,6 +1091,18 @@ public class Business extends CRUD {
 //                }else {
     //
 //                }
+                
+                // 获取业务对象集合
+                List<TCfgBusinessObj> objlist =TCfgBusinessObj.find("bus_content=?", _busi.post_business_content).fetch();
+                
+                String posttempObjs = "";
+                for(TCfgBusinessObj vo : objlist){
+                    posttempObjs += vo.bus_obj_name + ",";
+                }
+                if(posttempObjs.length() > 0){
+                    posttempObjs = posttempObjs.substring(0, posttempObjs.length() -1);
+                }
+                node.busObjName = posttempObjs;
 
                 if(!nodeSet.contains(node.name)) {
                     nodeList.add(node);
@@ -1082,8 +1142,6 @@ public class Business extends CRUD {
                         }
                     }
                 }
-
-
                 xx++;
                 if(_busi.relation.equalsIgnoreCase("引用")){
                     break;

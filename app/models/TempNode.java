@@ -28,6 +28,8 @@ public class TempNode implements Comparable<TempNode> {
     
     public String target;
 
+    public String busObjName;
+    
     @Override
     public int compareTo(TempNode o) {
         if(this.name != o.name){

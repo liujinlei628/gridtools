@@ -65,7 +65,9 @@
                                                 <tr>
                                                     <td>${_logicList_index}</td>
                                                     <td>
-                                                        <a href="#">${_logicList.bus_attr_name}</a>
+                                                        <a href="javascript:void(0);"
+                                                            onclick="toBusDataLife('${_logicList.bus_attr_name}', '${_logicList.bus_attr_code}')">${_logicList.bus_attr_name}</a>
+                                                        <!-- <a href="#">${_logicList.bus_attr_name}</a> -->
                                                     </td>
                                                     <td>
                                                         <a href="javascript:void(0);" onclick="queryPhyEnByBusAttr('${_logicList.bus_attr_code}', this)">

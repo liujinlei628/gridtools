@@ -1,0 +1,73 @@
+#{extends 'main.html' /}
+#{set title:'toUpload.html' /}
+
+#{set 'moreStyles'}
+    <link href="@{'/public/css/plugins/dropzone/basic.css'}" rel="stylesheet">
+    <link href="@{'/public/css/plugins/dropzone/dropzone.css'}" rel="stylesheet">
+#{/set}
+
+<ul class="nav nav-tabs">
+    <li><a href="@{controllers.DataDicts.list()}">元数据管理</a></li>
+    <li><a href="#">主数据管理</a></li>
+    <li class="active"><a href="@{controllers.BusinessObjs.toUpload()}">业务数据导入</a></li>
+</ul>
+
+<div class="row">
+    <div class="col-lg-12">
+        <div class="ibox float-e-margins">
+            <div class="ibox-content text-center p-md">
+                <h2>
+                    <span class="text-navy">请选择一个文件上传</span>
+                </h2>
+            </div>
+        </div>
+    </div>
+</div>
+
+#{form @BusinessObjs.uploadBusinessData(), id:'assetForm', enctype:'multipart/form-data', class:'dropzone'}
+<div class="row">
+    <div class="col-sm-12">
+            <div class="fallback">
+                <input name="file" type="file" multiple />
+            </div>
+    </div>
+</div>
+#{/form}
+#{set 'moreScripts'}
+<script src="@{'/public/js/plugins/dropzone/dropzone.js'}"></script>
+<script type="text/javascript">
+    Dropzone.options.assetForm = {
+        paramName: "file", // The name that will be used to transfer the file
+        maxFilesize: 200, // MB
+        acceptedFiles: ".csv,.xls,.xlsx",
+        addRemoveLinks: true,
+        dictDefaultMessage: "拖动文件到此或者点击选择文件上传",
+        init: function() {
+            this.on("complete", function(file) {
+                console.log("File " + file.name + "uploaded");
+            });
+            this.on("removedfile", function(file) {
+                console.log("File " + file.name + "removed");
+            });
+        }
+    };
+</script>
+
+<script type="text/javascript">
+
+$(function(){
+     showHighLight(2, 2, 6);
+});
+
+</script>
+
+<style type="text/css">
+
+.col-xs-2 {
+    width: 170px;
+    padding-left: 40px;
+    padding-top: 8px;
+}
+
+</style>
+#{/set}

@@ -1,22 +1,29 @@
 package controllers;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
+import org.jeecgframework.poi.excel.entity.ImportParams;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 
+import controllers.utils.ExcelImportUtil;
+import models.TCfgBusinessData;
 import models.TCfgBusinessDesc;
 import models.TCfgBusinessObj;
+import models.TCfgDataDict;
 import models.TCfgDataLife;
 import models.TCfgDict;
 import models.TCfgLogicalEntity;
 import models.TCfgPhysicalEntity;
 import models.TempBusObj;
 import play.Logger;
+import sun.util.logging.resources.logging;
 
 /**
  * Created by humin on 03/06/2017.
@@ -460,6 +467,108 @@ public class BusinessObjs extends CRUD {
         }
         
         return msg;
+    }
+    
+    /**
+     * 跳转到业务数据导入页面
+     */
+    public static void toUpload() {
+        render();
+    }
+    
+    /**
+     * 业务数据excel文件导入
+     * @param file
+     */
+    public static void uploadBusinessData(File file) {
+        
+        Logger.info("Get file:"+ file);
+        
+        ImportParams params = new ImportParams();
+        // 表格标题行数
+        params.setTitleRows(0);
+        // 是否需要保存上传的Excel,默认为false
+        // params.setNeedSave(true);
+        
+        List<Map<String, Object>> list = ExcelImportUtil.importExcel(file, Map.class, params);
+        
+        TCfgBusinessData businessData = null;
+        for (Map<String, Object> map : list) {
+            
+            businessData = new TCfgBusinessData();
+            
+            Logger.info("数据项：" + map.get("数据项").toString());
+            
+            if(map.get("业务框架") != null){
+                businessData.bus_area = map.get("业务框架").toString();
+            }
+            
+            if(map.get("业务名称") != null){
+                businessData.bus_name = map.get("业务名称").toString();
+            }
+            
+            if(map.get("业务内容") != null){
+                businessData.bus_content = map.get("业务内容").toString();
+            }
+            
+            if(map.get("业务编号") != null){
+                businessData.bus_code = map.get("业务编号").toString();
+            }
+            
+            if(map.get("业务内容描述") != null){
+                businessData.bus_des = map.get("业务内容描述").toString();
+            }
+            
+            if(map.get("业务对象实体编号") != null){
+                businessData.bus_obj_code = map.get("业务对象实体编号").toString();
+            }
+            
+            if(map.get("业务对象实体名称") != null){
+                businessData.bus_obj_name = map.get("业务对象实体名称").toString();
+            }
+            
+            if(map.get("数据项") != null){
+                businessData.bus_attr_name = map.get("数据项").toString();
+            }
+            
+            if(map.get("业务属性编号") != null){
+                businessData.bus_attr_code = map.get("业务属性编号").toString();
+            }
+            
+            if(map.get("来源系统") != null){
+                businessData.bus_sys_src = map.get("来源系统").toString();
+            }
+            
+            if(map.get("数据类型（结构化/非结构化）") != null){
+                businessData.bus_data_struct = map.get("数据类型（结构化/非结构化）").toString();
+            }
+            
+            if(map.get("数据库表名（英文）") != null){
+                businessData.bus_table_name = map.get("数据库表名（英文）").toString();
+            }
+            
+            if(map.get("数据库表名（中文）") != null){
+                businessData.bus_table_zhname = map.get("数据库表名（中文）").toString();
+            }
+            
+            if(map.get("数据项名称（英文）") != null){
+                businessData.bus_col_name = map.get("数据项名称（英文）").toString();
+            }
+            
+            if(map.get("数据项类型") != null){
+                businessData.bus_data_type = map.get("数据项类型").toString();
+            }
+            
+            if(map.get("数据项长度") != null){
+                businessData.bus_data_length = map.get("数据项长度").toString();
+            }
+            
+            if(map.get("是否一手数据") != null){
+                businessData.bus_if_onehand = map.get("是否一手数据").toString();
+            }
+            businessData.del_flag = "0";
+            businessData.save();
+        }
     }
     
 }
